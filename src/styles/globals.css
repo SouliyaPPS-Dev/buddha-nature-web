@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Phetsarath";
+  src: url("@/assets/fonts/PhetsarathOT.ttf") format("truetype"); /* Adjust path if needed */
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Apply Tailwind's default body styles using Phetsarath */
+body {
+  @apply font-phetsarath;
+}
