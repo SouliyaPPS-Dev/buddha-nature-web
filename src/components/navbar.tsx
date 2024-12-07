@@ -1,3 +1,6 @@
+import { Logo, SearchIcon } from '@/components/icons';
+import { ThemeSwitch } from '@/components/theme-switch';
+import { siteConfig } from '@/layouts/site';
 import { Input } from '@nextui-org/input';
 import {
   NavbarBrand,
@@ -9,17 +12,23 @@ import {
   Navbar as NextUINavbar,
 } from '@nextui-org/navbar';
 import { link as linkStyles } from '@nextui-org/theme';
+import { Link, useRouterState } from '@tanstack/react-router';
 import clsx from 'clsx';
-import { Logo, SearchIcon } from '@/components/icons';
-import { ThemeSwitch } from '@/components/theme-switch';
-import { siteConfig } from '@/layouts/site';
-import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
+import { useSearch } from './SearchContext';
 
 export const Navbar = () => {
   const [activeItem, setActiveItem] = useState<string>('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+
+  const { searchTerm, setSearchTerm } = useSearch();
+
+  const location = useRouterState({ select: (s) => s.location });
+
+  const currentPath = location.pathname;
+
+  // Use useRouterState to get the current location
+
   const handleMobileNavigation = (href: string) => {
     setActiveItem(href); // Set the active item when it's clicked
     setIsMenuOpen(false); // This closes the menu
@@ -33,11 +42,13 @@ export const Navbar = () => {
         input: 'text-sm',
       }}
       labelPlacement='outside'
-      placeholder='Search...'
+      placeholder='ຄົ້ນຫາພຣະສູດ...'
       startContent={
         <SearchIcon className='text-base text-default-400 pointer-events-none flex-shrink-0' />
       }
       type='search'
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
     />
   );
 
@@ -45,7 +56,6 @@ export const Navbar = () => {
     <NextUINavbar
       maxWidth='xl'
       position='sticky'
-      isBordered
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
     >
@@ -87,7 +97,10 @@ export const Navbar = () => {
         <NavbarItem className='hidden sm:flex gap-2'>
           <ThemeSwitch />
         </NavbarItem>
-        <NavbarItem className='hidden lg:flex'>{searchInput}</NavbarItem>
+        {/* Conditionally hide search input when the current path is '/sutra' */}
+        {currentPath !== '/sutra' && (
+          <NavbarItem className='hidden lg:flex'>{searchInput}</NavbarItem>
+        )}
       </NavbarContent>
 
       {/* Mobile Menu Toggle */}

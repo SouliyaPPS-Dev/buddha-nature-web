@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
+import { Route as VideoIndexImport } from './routes/video/index'
 import { Route as SutraIndexImport } from './routes/sutra/index'
 import { Route as CalendarIndexImport } from './routes/calendar/index'
 import { Route as BookIndexImport } from './routes/book/index'
@@ -29,6 +30,12 @@ const AboutRoute = AboutImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const VideoIndexRoute = VideoIndexImport.update({
+  id: '/video/',
+  path: '/video/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -102,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SutraIndexImport
       parentRoute: typeof rootRoute
     }
+    '/video/': {
+      id: '/video/'
+      path: '/video'
+      fullPath: '/video'
+      preLoaderRoute: typeof VideoIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -114,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/book': typeof BookIndexRoute
   '/calendar': typeof CalendarIndexRoute
   '/sutra': typeof SutraIndexRoute
+  '/video': typeof VideoIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -123,6 +138,7 @@ export interface FileRoutesByTo {
   '/book': typeof BookIndexRoute
   '/calendar': typeof CalendarIndexRoute
   '/sutra': typeof SutraIndexRoute
+  '/video': typeof VideoIndexRoute
 }
 
 export interface FileRoutesById {
@@ -133,6 +149,7 @@ export interface FileRoutesById {
   '/book/': typeof BookIndexRoute
   '/calendar/': typeof CalendarIndexRoute
   '/sutra/': typeof SutraIndexRoute
+  '/video/': typeof VideoIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -144,8 +161,16 @@ export interface FileRouteTypes {
     | '/book'
     | '/calendar'
     | '/sutra'
+    | '/video'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/sutra/$category' | '/book' | '/calendar' | '/sutra'
+  to:
+    | '/'
+    | '/about'
+    | '/sutra/$category'
+    | '/book'
+    | '/calendar'
+    | '/sutra'
+    | '/video'
   id:
     | '__root__'
     | '/'
@@ -154,6 +179,7 @@ export interface FileRouteTypes {
     | '/book/'
     | '/calendar/'
     | '/sutra/'
+    | '/video/'
   fileRoutesById: FileRoutesById
 }
 
@@ -164,6 +190,7 @@ export interface RootRouteChildren {
   BookIndexRoute: typeof BookIndexRoute
   CalendarIndexRoute: typeof CalendarIndexRoute
   SutraIndexRoute: typeof SutraIndexRoute
+  VideoIndexRoute: typeof VideoIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -173,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   BookIndexRoute: BookIndexRoute,
   CalendarIndexRoute: CalendarIndexRoute,
   SutraIndexRoute: SutraIndexRoute,
+  VideoIndexRoute: VideoIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -190,7 +218,8 @@ export const routeTree = rootRoute
         "/sutra/$category",
         "/book/",
         "/calendar/",
-        "/sutra/"
+        "/sutra/",
+        "/video/"
       ]
     },
     "/": {
@@ -210,6 +239,9 @@ export const routeTree = rootRoute
     },
     "/sutra/": {
       "filePath": "sutra/index.tsx"
+    },
+    "/video/": {
+      "filePath": "video/index.tsx"
     }
   }
 }

@@ -1,34 +1,25 @@
-import { BookIcon, CalendarIcon, SutraIcon } from '@/components/icons'; // Import icons for each tab
+import {
+  BookIcon,
+  CalendarIcon,
+  SutraIcon,
+  VideoIcon,
+} from '@/components/icons'; // Import icons for each tab
 import { siteConfig } from '@/layouts/site';
 import { Tab, Tabs } from '@nextui-org/react'; // Import NextUI Tabs
-import { useRouter } from '@tanstack/react-router'; // Import useRouter hook
-import React, { useEffect, useState } from 'react';
+import { useRouter, useRouterState } from '@tanstack/react-router'; // Import useRouter hook
+import React from 'react';
 
 export const NavigationTabs: React.FC = () => {
   const router = useRouter();
-  const [currentPath, setCurrentPath] = useState(
-    router.state.location.pathname
-  );
 
-  useEffect(() => {
-    // Subscribe to the navigationComplete event
-    const unsubscribe = router.subscribe(
-      'onLoad', // Specify the event type
-      ({ type, toLocation }) => {
-        if (type === 'onLoad' && toLocation) {
-          setCurrentPath(toLocation.pathname); // Update the current path state
-        }
-      }
-    );
-
-    // Cleanup subscription on component unmount
-    return () => unsubscribe();
-  }, [router]);
+  const location = useRouterState({ select: (s) => s.location });
+  const currentPath = location.pathname;
 
   // Map icons for each tab
   const tabIcons: Record<string, JSX.Element> = {
     '/sutra': <SutraIcon />,
     '/book': <BookIcon />,
+    '/video': <VideoIcon />,
     '/calendar': <CalendarIcon />,
   };
 
@@ -78,4 +69,3 @@ export const NavigationTabs: React.FC = () => {
     </Tabs>
   );
 };
-

@@ -1,32 +1,28 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { sutraApi } from "@/services/https/sutra";
-import { useQuery } from "@tanstack/react-query";
+import { useSearch } from '@/components/SearchContext';
+import { sutraApi } from '@/services/https/sutra';
+import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { useDebounce } from 'use-debounce';
 
 export const useSutra = () => {
-     const { data, isLoading, error } = useQuery({
+     const { searchTerm, setSearchTerm } = useSearch();
+
+     const [debouncedSearchTerm] = useDebounce(searchTerm, 300); // Delay filtering
+
+     const { data, isLoading } = useQuery({
           queryKey: ['sutra'],
-          queryFn: sutraApi,
+          queryFn: async () => sutraApi(),
      });
 
-     const info = data?.map((item) => item);
+     const filteredData = useMemo(() => {
+          if (!data) return [];
+          return data.filter((item) =>
+               [item['ຊື່ພຣະສູດ'], item['ພຣະສູດ'], item['ໝວດທັມ']]
+                    .join(' ')
+                    .toLowerCase()
+                    .includes(debouncedSearchTerm.toLowerCase())
+          );
+     }, [debouncedSearchTerm, data]);
 
-     // Safely ensure data isn't null or undefined
-     const categoryData = data || [];
-
-     // Collect unique categories from the data
-     const categories = Array.from(
-          new Set(categoryData.map((item: any) => item['ໝວດທັມ']) || [])
-     );
-
-
-     return {
-          // Data
-          data: info,
-          categories,
-
-          // Additional properties
-          isLoading,
-          error
-     }
-
-}
+     return { data: filteredData, isLoading, searchTerm, setSearchTerm };
+};

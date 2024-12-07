@@ -4,6 +4,7 @@ import book from '@/assets/icons/book.png';
 import calendar from '@/assets/icons/calendar.png';
 import home from '@/assets/icons/home.png';
 import sutra from '@/assets/icons/sutra.png';
+import video from '@/assets/icons/vdo.png';
 import logo from '@/assets/images/logo.png';
 import { IconSvgProps, LogoProps } from '@/model';
 
@@ -233,6 +234,18 @@ export const SutraIcon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = (
   <img
     {...props}
     src={sutra}
+    alt='Sutra'
+    className='w-6 h-6 mx-auto' // Consistent size for Sutra icon
+  />
+);
+
+// Sutra Icon
+export const VideoIcon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = (
+  props
+) => (
+  <img
+    {...props}
+    src={video}
     alt='Sutra'
     className='w-6 h-6 mx-auto' // Consistent size for Sutra icon
   />

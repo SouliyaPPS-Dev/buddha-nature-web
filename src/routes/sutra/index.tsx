@@ -1,5 +1,6 @@
+import { SearchIcon } from '@/components/icons';
 import { useSutra } from '@/hooks/sutra/useSutra';
-import { Card, CardBody, Image, Spinner } from '@nextui-org/react';
+import { Card, CardBody, Image, Input, Spinner } from '@nextui-org/react';
 
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Helmet } from 'react-helmet-async';
@@ -9,7 +10,14 @@ export const Route = createFileRoute('/sutra/')({
 });
 
 function RouteComponent() {
-  const { categories, isLoading } = useSutra();
+  const {
+    data,
+    isLoading,
+
+    // Search
+    searchTerm,
+    setSearchTerm,
+  } = useSutra();
 
   return (
     <>
@@ -44,46 +52,85 @@ function RouteComponent() {
         <link rel='icon' href='/images/logo.png' />
       </Helmet>
 
-      <section className='flex flex-col items-center justify-center gap-4 py-8 md:py-10'>
-        <div className='gap-2 grid grid-cols-3 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-5'>
-          {categories.map((category) => (
-            <Link
-              key={category}
-              to={`/sutra/${category}`}
-              className='flex justify-center items-center'
-            >
-              <Card
-                isHoverable
-                key={category}
-                isFooterBlurred
-                className='w-full max-w-[200px] h-auto'
-              >
-                <CardBody className='overflow-visible p-0 relative'>
-                  {!isLoading && (
-                    // Show a loading spinner or placeholder while the image is loading
-                    <div className='absolute inset-0 flex items-center justify-center bg-gray-200'>
-                      <Spinner size='sm' />
-                    </div>
-                  )}
-                  <Image
-                    removeWrapper
-                    shadow='sm'
-                    radius='lg'
-                    alt={category}
-                    className={`z-0 w-full h-full object-contain transition-opacity duration-300 ${
-                      isLoading ? 'opacity-100' : 'opacity-0'
-                    }`} // Add smooth transition for images
-                    src={`/images/sutra/${category}.jpg`} // Dynamically resolve the image path
-                    onLoad={isLoading ? () => {} : () => {}} // Update isLoading state
-                    onError={() =>
-                      console.error(`Failed to load image for ${category}`)
-                    } // Handle potential errors
-                  />
-                </CardBody>
-              </Card>
-            </Link>
-          ))}
+      <section className='flex flex-col items-center justify-center'>
+        {/* Search Bar */}
+        <div className='mb-4 w-full max-w-lg hidden lg:flex'>
+          <Input
+            aria-label='Search'
+            classNames={{
+              inputWrapper: 'bg-default-100',
+              input: 'text-sm',
+            }}
+            type='search'
+            labelPlacement='outside'
+            placeholder='ຄົ້ນຫາພຣະສູດ...'
+            value={searchTerm}
+            startContent={
+              <SearchIcon className='text-base text-default-400 pointer-events-none flex-shrink-0' />
+            }
+            onChange={(e) => setSearchTerm(e.target.value)} // Update search term
+          />
         </div>
+
+        {/* Category Filter */}
+        {searchTerm === '' && (
+          <div className='gap-2 grid grid-cols-3 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-5'>
+            {data?.map((item) => (
+              <Link
+                key={item.ID}
+                to={`/sutra/${item['ໝວດທັມ']}`}
+                className='flex justify-center items-center'
+              >
+                <Card
+                  isHoverable
+                  key={item.ID}
+                  isFooterBlurred
+                  className='w-full max-w-[200px] h-auto'
+                >
+                  <CardBody className='overflow-visible p-0 relative'>
+                    {!isLoading && (
+                      <div className='absolute inset-0 flex items-center justify-center bg-gray-200'>
+                        <Spinner size='sm' />
+                      </div>
+                    )}
+                    <Image
+                      removeWrapper
+                      shadow='sm'
+                      radius='lg'
+                      alt={item['ຊື່ພຣະສູດ']}
+                      className={`z-0 w-full h-full object-contain transition-opacity duration-300 ${
+                        isLoading ? 'opacity-100' : 'opacity-0'
+                      }`} // Add smooth transition for images
+                      src={`/images/sutra/${item['ໝວດທັມ']}.jpg`} // Dynamically resolve the image path
+                      onLoad={isLoading ? () => {} : () => {}} // Update isLoading state
+                      onError={() =>
+                        console.error(
+                          `Failed to load image for ${item['ໝວດທັມ']}`
+                        )
+                      } // Handle potential errors
+                    />
+                  </CardBody>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {/* Render Filtered Items */}
+        {searchTerm !== '' && (
+          <div className='flex flex-col gap-2'>
+            {data?.map((item) => (
+              <Card key={item.ID} className='cursor-pointer'>
+                <CardBody>{item['ຊື່ພຣະສູດ']}</CardBody>
+              </Card>
+            ))}
+
+            {/* Fallback for Empty Data */}
+            {!data?.length && (
+              <div className='text-center text-gray-600'>ບໍ່ພົບຂໍ້ມູນ</div>
+            )}
+          </div>
+        )}
       </section>
     </>
   );

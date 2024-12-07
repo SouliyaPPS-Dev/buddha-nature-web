@@ -5,7 +5,7 @@ export const siteConfig = {
   description: "The Word of Buddha",
   navItems: [
     {
-      label: "About",
+      label: "ຂໍ້ມູນຕິດຕໍ່",
       href: "/about",
     },
   ],
@@ -20,7 +20,11 @@ export const siteConfig = {
       href: "/calendar",
     },
     {
-      label: "About",
+      label: "Video",
+      href: "/video",
+    },
+    {
+      label: "ຂໍ້ມູນຕິດຕໍ່",
       href: "/about",
     },
   ],
@@ -31,9 +35,14 @@ export const siteConfig = {
     },
     { label: "ປື້ມ", href: "/book" },
     {
+      label: "Video",
+      href: "/video",
+    },
+    {
       label: "ປະຕິທິນທັມ",
       href: "/calendar",
     },
+   
   ],
   links: {
     github: "https://github.com/nextui-org/nextui",

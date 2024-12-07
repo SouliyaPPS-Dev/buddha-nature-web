@@ -40,7 +40,6 @@ function RouteComponent() {
         {/* Favicon */}
         <link rel='icon' href='/images/logo.png' />
       </Helmet>
-
     </>
   );
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navbar } from '@/components/navbar';
 import { NavigationTabs } from '@/components/NavigationTabs';
+import { SearchProvider } from '@/components/SearchContext';
 
 export default function DefaultLayout({
   children,
@@ -9,16 +10,18 @@ export default function DefaultLayout({
 }) {
   return (
     <div className='relative flex flex-col h-screen  overflow-y-auto scrollbar-none'>
-      {/* Top navbar */}
-      <Navbar />
+      <SearchProvider>
+        {/* Top navbar */}
+        <Navbar />
 
-      {/* Main content */}
-      <main className='container mx-auto max-w-7xl px-6 flex-grow'>
-        {children}
-      </main>
+        {/* Main content */}
+        <main className='container mx-auto max-w-7xl px-6 flex-grow'>
+          {children}
+        </main>
 
-      {/* Bottom navigation tabs */}
-      <NavigationTabs />
+        {/* Bottom navigation tabs */}
+        <NavigationTabs />
+      </SearchProvider>
     </div>
   );
 }
