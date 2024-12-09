@@ -1,6 +1,6 @@
+import { useState } from 'react';
 import { SutraDataModel } from '@/model/sutra';
 import { Route } from '@/routes/sutra/$category';
-import { useState } from 'react';
 import { useSutra } from './useSutra';
 
 export const useCategory = () => {
@@ -8,25 +8,29 @@ export const useCategory = () => {
      const params = Route.useParams();
      const { category } = params;
 
+     
      // Fetch Sutra Data
      const { data } = useSutra();
 
      // Filter items based on category and search term
      const filteredItemsCategory = data?.filter((item: SutraDataModel) => {
           // Match category
-          const matchesCategory = category === '' || item['ໝວດທັມ'] === category;
+          const matchesCategory = category ? item['ໝວດທັມ'] === category : true;
 
-          // Match search term in any field
-          const matchesSearchTerm =
-               item['ຊື່ພຣະສູດ']?.includes(searchTerm.toLowerCase()) ||
-               item['ພຣະສູດ']?.includes(searchTerm.toLowerCase()) ||
-               item['ໝວດທັມ']?.includes(searchTerm.toLowerCase());
+          // Match search term in any field (case-insensitive)
+          const matchesSearchTerm = searchTerm
+               ? [item['ຊື່ພຣະສູດ'], item['ພຣະສູດ'], item['ໝວດທັມ']]
+                    .some((field) => field?.toLowerCase().includes(searchTerm.toLowerCase()))
+               : true;
 
           return matchesCategory && matchesSearchTerm;
      });
 
      return {
           data: filteredItemsCategory,
+          category,
+          
+          // Search
           searchTerm,
           setSearchTerm,
      };

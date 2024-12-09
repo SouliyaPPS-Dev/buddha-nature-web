@@ -41,7 +41,7 @@ export const Loading: React.FC = () => {
         backgroundSize: 'cover', // Ensures the image covers the entire viewport while preserving its aspect ratio
         backgroundPosition: 'center', // Keeps the image centered
         backgroundRepeat: 'no-repeat', // Prevents background tiling
-        zIndex: 9999, // Ensure it is above other content
+        zIndex: 999, // Ensure it is above other content
       }}
     />
   );

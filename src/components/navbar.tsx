@@ -42,7 +42,7 @@ export const Navbar = () => {
         input: 'text-sm',
       }}
       labelPlacement='outside'
-      placeholder='ຄົ້ນຫາພຣະສູດ...'
+      placeholder='ຄົ້ນຫາພຣະສູດທັງໝົດ...'
       startContent={
         <SearchIcon className='text-base text-default-400 pointer-events-none flex-shrink-0' />
       }

@@ -57,12 +57,56 @@
 
   <!-- Scroll View Style Reset -->
   <style>
+    /* Ensure the body does not block overlays */
     body {
       margin: 0;
       padding: 0;
-      overflow: hidden;
+    }
+
+    /* Make overlay banners always the top-most layer */
+    /* Inside global CSS or inline styles */
+    .install-alert {
+      z-index: 9999;
+      /* Ensure it's the topmost layer */
+      position: fixed;
+      /* Anchor it to the viewport */
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: auto;
+      /* Prevent overlapping */
+      pointer-events: auto;
+      /* Ensure interactions */
+    }
+
+    .modal {
+      position: fixed;
+      /* Sticks to viewport */
+      z-index: 9999;
+      /* Topmost layer */
+      /* Ensures nothing overlaps these elements */
+    }
+
+    /* Ensure interactive buttons are clickable */
+    .install-alert *,
+    .modal * {
+      pointer-events: auto;
+      /* Allow interaction */
+    }
+
+    /* Prevent background content from interfering */
+    .install-alert-blocker,
+    .modal-blocker {
+      pointer-events: none;
+      /* Block clicks to underlying layers */
+    }
+
+    .sticky-element {
+      position: sticky;
+      z-index: 999;
     }
   </style>
+
   <!-- Register Service Worker and Add to Home Screen scripts -->
   <script>
     if ("serviceWorker" in navigator) {
@@ -99,7 +143,7 @@
           installAlert.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.15)";
           installAlert.style.borderRadius = "12px";
           installAlert.style.padding = "15px 20px";
-          installAlert.style.zIndex = "1000";
+          installAlert.style.zIndex = "999";
           installAlert.style.display = "flex";
           installAlert.style.alignItems = "center";
           installAlert.style.justifyContent = "space-between";
@@ -108,7 +152,7 @@
           installAlert.style.fontFamily = "Arial, sans-serif";
           // Add content: message, install button, and close button
           installAlert.innerHTML = `
-                    <div style="flex: 1;">
+                    <div style="flex: 1; z-index: 999;">
                       <p style="margin: 0; font-size: 16px; font-weight: bold; color: #333;">
                         Add to Home Screen
                       </p>
@@ -116,7 +160,7 @@
                         Install this app for a better user experience!
                       </p>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px; z-index: 999;">
                       <button id="install-pwa-button" style="
                         background-color: #ab5f14;
                         color: #ffffff;
@@ -219,6 +263,7 @@
             font-size: 16px;
             margin: 4px 2px;
             cursor: pointer;
+            z-index: 999;
             `;
       button.onclick = showSafariInstructions; // Show full instructions when button is clicked
       // Append the button to the banner
@@ -244,7 +289,7 @@
             border: 2px solid #333;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
+            z-index: 999;
             width: 90%;
             max-width: 600px;
             max-height: 90vh;
