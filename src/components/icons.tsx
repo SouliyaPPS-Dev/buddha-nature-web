@@ -5,6 +5,7 @@ import calendar from '@/assets/icons/calendar.png';
 import home from '@/assets/icons/home.png';
 import sutra from '@/assets/icons/sutra.png';
 import video from '@/assets/icons/vdo.png';
+import dhamma from '@/assets/icons/dhamma.png';
 import logo from '@/assets/images/logo.png';
 import { IconSvgProps, LogoProps } from '@/model';
 
@@ -246,6 +247,17 @@ export const VideoIcon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = (
   <img
     {...props}
     src={video}
+    alt='Sutra'
+    className='w-6 h-6 mx-auto' // Consistent size for Sutra icon
+  />
+);
+
+export const DhammaIcon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = (
+  props
+) => (
+  <img
+    {...props}
+    src={dhamma}
     alt='Sutra'
     className='w-6 h-6 mx-auto' // Consistent size for Sutra icon
   />

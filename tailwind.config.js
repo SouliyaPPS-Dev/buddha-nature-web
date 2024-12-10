@@ -13,6 +13,14 @@ export default {
   ],
   theme: {
     extend: {
+      fontSize: {
+        'xs-extra': '0.625rem', // 10px
+        'sm-extra': '0.875rem', // 14px
+        'base-large': '1.125rem', // 18px
+        '2xl-extra': '1.625rem', // 26px
+        '3xl-extra': '2.5rem', // 40px
+        hero: '4.5rem', // 72px, for hero text
+      },
       // Add the custom `Phetsarath` font to the Tailwind configuration
       fontFamily: {
         phetsarath: ['Phetsarath', 'sans-serif'], // Use Phetsarath with fallback

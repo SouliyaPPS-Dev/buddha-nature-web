@@ -24,6 +24,10 @@ export const siteConfig = {
       href: "/calendar",
     },
     {
+      label: "ພຣະທັມ",
+      href: "/dhamma",
+    },
+    {
       label: "ຂໍ້ມູນຕິດຕໍ່",
       href: "/about",
     },
@@ -42,7 +46,10 @@ export const siteConfig = {
       label: "ປະຕິທິນ",
       href: "/calendar",
     },
-   
+    {
+      label: "ພຣະທັມ",
+      href: "/dhamma",
+    },
   ],
   links: {
     github: "https://github.com/nextui-org/nextui",

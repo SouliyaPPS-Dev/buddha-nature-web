@@ -1,6 +1,7 @@
 import {
   BookIcon,
   CalendarIcon,
+  DhammaIcon,
   SutraIcon,
   VideoIcon,
 } from '@/components/icons'; // Import icons for each tab
@@ -19,6 +20,7 @@ export const NavigationTabs: React.FC = () => {
     '/sutra': <SutraIcon />,
     '/book': <BookIcon />,
     '/video': <VideoIcon />,
+    '/dhamma': <DhammaIcon />,
     '/calendar': <CalendarIcon />,
   };
 
