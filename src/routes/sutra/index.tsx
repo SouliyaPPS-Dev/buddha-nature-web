@@ -1,4 +1,3 @@
-import Seo from '@/components/Seo';
 import { SearchIcon } from '@/components/icons';
 import CategoryCard from '@/containers/sutra/CategoryCard';
 import { useSutra } from '@/hooks/sutra/useSutra';
@@ -22,7 +21,6 @@ function RouteComponent() {
 
   return (
     <>
-      <Seo />
       <section className='flex flex-col items-center justify-center'>
         {/* Search Bar */}
 

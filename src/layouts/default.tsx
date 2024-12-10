@@ -2,6 +2,7 @@ import React from 'react';
 import { Navbar } from '@/components/navbar';
 import { NavigationTabs } from '@/components/NavigationTabs';
 import { SearchProvider } from '@/components/SearchContext';
+import '@/styles/globals.css';
 
 export default function DefaultLayout({
   children,
@@ -9,16 +10,14 @@ export default function DefaultLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className='relative flex flex-col h-screen  overflow-y-auto scrollbar-none'>
+    <div className='relative flex flex-col h-screen overflow-y-auto scrollbar-none smooth-scroll'>
       <SearchProvider>
         {/* Top navbar */}
         <Navbar />
-
         {/* Main content */}
         <main className='container mx-auto max-w-7xl px-6 flex-grow'>
           {children}
         </main>
-
         {/* Bottom navigation tabs */}
         <NavigationTabs />
       </SearchProvider>

@@ -1,4 +1,3 @@
-import Seo from '@/components/Seo';
 import { useCategory } from '@/hooks/sutra/useCategory';
 import { Card, CardBody, Input } from '@nextui-org/react';
 import { createFileRoute } from '@tanstack/react-router';
@@ -19,7 +18,6 @@ function RouteComponent() {
 
   return (
     <>
-      <Seo />
       <section className='max-w-lg mx-auto'>
         {/* Search Bar */}
         <Input

@@ -10,7 +10,7 @@ export function createRouter() {
     defaultPreload: 'intent',
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: PageNotFound,
-    defaultPendingComponent: Loading, // Add default loading component here
+    defaultPendingComponent: () => <Loading />,
   });
 }
 

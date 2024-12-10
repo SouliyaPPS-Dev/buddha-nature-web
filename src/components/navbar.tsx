@@ -1,7 +1,6 @@
-import { Logo, SearchIcon } from '@/components/icons';
+import { Logo } from '@/components/icons';
 import { ThemeSwitch } from '@/components/theme-switch';
 import { siteConfig } from '@/layouts/site';
-import { Input } from '@nextui-org/input';
 import {
   NavbarBrand,
   NavbarContent,
@@ -15,13 +14,11 @@ import { link as linkStyles } from '@nextui-org/theme';
 import { Link, useRouterState } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { useSearch } from './SearchContext';
+import { SearchDropdown } from './SearchDropdown';
 
 export const Navbar = () => {
   const [activeItem, setActiveItem] = useState<string>('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const { searchTerm, setSearchTerm } = useSearch();
 
   const location = useRouterState({ select: (s) => s.location });
 
@@ -33,24 +30,6 @@ export const Navbar = () => {
     setActiveItem(href); // Set the active item when it's clicked
     setIsMenuOpen(false); // This closes the menu
   };
-
-  const searchInput = (
-    <Input
-      aria-label='Search'
-      classNames={{
-        inputWrapper: 'bg-default-100',
-        input: 'text-sm',
-      }}
-      labelPlacement='outside'
-      placeholder='ຄົ້ນຫາພຣະສູດທັງໝົດ...'
-      startContent={
-        <SearchIcon className='text-base text-default-400 pointer-events-none flex-shrink-0' />
-      }
-      type='search'
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-    />
-  );
 
   return (
     <NextUINavbar
@@ -99,7 +78,9 @@ export const Navbar = () => {
         </NavbarItem>
         {/* Conditionally hide search input when the current path is '/sutra' */}
         {currentPath !== '/sutra' && (
-          <NavbarItem className='hidden lg:flex'>{searchInput}</NavbarItem>
+          <NavbarItem className='hidden lg:flex'>
+            <SearchDropdown />
+          </NavbarItem>
         )}
       </NavbarContent>
 
@@ -111,7 +92,7 @@ export const Navbar = () => {
 
       {/* Mobile Menu */}
       <NavbarMenu>
-        {searchInput}
+        <SearchDropdown />
         <div className='mx-4 mt-2 flex flex-col gap-2'>
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`} className='w-full'>

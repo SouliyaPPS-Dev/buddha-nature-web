@@ -1,8 +1,13 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { Helmet } from 'react-helmet-async';
 
 // Define the route
 export const Route = createFileRoute('/')({
+  beforeLoad: async () => {
+    return redirect({
+      to: '/sutra',
+    });
+  },
   component: RouteComponent,
 });
 

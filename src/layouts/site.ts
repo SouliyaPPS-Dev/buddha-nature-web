@@ -16,12 +16,12 @@ export const siteConfig = {
     },
     { label: "ປື້ມ", href: "/book" },
     {
-      label: "ປະຕິທິນທັມ",
-      href: "/calendar",
-    },
-    {
       label: "Video",
       href: "/video",
+    },
+    {
+      label: "ປະຕິທິນ",
+      href: "/calendar",
     },
     {
       label: "ຂໍ້ມູນຕິດຕໍ່",
@@ -39,7 +39,7 @@ export const siteConfig = {
       href: "/video",
     },
     {
-      label: "ປະຕິທິນທັມ",
+      label: "ປະຕິທິນ",
       href: "/calendar",
     },
    

@@ -11,7 +11,6 @@ import React from 'react';
 
 export const NavigationTabs: React.FC = () => {
   const router = useRouter();
-
   const location = useRouterState({ select: (s) => s.location });
   const currentPath = location.pathname;
 
@@ -37,7 +36,7 @@ export const NavigationTabs: React.FC = () => {
       size='lg' // Large-sized tabs
       className='fixed bottom-4 left-1/2 transform -translate-x-1/2 px-0 py-0 rounded-lg shadow-md'
       aria-label='Dynamic Navigation Tabs'
-      selectedKey={getSelectedKey()} // Dynamically highlight based on current route
+      selectedKey={getSelectedKey()} // Dynamically highlight based on the current route
       onSelectionChange={(key) => {
         if (key && typeof key === 'string' && key !== currentPath) {
           router.navigate({ to: key }); // Navigate to the selected tab's route
@@ -47,21 +46,20 @@ export const NavigationTabs: React.FC = () => {
       {siteConfig.tabMenuItems.map((item) => (
         <Tab
           key={item.href}
-          className='flex items-center justify-center gap-2 sm:gap-2 w-full p-3'
+          className='flex items-center justify-center w-full px-2 py-6'
           title={
             <div
-              className='flex items-center justify-center text-center gap-2 sm:gap-2 w-full'
+              className='flex flex-col items-center justify-center text-center'
               role='tab'
             >
               {/* Icon */}
-              <span className='text-primary flex-shrink-0'>
+              <span className='mb-1 text-primary flex-shrink-0 w-10'>
                 {tabIcons[item.href as string]}
               </span>
               {/* Label */}
-              <span className='text-sm sm:text-base whitespace-nowrap'>
+              <span className='text-xs sm:text-sm whitespace-nowrap'>
                 {item.label}
               </span>
-              &nbsp;
             </div>
           }
         />
