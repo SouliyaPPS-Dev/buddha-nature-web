@@ -7,7 +7,6 @@ export const useCategory = () => {
      const [searchTerm, setSearchTerm] = useState('');
      const params = Route.useParams();
      const { category } = params;
-
      
      // Fetch Sutra Data
      const { data } = useSutra();

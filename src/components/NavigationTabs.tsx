@@ -8,6 +8,7 @@ import {
 import { siteConfig } from '@/layouts/site';
 import { Tab, Tabs } from '@nextui-org/react'; // Import NextUI Tabs
 import { useRouter, useRouterState } from '@tanstack/react-router'; // Import useRouter hook
+import clsx from 'clsx';
 import React from 'react';
 
 export const NavigationTabs: React.FC = () => {
@@ -59,7 +60,13 @@ export const NavigationTabs: React.FC = () => {
                 {tabIcons[item.href as string]}
               </span>
               {/* Label */}
-              <span className='text-xs sm:text-sm whitespace-nowrap'>
+              <span
+                className={clsx(
+                  'text-xs sm:text-sm whitespace-nowrap',
+                  // Apply font-bold when the tab is selected
+                  getSelectedKey() === item.href ? 'font-bold' : ''
+                )}
+              >
                 {item.label}
               </span>
             </div>

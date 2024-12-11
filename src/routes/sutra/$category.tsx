@@ -1,5 +1,6 @@
+import SutraCard from '@/containers/sutra/SutraCard';
 import { useCategory } from '@/hooks/sutra/useCategory';
-import { Card, CardBody, Input } from '@nextui-org/react';
+import { Input } from '@nextui-org/react';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/sutra/$category')({
@@ -18,10 +19,14 @@ function RouteComponent() {
 
   return (
     <>
-      <section className='max-w-lg mx-auto'>
+      <section className='max-w-lg mx-auto mb-20'>
         {/* Search Bar */}
         <Input
           placeholder={`ຄົ້ນຫາພຣະສູດ${category}...`}
+          classNames={{
+            inputWrapper: 'bg-default-100',
+            input: 'text-lg',
+          }}
           className='mb-0 p-4 mx-auto sticky top-14 z-10 w-full max-w-lg'
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)} // Update search term
@@ -30,14 +35,22 @@ function RouteComponent() {
         {/* Render Filtered Items */}
         <div className='flex flex-col gap-2'>
           {data?.map((item) => (
-            <Card key={item.ID} className='cursor-pointer'>
-              <CardBody>{item['ຊື່ພຣະສູດ']}</CardBody>
-            </Card>
+            <SutraCard
+              key={item.ID}
+              title={item['ຊື່ພຣະສູດ']}
+              detail={item['ພຣະສູດ']}
+              searchTerm={searchTerm}
+              onClick={() => {
+                // Handle click event for each item
+              }}
+            />
           ))}
 
           {/* Fallback for Empty Data */}
           {!data?.length && (
-            <div className='text-center text-gray-600'>ບໍ່ພົບຂໍ້ມູນ</div>
+            <div className='text-center text-gray-600 text-lg'>
+              ບໍ່ພົບຂໍ້ມູນ
+            </div>
           )}
         </div>
       </section>

@@ -19,6 +19,7 @@ import { Route as DhammaIndexImport } from './routes/dhamma/index'
 import { Route as CalendarIndexImport } from './routes/calendar/index'
 import { Route as BookIndexImport } from './routes/book/index'
 import { Route as SutraCategoryImport } from './routes/sutra/$category'
+import { Route as SutraCategoryTitleImport } from './routes/sutra/$category.$title'
 
 // Create/Update Routes
 
@@ -68,6 +69,12 @@ const SutraCategoryRoute = SutraCategoryImport.update({
   id: '/sutra/$category',
   path: '/sutra/$category',
   getParentRoute: () => rootRoute,
+} as any)
+
+const SutraCategoryTitleRoute = SutraCategoryTitleImport.update({
+  id: '/$title',
+  path: '/$title',
+  getParentRoute: () => SutraCategoryRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -130,43 +137,65 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VideoIndexImport
       parentRoute: typeof rootRoute
     }
+    '/sutra/$category/$title': {
+      id: '/sutra/$category/$title'
+      path: '/$title'
+      fullPath: '/sutra/$category/$title'
+      preLoaderRoute: typeof SutraCategoryTitleImport
+      parentRoute: typeof SutraCategoryImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface SutraCategoryRouteChildren {
+  SutraCategoryTitleRoute: typeof SutraCategoryTitleRoute
+}
+
+const SutraCategoryRouteChildren: SutraCategoryRouteChildren = {
+  SutraCategoryTitleRoute: SutraCategoryTitleRoute,
+}
+
+const SutraCategoryRouteWithChildren = SutraCategoryRoute._addFileChildren(
+  SutraCategoryRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/sutra/$category': typeof SutraCategoryRoute
+  '/sutra/$category': typeof SutraCategoryRouteWithChildren
   '/book': typeof BookIndexRoute
   '/calendar': typeof CalendarIndexRoute
   '/dhamma': typeof DhammaIndexRoute
   '/sutra': typeof SutraIndexRoute
   '/video': typeof VideoIndexRoute
+  '/sutra/$category/$title': typeof SutraCategoryTitleRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/sutra/$category': typeof SutraCategoryRoute
+  '/sutra/$category': typeof SutraCategoryRouteWithChildren
   '/book': typeof BookIndexRoute
   '/calendar': typeof CalendarIndexRoute
   '/dhamma': typeof DhammaIndexRoute
   '/sutra': typeof SutraIndexRoute
   '/video': typeof VideoIndexRoute
+  '/sutra/$category/$title': typeof SutraCategoryTitleRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/sutra/$category': typeof SutraCategoryRoute
+  '/sutra/$category': typeof SutraCategoryRouteWithChildren
   '/book/': typeof BookIndexRoute
   '/calendar/': typeof CalendarIndexRoute
   '/dhamma/': typeof DhammaIndexRoute
   '/sutra/': typeof SutraIndexRoute
   '/video/': typeof VideoIndexRoute
+  '/sutra/$category/$title': typeof SutraCategoryTitleRoute
 }
 
 export interface FileRouteTypes {
@@ -180,6 +209,7 @@ export interface FileRouteTypes {
     | '/dhamma'
     | '/sutra'
     | '/video'
+    | '/sutra/$category/$title'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -190,6 +220,7 @@ export interface FileRouteTypes {
     | '/dhamma'
     | '/sutra'
     | '/video'
+    | '/sutra/$category/$title'
   id:
     | '__root__'
     | '/'
@@ -200,13 +231,14 @@ export interface FileRouteTypes {
     | '/dhamma/'
     | '/sutra/'
     | '/video/'
+    | '/sutra/$category/$title'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  SutraCategoryRoute: typeof SutraCategoryRoute
+  SutraCategoryRoute: typeof SutraCategoryRouteWithChildren
   BookIndexRoute: typeof BookIndexRoute
   CalendarIndexRoute: typeof CalendarIndexRoute
   DhammaIndexRoute: typeof DhammaIndexRoute
@@ -217,7 +249,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  SutraCategoryRoute: SutraCategoryRoute,
+  SutraCategoryRoute: SutraCategoryRouteWithChildren,
   BookIndexRoute: BookIndexRoute,
   CalendarIndexRoute: CalendarIndexRoute,
   DhammaIndexRoute: DhammaIndexRoute,
@@ -252,7 +284,10 @@ export const routeTree = rootRoute
       "filePath": "about.tsx"
     },
     "/sutra/$category": {
-      "filePath": "sutra/$category.tsx"
+      "filePath": "sutra/$category.tsx",
+      "children": [
+        "/sutra/$category/$title"
+      ]
     },
     "/book/": {
       "filePath": "book/index.tsx"
@@ -268,6 +303,10 @@ export const routeTree = rootRoute
     },
     "/video/": {
       "filePath": "video/index.tsx"
+    },
+    "/sutra/$category/$title": {
+      "filePath": "sutra/$category.$title.tsx",
+      "parent": "/sutra/$category"
     }
   }
 }

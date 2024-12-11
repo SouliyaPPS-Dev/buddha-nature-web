@@ -2,6 +2,7 @@
 import { useSutra } from '@/hooks/sutra/useSutra';
 import { Input } from '@nextui-org/react'; // Assuming you're using the Next.js UI framework
 import React, { useState } from 'react';
+import DropdownSearch from './DropdownSearch';
 import { SearchIcon } from './icons';
 import { useSearch } from './SearchContext';
 
@@ -43,32 +44,13 @@ export const SearchDropdown = () => {
       />
 
       {/* Search Results Dropdown */}
-      {isDropdownOpen && searchResults?.length > 0 && (
-        <ul className='absolute z-50 mt-2 w-full max-h-60 rounded-md shadow-lg overflow-y-auto bg-white border border-gray-200'>
-          {[...searchResults] // Create a copy of searchResults before reversing
-            .reverse()
-            .map((result: any, index: number) => (
-              <React.Fragment key={index}>
-                <li
-                  onClick={() => handleResultClick()}
-                  className='cursor-pointer px-4 py-2 hover:bg-gray-100 flex items-center justify-between'
-                >
-                  {/* Flexible List Item */}
-                  <div className='flex flex-col'>
-                    <span className='font-medium text-gray-800'>
-                      {result['ຊື່ພຣະສູດ']}
-                    </span>
-                  </div>
-                </li>
-
-                {/* Divider */}
-                {index < searchResults.length - 1 && (
-                  <li className='h-px bg-gray-200 mx-4' aria-hidden='true'></li>
-                )}
-              </React.Fragment>
-            ))}
-        </ul>
-      )}
+      <DropdownSearch
+        isDropdownOpen={isDropdownOpen}
+        searchResults={searchResults}
+        searchTerm={searchTerm}
+        handleResultClick={handleResultClick}
+        setIsDropdownOpen={setIsDropdownOpen}
+      />
 
       {/* No Results Message */}
       {isDropdownOpen && searchResults?.length === 0 && (
