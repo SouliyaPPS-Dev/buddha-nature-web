@@ -1,4 +1,4 @@
-import { SearchIcon } from '@/components/icons';
+import { SearchIcon } from '@/components/layouts/icons';
 import CategoryCard from '@/containers/sutra/CategoryCard';
 import SutraCard from '@/containers/sutra/SutraCard';
 import { useSutra } from '@/hooks/sutra/useSutra';
@@ -12,7 +12,7 @@ export const Route = createFileRoute('/sutra/')({
 function RouteComponent() {
   const { data, isLoading, getGroupedData, searchTerm, setSearchTerm } =
     useSutra();
-  
+
   return (
     <>
       <section className='flex flex-col items-center justify-center mb-20'>

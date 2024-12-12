@@ -6,8 +6,8 @@ import {
   Logo,
   SutraIcon,
   VideoIcon,
-} from '@/components/icons';
-import { ThemeSwitch } from '@/components/theme-switch';
+} from '@/components/layouts/icons';
+import { ThemeSwitch } from '@/components/layouts/theme-switch';
 import { siteConfig } from '@/layouts/site';
 import {
   NavbarBrand,
@@ -22,7 +22,7 @@ import { link as linkStyles } from '@nextui-org/theme';
 import { Link, useRouterState } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { SearchDropdown } from './SearchDropdown';
+import { SearchDropdown } from '../search/SearchDropdown';
 
 export const Navbar = () => {
   const [activeItem, setActiveItem] = useState<string>('');

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Navbar } from '@/components/navbar';
-import { NavigationTabs } from '@/components/NavigationTabs';
-import { SearchProvider } from '@/components/SearchContext';
+import { Navbar } from '@/components/layouts/navbar';
+import { NavigationTabs } from '@/components/layouts/NavigationTabs';
+import { SearchProvider } from '@/components/search/SearchContext';
 import '@/styles/globals.css';
 
 export default function DefaultLayout({

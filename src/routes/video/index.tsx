@@ -1,4 +1,4 @@
-import { title } from '@/components/primitives';
+import { title } from '@/components/layouts/primitives';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/video/')({

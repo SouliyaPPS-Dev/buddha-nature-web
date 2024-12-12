@@ -2,8 +2,8 @@
 import { useSutra } from '@/hooks/sutra/useSutra';
 import { Input } from '@nextui-org/react'; // Assuming you're using the Next.js UI framework
 import React, { useState } from 'react';
-import DropdownSearch from './DropdownSearch';
-import { SearchIcon } from './icons';
+import DropdownSearch from '../DropdownSearch';
+import { SearchIcon } from '../layouts/icons';
 import { useSearch } from './SearchContext';
 
 export const SearchDropdown = () => {

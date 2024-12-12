@@ -1,4 +1,4 @@
-import { useSearch } from '@/components/SearchContext';
+import { useSearch } from '@/components/search/SearchContext';
 import { sutraApi } from '@/services/https/sutra';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';

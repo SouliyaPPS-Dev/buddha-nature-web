@@ -4,7 +4,7 @@ import {
   DhammaIcon,
   SutraIcon,
   VideoIcon,
-} from '@/components/icons'; // Import icons for each tab
+} from '@/components/layouts/icons'; // Import icons for each tab
 import { siteConfig } from '@/layouts/site';
 import { Tab, Tabs } from '@nextui-org/react'; // Import NextUI Tabs
 import { useRouter, useRouterState } from '@tanstack/react-router'; // Import useRouter hook
