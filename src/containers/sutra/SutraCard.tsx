@@ -1,20 +1,24 @@
 import { Card, CardBody } from '@nextui-org/react';
+import { Link } from '@tanstack/react-router';
+import DOMPurify from 'dompurify';
 import { useState } from 'react';
 import Highlighter from 'react-highlight-words';
+import ReactHtmlParser from 'react-html-parser';
 import { FiMinus, FiPlus } from 'react-icons/fi';
-import DOMPurify from 'dompurify';
-import parse from 'html-react-parser';
+import { GrView } from 'react-icons/gr';
 
 function SutraCard({
   title,
   detail,
   searchTerm,
+  route,
   onClick,
 }: {
   title: string;
   detail: string;
   searchTerm?: string;
-  onClick: () => void;
+  route?: string;
+  onClick?: () => void;
 }) {
   const [isExpanded, setIsExpanded] = useState(false); // State to track collapse/expand
   const [fontSize, setFontSize] = useState(18); // State to manage font size (default 16px)
@@ -27,9 +31,12 @@ function SutraCard({
     // If no searchTerm is provided or it's empty, render the content directly
     if (!searchTerm?.trim()) {
       return (
-        <div contentEditable={true} style={{ fontSize: `${fontSize}px` }}>
-          {parse(contentWithBreaks)}
-          {/* Render content with cursor but prevent editing */}
+        <div
+          contentEditable={true}
+          style={{ fontSize: `${fontSize}px` }}
+          className='cursor-text'
+        >
+          {ReactHtmlParser(contentWithBreaks)}
         </div>
       );
     }
@@ -39,13 +46,18 @@ function SutraCard({
     return parts.map((part, index) => {
       if (part.toLowerCase() === searchTerm.toLowerCase()) {
         return (
-          <span key={index} className='bg-yellow-200 font-bold text-black'>
-            {part}
+          <span
+            key={index}
+            className='bg-yellow-200 font-bold text-black cursor-text'
+            contentEditable={true}
+            style={{ fontSize: `${fontSize}px` }}
+          >
+            {ReactHtmlParser(part)}
           </span>
         );
       }
 
-      return <span key={index}>{parse(part)}</span>;
+      return <span key={index}>{ReactHtmlParser(part)}</span>;
     });
   };
 
@@ -54,7 +66,7 @@ function SutraCard({
   const decreaseFontSize = () => setFontSize((prev) => Math.max(prev - 2, 12)); // Min 12px
 
   return (
-    <Card className='cursor-pointer' onClick={onClick}>
+    <Card>
       <CardBody className='text-xl flex flex-col'>
         <div className='flex items-center gap-2'>
           {/* Toggle Button */}
@@ -62,7 +74,7 @@ function SutraCard({
             onClick={() => {
               setIsExpanded(!isExpanded);
             }} // Toggle the state
-            className='cursor-pointer bg-gray-200 hover:bg-gray-300 rounded-full p-1 flex items-center justify-center text-sm w-6 h-6'
+            className='bg-gray-200 hover:bg-gray-300 rounded-full p-1 flex items-center justify-center text-sm w-6 h-6'
           >
             {isExpanded ? (
               <FiMinus className='text-gray-600' /> // Minus icon
@@ -70,20 +82,31 @@ function SutraCard({
               <FiPlus className='text-gray-600' /> // Plus icon
             )}
           </span>
-          {/* Highlighted Title */}
-          <Highlighter
-            highlightClassName='bg-yellow-200 font-bold'
-            searchWords={[searchTerm || '']}
-            autoEscape={true}
-            textToHighlight={title}
-            style={{ fontSize: `18px` }} // Dynamically set the font size
-          />
+          <Link
+            to={route}
+            className='flex justify-between items-center w-full'
+            onClick={onClick}
+          >
+            <Highlighter
+              highlightClassName='bg-yellow-200 font-bold'
+              searchWords={[searchTerm || '']}
+              autoEscape={true}
+              textToHighlight={title}
+              style={{ fontSize: '18px' }}
+            />
+            <GrView
+              onClick={onClick}
+              className='cursor-pointer text-gray-600 hidden'
+            />
+          </Link>
         </div>
+
         {/* Collapsible Content (with scrollable area) */}
         {isExpanded && (
           <>
             {/* Scrollable Content */}
             <div
+              contentEditable={true}
               className='mt-2 prose mx-auto overflow-y-auto border rounded-md p-4 w-full'
               style={{
                 maxHeight: '200px', // Scrollable content area

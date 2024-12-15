@@ -4,7 +4,6 @@ import SutraCard from '@/containers/sutra/SutraCard';
 import { useSutra } from '@/hooks/sutra/useSutra';
 import { Input } from '@nextui-org/react';
 import { createFileRoute } from '@tanstack/react-router';
-
 export const Route = createFileRoute('/sutra/')({
   component: RouteComponent,
 });
@@ -55,7 +54,7 @@ function RouteComponent() {
                 title={item['ຊື່ພຣະສູດ']}
                 detail={item['ພຣະສູດ']}
                 searchTerm={searchTerm}
-                onClick={() => {}}
+                route={`/sutra/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}`}
               />
             ))}
             {/* Fallback for Empty Data */}

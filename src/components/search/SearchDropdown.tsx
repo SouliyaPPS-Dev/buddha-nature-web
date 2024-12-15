@@ -2,14 +2,16 @@
 import { useSutra } from '@/hooks/sutra/useSutra';
 import { Input } from '@nextui-org/react'; // Assuming you're using the Next.js UI framework
 import React, { useState } from 'react';
-import DropdownSearch from './DropdownSearch';
 import { SearchIcon } from '../layouts/icons';
-import { useSearch } from './SearchContext';
+import { useMenuContext } from '../layouts/MenuProvider';
+import DropdownSearch from './DropdownSearch';
+import { useSearchContext } from './SearchContext';
 
 export const SearchDropdown = () => {
-  const { searchTerm, setSearchTerm } = useSearch();
+  const { searchTerm, setSearchTerm } = useSearchContext();
   const { data: searchResults, isLoading } = useSutra();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Controls dropdown visibility
+  const { setIsMenuOpen } = useMenuContext(); // Use the context
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -20,6 +22,7 @@ export const SearchDropdown = () => {
   const handleResultClick = () => {
     setIsDropdownOpen(false); // Close dropdown on selection
     setSearchTerm(''); // Reset search if necessary
+    setIsMenuOpen(false);
   };
 
   //  Container for search and dropdown

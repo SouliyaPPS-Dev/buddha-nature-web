@@ -1,11 +1,11 @@
-import { useSearch } from '@/components/search/SearchContext';
+import { useSearchContext } from '@/components/search/SearchContext';
 import { sutraApi } from '@/services/https/sutra';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { useDebounce } from 'use-debounce';
 
 export const useSutra = () => {
-     const { searchTerm, setSearchTerm } = useSearch();
+     const { searchTerm, setSearchTerm } = useSearchContext();
 
      const [debouncedSearchTerm] = useDebounce(searchTerm, 300); // Delay filtering
 

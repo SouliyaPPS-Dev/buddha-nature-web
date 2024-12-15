@@ -1,10 +1,11 @@
-import { useState } from 'react';
 import { SutraDataModel } from '@/model/sutra';
 import { Route } from '@/routes/sutra/$category';
 import { useSutra } from './useSutra';
+import { useSearchContext } from '@/components/search/SearchContext';
 
 export const useCategory = () => {
-     const [searchTerm, setSearchTerm] = useState('');
+     const { searchTerm, setSearchTerm } = useSearchContext();
+
      const params = Route.useParams();
      const { category } = params;
      

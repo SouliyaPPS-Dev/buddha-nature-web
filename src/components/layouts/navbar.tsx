@@ -23,17 +23,17 @@ import { Link, useRouterState } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { useState } from 'react';
 import { SearchDropdown } from '../search/SearchDropdown';
+import { useMenuContext } from './MenuProvider';
 
 export const Navbar = () => {
   const [activeItem, setActiveItem] = useState<string>('');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isMenuOpen, setIsMenuOpen } = useMenuContext(); // Use the context
 
   const location = useRouterState({ select: (s) => s.location });
 
   const currentPath = location.pathname;
 
   // Use useRouterState to get the current location
-
   const handleMobileNavigation = (href: string) => {
     setActiveItem(href); // Set the active item when it's clicked
     setIsMenuOpen(false); // This closes the menu

@@ -1,5 +1,6 @@
 import SutraCard from '@/containers/sutra/SutraCard';
 import { useCategory } from '@/hooks/sutra/useCategory';
+import { router } from '@/router';
 import { Input } from '@nextui-org/react';
 import { createFileRoute } from '@tanstack/react-router';
 
@@ -41,8 +42,11 @@ function RouteComponent() {
               detail={item['ພຣະສູດ']}
               searchTerm={searchTerm}
               onClick={() => {
-                // Handle click event for each item
+                router.navigate({
+                  to: `/sutra/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}`,
+                });
               }}
+              route={`/sutra/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}`}
             />
           ))}
 

@@ -19,7 +19,7 @@ import { Route as DhammaIndexImport } from './routes/dhamma/index'
 import { Route as CalendarIndexImport } from './routes/calendar/index'
 import { Route as BookIndexImport } from './routes/book/index'
 import { Route as SutraCategoryImport } from './routes/sutra/$category'
-import { Route as SutraCategoryTitleImport } from './routes/sutra/$category.$title'
+import { Route as SutraDetailsCategoryTitleImport } from './routes/sutra/details.$category.$title'
 
 // Create/Update Routes
 
@@ -71,10 +71,10 @@ const SutraCategoryRoute = SutraCategoryImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const SutraCategoryTitleRoute = SutraCategoryTitleImport.update({
-  id: '/$title',
-  path: '/$title',
-  getParentRoute: () => SutraCategoryRoute,
+const SutraDetailsCategoryTitleRoute = SutraDetailsCategoryTitleImport.update({
+  id: '/sutra/details/$category/$title',
+  path: '/sutra/details/$category/$title',
+  getParentRoute: () => rootRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -137,65 +137,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VideoIndexImport
       parentRoute: typeof rootRoute
     }
-    '/sutra/$category/$title': {
-      id: '/sutra/$category/$title'
-      path: '/$title'
-      fullPath: '/sutra/$category/$title'
-      preLoaderRoute: typeof SutraCategoryTitleImport
-      parentRoute: typeof SutraCategoryImport
+    '/sutra/details/$category/$title': {
+      id: '/sutra/details/$category/$title'
+      path: '/sutra/details/$category/$title'
+      fullPath: '/sutra/details/$category/$title'
+      preLoaderRoute: typeof SutraDetailsCategoryTitleImport
+      parentRoute: typeof rootRoute
     }
   }
 }
 
 // Create and export the route tree
 
-interface SutraCategoryRouteChildren {
-  SutraCategoryTitleRoute: typeof SutraCategoryTitleRoute
-}
-
-const SutraCategoryRouteChildren: SutraCategoryRouteChildren = {
-  SutraCategoryTitleRoute: SutraCategoryTitleRoute,
-}
-
-const SutraCategoryRouteWithChildren = SutraCategoryRoute._addFileChildren(
-  SutraCategoryRouteChildren,
-)
-
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/sutra/$category': typeof SutraCategoryRouteWithChildren
+  '/sutra/$category': typeof SutraCategoryRoute
   '/book': typeof BookIndexRoute
   '/calendar': typeof CalendarIndexRoute
   '/dhamma': typeof DhammaIndexRoute
   '/sutra': typeof SutraIndexRoute
   '/video': typeof VideoIndexRoute
-  '/sutra/$category/$title': typeof SutraCategoryTitleRoute
+  '/sutra/details/$category/$title': typeof SutraDetailsCategoryTitleRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/sutra/$category': typeof SutraCategoryRouteWithChildren
+  '/sutra/$category': typeof SutraCategoryRoute
   '/book': typeof BookIndexRoute
   '/calendar': typeof CalendarIndexRoute
   '/dhamma': typeof DhammaIndexRoute
   '/sutra': typeof SutraIndexRoute
   '/video': typeof VideoIndexRoute
-  '/sutra/$category/$title': typeof SutraCategoryTitleRoute
+  '/sutra/details/$category/$title': typeof SutraDetailsCategoryTitleRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/sutra/$category': typeof SutraCategoryRouteWithChildren
+  '/sutra/$category': typeof SutraCategoryRoute
   '/book/': typeof BookIndexRoute
   '/calendar/': typeof CalendarIndexRoute
   '/dhamma/': typeof DhammaIndexRoute
   '/sutra/': typeof SutraIndexRoute
   '/video/': typeof VideoIndexRoute
-  '/sutra/$category/$title': typeof SutraCategoryTitleRoute
+  '/sutra/details/$category/$title': typeof SutraDetailsCategoryTitleRoute
 }
 
 export interface FileRouteTypes {
@@ -209,7 +197,7 @@ export interface FileRouteTypes {
     | '/dhamma'
     | '/sutra'
     | '/video'
-    | '/sutra/$category/$title'
+    | '/sutra/details/$category/$title'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -220,7 +208,7 @@ export interface FileRouteTypes {
     | '/dhamma'
     | '/sutra'
     | '/video'
-    | '/sutra/$category/$title'
+    | '/sutra/details/$category/$title'
   id:
     | '__root__'
     | '/'
@@ -231,30 +219,32 @@ export interface FileRouteTypes {
     | '/dhamma/'
     | '/sutra/'
     | '/video/'
-    | '/sutra/$category/$title'
+    | '/sutra/details/$category/$title'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  SutraCategoryRoute: typeof SutraCategoryRouteWithChildren
+  SutraCategoryRoute: typeof SutraCategoryRoute
   BookIndexRoute: typeof BookIndexRoute
   CalendarIndexRoute: typeof CalendarIndexRoute
   DhammaIndexRoute: typeof DhammaIndexRoute
   SutraIndexRoute: typeof SutraIndexRoute
   VideoIndexRoute: typeof VideoIndexRoute
+  SutraDetailsCategoryTitleRoute: typeof SutraDetailsCategoryTitleRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  SutraCategoryRoute: SutraCategoryRouteWithChildren,
+  SutraCategoryRoute: SutraCategoryRoute,
   BookIndexRoute: BookIndexRoute,
   CalendarIndexRoute: CalendarIndexRoute,
   DhammaIndexRoute: DhammaIndexRoute,
   SutraIndexRoute: SutraIndexRoute,
   VideoIndexRoute: VideoIndexRoute,
+  SutraDetailsCategoryTitleRoute: SutraDetailsCategoryTitleRoute,
 }
 
 export const routeTree = rootRoute
@@ -274,7 +264,8 @@ export const routeTree = rootRoute
         "/calendar/",
         "/dhamma/",
         "/sutra/",
-        "/video/"
+        "/video/",
+        "/sutra/details/$category/$title"
       ]
     },
     "/": {
@@ -284,10 +275,7 @@ export const routeTree = rootRoute
       "filePath": "about.tsx"
     },
     "/sutra/$category": {
-      "filePath": "sutra/$category.tsx",
-      "children": [
-        "/sutra/$category/$title"
-      ]
+      "filePath": "sutra/$category.tsx"
     },
     "/book/": {
       "filePath": "book/index.tsx"
@@ -304,9 +292,8 @@ export const routeTree = rootRoute
     "/video/": {
       "filePath": "video/index.tsx"
     },
-    "/sutra/$category/$title": {
-      "filePath": "sutra/$category.$title.tsx",
-      "parent": "/sutra/$category"
+    "/sutra/details/$category/$title": {
+      "filePath": "sutra/details.$category.$title.tsx"
     }
   }
 }
