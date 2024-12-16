@@ -1,5 +1,6 @@
 import PushNotificationA2HS from '@/components/layouts/PushNotificationA2HS';
 import Seo from '@/components/layouts/Seo';
+import { SearchProvider } from '@/components/search/SearchContext';
 import DefaultLayout from '@/layouts/default';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
@@ -11,9 +12,11 @@ export const Route = createRootRoute({
     <>
       <Seo />
       <PushNotificationA2HS />
-      <DefaultLayout>
-        <Outlet />
-      </DefaultLayout>
+      <SearchProvider>
+        <DefaultLayout>
+          <Outlet />
+        </DefaultLayout>
+      </SearchProvider>
       {isDevelopment && <TanStackRouterDevtools />}
     </>
   ),

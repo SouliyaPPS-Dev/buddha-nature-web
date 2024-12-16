@@ -1,13 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useFontSizeContext } from '@/components/FontSizeProvider';
+import { useSearchContext } from '@/components/search/SearchContext';
 import { useSutra } from '@/hooks/sutra/useSutra';
 import { createFileRoute } from '@tanstack/react-router';
 import DOMPurify from 'dompurify';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import Highlighter from 'react-highlight-words';
 import ReactHtmlParser from 'react-html-parser';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 export const Route = createFileRoute('/sutra/details/$category/$title')({
+  loader: async ({ params }) => {
+    const { category, title } = params;
+    return { category, title };
+  },
   component: RouteComponent,
 });
 
@@ -15,69 +22,80 @@ function RouteComponent() {
   const params = Route.useParams();
   const { category, title } = params;
   const { data } = useSutra();
+  const { searchTerm } = useSearchContext();
+  const { fontSize, setFontSize } = useFontSizeContext();
 
   // State for font size
-  const [fontSize, setFontSize] = useState(18); // Default font size is 18px
-  const [currentPage, setCurrentPage] = useState(0); // Track current page
-  const [itemsPerPage] = useState(5); // Number of pages to display per pagination "chunk"
+  const itemsPerPage = 1; // Always show 1 item per "chunk"
   const [filteredDetails, setFilteredDetails] = useState<any[]>([]); // Filtered data displayed in the flipbook
+  const [currentPage, setCurrentPage] = useState(0); // Current page index
 
-  // Find current index in the original data array
-  const currentGlobalIndex = data?.findIndex(
-    (item) => item.ID === filteredDetails?.[currentPage]?.ID
-  ); // Assuming `ID` is the unique identifier
+  // Filter the initial set of data
+  const initialFilteredDetails = useMemo(() => {
+    return (
+      data?.filter((item) => {
+        if (
+          !item ||
+          !item['ຊື່ພຣະສູດ'] ||
+          !item['ໝວດທັມ'] ||
+          !title ||
+          !category
+        ) {
+          return false;
+        }
+        return (
+          item['ຊື່ພຣະສູດ'].toLowerCase() === title.toLowerCase() &&
+          item['ໝວດທັມ'].toLowerCase() === category.toLowerCase()
+        );
+      }) || []
+    );
+  }, [data, title, category]);
 
-  // Initial filter logic to load all matching data (filtered by category and title)
-  const initialFilteredDetails =
-    data?.filter((item) => {
-      if (
-        !item ||
-        !item['ຊື່ພຣະສູດ'] ||
-        !item['ໝວດທັມ'] ||
-        !title ||
-        !category
-      ) {
-        return false;
-      }
-      return (
-        item['ຊື່ພຣະສູດ'].toLowerCase() === title.toLowerCase() &&
-        item['ໝວດທັມ'].toLowerCase() === category.toLowerCase()
-      );
-    }) || [];
-
-  // Effect to set the initial chunk of filtered data
+  // Initialize `filteredDetails` with the first chunk of data
   useEffect(() => {
     if (initialFilteredDetails.length > 0) {
-      setFilteredDetails(initialFilteredDetails.slice(0, itemsPerPage)); // Load the first chunk
+      setFilteredDetails(initialFilteredDetails.slice(0, itemsPerPage));
     }
-  }, [initialFilteredDetails, itemsPerPage]); // Re-run if initialFilteredDetails or itemsPerPage changes
+  }, [initialFilteredDetails, itemsPerPage]);
 
-  // Function to load more data when reaching the end of the current filteredDetails
-  const loadMoreData = () => {
-    const newStartIndex = filteredDetails.length; // Start after currently displayed data
-    const newDataChunk = initialFilteredDetails.slice(
-      newStartIndex,
-      newStartIndex + itemsPerPage
-    ); // Get the next set of items
-    if (newDataChunk.length > 0) {
-      setFilteredDetails((prevDetails) => [...prevDetails, ...newDataChunk]); // Add new data to current filteredDetails
+  // Update `filteredDetails` whenever `category` or `title` changes
+  useEffect(() => {
+    const updatedDetails =
+      data?.filter(
+        (item) =>
+          item['ຊື່ພຣະສູດ']?.toLowerCase() === title?.toLowerCase() &&
+          item['ໝວດທັມ']?.toLowerCase() === category?.toLowerCase()
+      ) || [];
+
+    setFilteredDetails(updatedDetails.slice(0, itemsPerPage));
+    setCurrentPage(0); // Reset to the first page
+  }, [category, title, data]);
+
+  // The reusable function to get the next chunk of data
+  const getNextData = (
+    latestIndex: number,
+    itemsPerPage: number,
+    fullData: any[]
+  ): any[] => {
+    if (latestIndex + 1 < fullData.length) {
+      return fullData.slice(latestIndex + 1, latestIndex + 1 + itemsPerPage); // Get next `itemsPerPage` items
     }
+    return []; // Return empty array if no data is left
   };
 
-  // Handlers to navigate between pages
+  // Navigate to the next page
   const goToNextPage = () => {
-    if (currentPage < filteredDetails.length - 1) {
-      setCurrentPage((prev) => prev + 1);
-    } else if (currentPage === filteredDetails.length - 1) {
-      // Load new data if on the last page
-      loadMoreData();
-    }
+    setFilteredDetails((prev) =>
+      prev.concat(getNextData(currentPage, itemsPerPage, data))
+    );
+
+    setCurrentPage((prev) => prev + itemsPerPage);
   };
 
+  // Navigate to the previous page
   const goToPreviousPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage((prev) => prev - 1);
-    }
+    setFilteredDetails((prev) => prev.slice(0, prev.length - itemsPerPage));
+    setCurrentPage((prev) => prev - itemsPerPage);
   };
 
   // Function to sanitize and parse HTML content
@@ -95,51 +113,217 @@ function RouteComponent() {
           {ReactHtmlParser(contentWithBreaks)}
         </div>
       );
+    } else {
+      // Highlighting functionality if searchTerm is provided
+      const parts = contentWithBreaks.split(
+        new RegExp(`(${searchTerm})`, 'gi')
+      );
+      return parts.map((part, index) => {
+        if (part.toLowerCase() === searchTerm.toLowerCase()) {
+          return (
+            <span
+              key={index}
+              className='bg-yellow-200 font-bold text-black cursor-text'
+              contentEditable={true}
+              style={{ fontSize: `${fontSize}px` }}
+            >
+              {ReactHtmlParser(part)}
+            </span>
+          );
+        }
+        return <span key={index}>{ReactHtmlParser(part)}</span>;
+      });
     }
-
-    // Highlighting functionality if searchTerm is provided
-    const parts = contentWithBreaks.split(new RegExp(`(${searchTerm})`, 'gi'));
-    return parts.map((part, index) => {
-      if (part.toLowerCase() === searchTerm.toLowerCase()) {
-        return (
-          <span
-            key={index}
-            className='bg-yellow-200 font-bold text-black cursor-text'
-            contentEditable={true}
-            style={{ fontSize: `${fontSize}px` }}
-          >
-            {ReactHtmlParser(part)}
-          </span>
-        );
-      }
-      return <span key={index}>{ReactHtmlParser(part)}</span>;
-    });
   };
 
   // Handlers for font size adjustments
   const increaseFontSize = () => setFontSize((prev) => Math.min(prev + 2, 32)); // Max 32px
   const decreaseFontSize = () => setFontSize((prev) => Math.max(prev - 2, 12)); // Min 12px
 
+  const renderPositionBar = () => (
+    <div
+      style={{
+        position: 'fixed', // Fixed at the bottom of the viewport
+        bottom: '0', // Align to the bottom
+        left: '0', // Full viewport width
+        right: '0', // Full viewport width
+        zIndex: 50, // Stay on top of other components
+        padding: '1rem', // Vertical padding
+        display: 'flex', // Flexbox layout
+        justifyContent: 'space-between', // Balance the layout for left, center, and right items
+        alignItems: 'center', // Vertically center all items
+        marginBottom: '58px',
+      }}
+    >
+      {/* Previous Page Button (Left Side) */}
+
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          justifyContent: 'flex-start',
+        }}
+      >
+        <button
+          onClick={goToPreviousPage}
+          disabled={currentPage === 0}
+          style={{
+            display: 'flex', // Use flexbox for alignment
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '25px', // Smaller width
+            height: '25px', // Smaller height
+            borderRadius: '15px', // Fully rounded button
+            border: 'none',
+            background: currentPage === 0 ? '#E0E0E0' : '#8B5E3C', // Gray for disabled, brown for active
+            color: currentPage === 0 ? '#999' : '#fff', // Indicate disabled state
+            cursor: currentPage === 0 ? 'not-allowed' : 'pointer', // Disable interaction if not clickable
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.15)', // Subtle shadow for depth
+            transition: 'all 0.3s ease', // Smooth transitions for hover and other changes
+          }}
+          onMouseOver={(e) => {
+            if (currentPage !== 0) {
+              e.currentTarget.style.background = '#704214'; // Darker brown hover effect
+              e.currentTarget.style.transform = 'scale(1.1)'; // Slight zoom effect
+            }
+          }}
+          onMouseOut={(e) => {
+            if (currentPage !== 0) {
+              e.currentTarget.style.background = '#8B5E3C'; // Reset color
+              e.currentTarget.style.transform = 'scale(1)'; // Reset zoom
+            }
+          }}
+        >
+          <FaChevronLeft size={18} /> {/* Chevron Left Icon */}
+        </button>
+      </div>
+      {/* Font Size Controls (Center) */}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          justifyContent: 'center', // Center the font size controls
+          gap: '1rem', // Add spacing between A- and A+
+          alignItems: 'center',
+        }}
+      >
+        {/* Decrease Font Size Button */}
+        <button
+          onClick={decreaseFontSize}
+          style={{
+            borderRadius: '0.25rem',
+            padding: '0.25rem 0.75rem',
+            fontSize: '0.875rem',
+            fontWeight: '500',
+            color: '#fff',
+            border: 'none',
+            background: 'linear-gradient(135deg, #8B5E3C, #D4A054)',
+            cursor: 'pointer',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+          onMouseOver={(e) =>
+            Object.assign(e.currentTarget.style, {
+              transform: 'scale(1.05)', // Enlarge slightly on hover
+              boxShadow: '0 6px 8px rgba(0, 0, 0, 0.2)', // Enhanced shadow
+            })
+          }
+          onMouseOut={(e) =>
+            Object.assign(e.currentTarget.style, {
+              transform: 'scale(1)', // Reset scale
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Reset shadow
+            })
+          }
+        >
+          A-
+        </button>
+
+        {/* Increase Font Size Button */}
+        <button
+          onClick={increaseFontSize}
+          style={{
+            borderRadius: '0.25rem',
+            padding: '0.25rem 0.75rem',
+            fontSize: '0.875rem',
+            fontWeight: '500',
+            color: '#fff',
+            border: 'none',
+            background: 'linear-gradient(135deg, #5E412D, #8B5E3C)',
+            cursor: 'pointer',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+          onMouseOver={(e) =>
+            Object.assign(e.currentTarget.style, {
+              transform: 'scale(1.05)', // Enlarge slightly on hover
+              boxShadow: '0 6px 8px rgba(0, 0, 0, 0.2)', // Enhanced shadow
+            })
+          }
+          onMouseOut={(e) =>
+            Object.assign(e.currentTarget.style, {
+              transform: 'scale(1)', // Reset scale
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Reset shadow
+            })
+          }
+        >
+          A+
+        </button>
+      </div>
+      {/* Next Page Button (Right Side) */}
+      <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+        <button
+          onClick={goToNextPage}
+          style={{
+            display: 'flex', // Use flexbox for alignment
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '25px', // Smaller width
+            height: '25px', // Smaller height
+            borderRadius: '15px', // Fully rounded button
+            border: 'none',
+            background: '#8B5E3C', // Active brown
+            color: '#fff',
+            cursor: 'pointer',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.15)',
+            transition: 'all 0.3s ease',
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.background = '#704214'; // Darker hover color
+            e.currentTarget.style.transform = 'scale(1.1)'; // Slight zoom
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.background = '#8B5E3C'; // Reset color
+            e.currentTarget.style.transform = 'scale(1)'; // Reset zoom
+          }}
+        >
+          <FaChevronRight size={18} /> {/* Chevron Right Icon */}
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <>
-      <div className='relative'>
-        {/* Show current page position */}
-        {filteredDetails.length > 0 && (
-          <div className='text-center font-medium mb-4'>
-            {currentGlobalIndex + 1} of {data?.length || 0}
-          </div>
-        )}
-
+      <div className='relative flex justify-center items-center mb-24'>
         {/* Content of the Current Page */}
-        {filteredDetails && filteredDetails.length > 0 ? (
+        {filteredDetails.length ? (
           <div
             className='page cursor-text mb-8'
             contentEditable={true}
             style={{ fontSize: `${fontSize}px` }}
           >
-            <h2 className='text-2xl font-bold mb-4 text-center'>
-              {filteredDetails[currentPage]['ຊື່ພຣະສູດ']}
-            </h2>
+            {/* ຊື່ພຣະສູດ */}
+            <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+              <Highlighter
+                highlightClassName='bg-yellow-200 font-bold'
+                searchWords={[searchTerm || '']}
+                autoEscape={true}
+                textToHighlight={filteredDetails[currentPage]['ຊື່ພຣະສູດ']}
+                style={{ fontSize: '20px' }}
+              />
+            </div>
+
+            {/* ສຽງ */}
             <div
               style={{
                 display: 'flex', // Use flexbox
@@ -157,14 +341,27 @@ function RouteComponent() {
                 </audio>
               )}
             </div>
-            {/* Render content */}
-            {renderDetail(filteredDetails[currentPage]['ພຣະສູດ'], '')}
-            <p
-              style={{ fontStyle: 'italic', color: '#888' }}
-              className='text-center'
-            >
-              {filteredDetails[currentPage]['ໝວດທັມ']}
-            </p>
+
+            {/* Render ພຣະສູດ */}
+            {renderDetail(filteredDetails[currentPage]['ພຣະສູດ'], searchTerm)}
+            <br />
+
+            {/* Render ໝວດທັມ */}
+            <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+              <Highlighter
+                highlightClassName='bg-yellow-200 font-bold' // Highlight class
+                searchWords={[searchTerm || '']} // Highlight based on searchTerm
+                autoEscape={true} // Allow Auto Escape for search term
+                textToHighlight={filteredDetails[currentPage]['ໝວດທັມ']} // Text to highlight
+                style={{
+                  fontSize: '20px', // Font size
+                  textAlign: 'center', // Ensure text alignment inside Highlighter
+                  display: 'inline-block', // Ensure it does not take full width
+                  fontStyle: 'italic',
+                  color: '#888',
+                }}
+              />
+            </div>
           </div>
         ) : (
           <p>No content available</p>
@@ -172,136 +369,7 @@ function RouteComponent() {
       </div>
 
       {/* Navigation Controls */}
-      <div
-        style={{
-          position: 'sticky', // Sticky position
-          bottom: '4rem',
-          left: '50px',
-          right: '5rem',
-          padding: '1rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '0.5rem',
-        }}
-      >
-        <button
-          onClick={goToPreviousPage}
-          style={{
-            borderRadius: '0.5rem',
-            padding: '0.5rem 1rem',
-            fontWeight: 'bold',
-            color: currentPage === 0 ? '#ccc' : 'white',
-            background: currentPage === 0 ? 'gray' : '#a35709',
-            border: 'none',
-            cursor: currentPage === 0 ? 'not-allowed' : 'pointer',
-          }}
-          disabled={currentPage === 0}
-        >
-          <FaChevronLeft size={20} /> {/* Chevron left icon with 20px size */}
-        </button>
-
-        <button
-          onClick={goToNextPage}
-          style={{
-            borderRadius: '0.5rem',
-            padding: '0.5rem 1rem',
-            fontWeight: 'bold',
-            color:
-              currentPage === filteredDetails.length - 1 &&
-              initialFilteredDetails.length === filteredDetails.length
-                ? '#ccc'
-                : 'white',
-            background:
-              currentPage === filteredDetails.length - 1 &&
-              initialFilteredDetails.length === filteredDetails.length
-                ? 'gray'
-                : '#704214',
-            border: 'none',
-            cursor:
-              currentPage === filteredDetails.length - 1 &&
-              initialFilteredDetails.length === filteredDetails.length
-                ? 'not-allowed'
-                : 'pointer',
-          }}
-        >
-          <FaChevronRight size={20} /> {/* Chevron right icon with 20px size */}
-        </button>
-      </div>
-
-      {/* Sticky Font Size Controls */}
-      <div
-        style={{
-          position: 'sticky', // sticky position
-          bottom: '4rem', // position 4rem from the bottom
-          left: '50px', // position 50px from the left
-          right: '5rem', // position 5rem from the right
-          padding: '1rem', // padding for the container
-          display: 'flex', // flexbox container
-          justifyContent: 'center', // align buttons to the right
-          gap: '0.5rem', // spacing between buttons
-          zIndex: 50, // ensure it stays on top of other elements
-        }}
-      >
-        <button
-          onClick={decreaseFontSize}
-          style={{
-            borderRadius: '0.5rem', // Rounded button corners
-            padding: '0.5rem 1rem', // Larger padding for better touch targets
-            fontSize: '1rem', // Bigger, readable font size
-            fontWeight: 'bold', // Bold font for emphasis
-            color: 'white', // White text color
-            border: 'none', // Remove default borders
-            background: 'linear-gradient(135deg, #a35709, #d49a30)', // Saffron and gold gradient
-            cursor: 'pointer', // Pointer cursor for interactivity
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Soft shadow for depth
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease', // Smooth animations
-          }}
-          onMouseOver={(e) =>
-            Object.assign(e.currentTarget.style, {
-              transform: 'scale(1.05)', // Slightly enlarge button on hover
-              boxShadow: '0 6px 8px rgba(0, 0, 0, 0.2)', // Enhance shadow on hover
-            })
-          }
-          onMouseOut={(e) =>
-            Object.assign(e.currentTarget.style, {
-              transform: 'scale(1)', // Reset scale
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Reset shadow
-            })
-          }
-        >
-          A-
-        </button>
-        <button
-          onClick={increaseFontSize}
-          style={{
-            borderRadius: '0.5rem', // Rounded button corners
-            padding: '0.5rem 1rem', // Larger padding for better touch targets
-            fontSize: '1rem', // Bigger, readable font size
-            fontWeight: 'bold', // Bold font for emphasis
-            color: 'white', // White text color
-            border: 'none', // Remove default borders
-            background: 'linear-gradient(135deg, #704214, #a35709)', // Earthy brown gradient
-            cursor: 'pointer', // Pointer cursor for interactivity
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Soft shadow for depth
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease', // Smooth animations
-          }}
-          onMouseOver={(e) =>
-            Object.assign(e.currentTarget.style, {
-              transform: 'scale(1.05)', // Slightly enlarge button on hover
-              boxShadow: '0 6px 8px rgba(0, 0, 0, 0.2)', // Enhance shadow on hover
-            })
-          }
-          onMouseOut={(e) =>
-            Object.assign(e.currentTarget.style, {
-              transform: 'scale(1)', // Reset scale
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Reset shadow
-            })
-          }
-        >
-          A+
-        </button>
-      </div>
+      {renderPositionBar()}
     </>
   );
 }

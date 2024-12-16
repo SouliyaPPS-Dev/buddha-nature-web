@@ -1,3 +1,4 @@
+import { useFontSizeContext } from '@/components/FontSizeProvider';
 import { Card, CardBody } from '@nextui-org/react';
 import { Link } from '@tanstack/react-router';
 import DOMPurify from 'dompurify';
@@ -21,7 +22,7 @@ function SutraCard({
   onClick?: () => void;
 }) {
   const [isExpanded, setIsExpanded] = useState(false); // State to track collapse/expand
-  const [fontSize, setFontSize] = useState(18); // State to manage font size (default 16px)
+  const { fontSize, setFontSize } = useFontSizeContext();
 
   // Function to parse, sanitize, and highlight content with bold tags
   const renderDetail = (htmlContent: string, searchTerm?: string) => {
@@ -33,7 +34,12 @@ function SutraCard({
       return (
         <div
           contentEditable={true}
-          style={{ fontSize: `${fontSize}px` }}
+          style={{
+            fontSize: `${fontSize}px`,
+            display: 'flex', // Use flexbox
+            justifyContent: 'center', // Center horizontally
+            alignItems: 'center', // Center vertically (optional, if needed)
+          }}
           className='cursor-text'
         >
           {ReactHtmlParser(contentWithBreaks)}
@@ -119,12 +125,60 @@ function SutraCard({
                 <button
                   onClick={decreaseFontSize}
                   className='rounded px-2 py-1 text-sm border'
+                  style={{
+                    borderRadius: '0.25rem', // Smaller rounded corners
+                    padding: '0.25rem 0.75rem', // Compact padding
+                    fontSize: '0.875rem', // Slightly smaller font
+                    fontWeight: '500', // Medium weight for text
+                    color: '#fff', // White text
+                    border: 'none', // No border
+                    background: 'linear-gradient(135deg, #8B5E3C, #D4A054)', // Subtle brown gradient
+                    cursor: 'pointer', // Pointer cursor
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Minimal shadow
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease', // Smooth animation
+                  }}
+                  onMouseOver={(e) =>
+                    Object.assign(e.currentTarget.style, {
+                      transform: 'scale(1.05)', // Slightly enlarge button on hover
+                      boxShadow: '0 6px 8px rgba(0, 0, 0, 0.2)', // Enhance shadow on hover
+                    })
+                  }
+                  onMouseOut={(e) =>
+                    Object.assign(e.currentTarget.style, {
+                      transform: 'scale(1)', // Reset scale
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Reset shadow
+                    })
+                  }
                 >
                   A-
                 </button>
                 <button
                   onClick={increaseFontSize}
                   className='rounded px-2 py-1 text-sm border'
+                  style={{
+                    borderRadius: '0.25rem', // Smaller rounded corners
+                    padding: '0.25rem 0.75rem', // Compact padding
+                    fontSize: '0.875rem', // Slightly smaller font
+                    fontWeight: '500', // Medium weight for text
+                    color: '#fff', // White text
+                    border: 'none', // No border
+                    background: 'linear-gradient(135deg, #5E412D, #8B5E3C)', // Subtle earthy gradient
+                    cursor: 'pointer', // Pointer cursor
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Minimal shadow
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease', // Smooth animation
+                  }}
+                  onMouseOver={(e) =>
+                    Object.assign(e.currentTarget.style, {
+                      transform: 'scale(1.05)', // Slightly enlarge button on hover
+                      boxShadow: '0 6px 8px rgba(0, 0, 0, 0.2)', // Enhance shadow on hover
+                    })
+                  }
+                  onMouseOut={(e) =>
+                    Object.assign(e.currentTarget.style, {
+                      transform: 'scale(1)', // Reset scale
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Reset shadow
+                    })
+                  }
                 >
                   A+
                 </button>

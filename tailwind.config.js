@@ -25,6 +25,9 @@ export default {
       fontFamily: {
         phetsarath: ['Phetsarath', 'sans-serif'], // Use Phetsarath with fallback
       },
+      transitionDuration: {
+        300: '300ms',
+      },
     },
   },
   darkMode: 'class',

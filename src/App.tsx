@@ -22,7 +22,6 @@ function App() {
           persistOptions={{ persister }}
         >
           <RouterProvider router={router} />
-
           {/* Add React Query Devtools */}
           <ReactQueryDevtools initialIsOpen={false} />
         </PersistQueryClientProvider>
