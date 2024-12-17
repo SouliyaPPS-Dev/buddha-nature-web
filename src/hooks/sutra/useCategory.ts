@@ -1,14 +1,14 @@
+import { useSearchContext } from '@/components/search/SearchContext';
 import { SutraDataModel } from '@/model/sutra';
 import { Route } from '@/routes/sutra/$category';
 import { useSutra } from './useSutra';
-import { useSearchContext } from '@/components/search/SearchContext';
 
 export const useCategory = () => {
      const { searchTerm, setSearchTerm } = useSearchContext();
 
      const params = Route.useParams();
      const { category } = params;
-     
+
      // Fetch Sutra Data
      const { data } = useSutra();
 
@@ -29,7 +29,7 @@ export const useCategory = () => {
      return {
           data: filteredItemsCategory,
           category,
-          
+
           // Search
           searchTerm,
           setSearchTerm,

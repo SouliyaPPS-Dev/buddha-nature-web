@@ -11,10 +11,6 @@ import ReactHtmlParser from 'react-html-parser';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 export const Route = createFileRoute('/sutra/details/$category/$title')({
-  loader: async ({ params }) => {
-    const { category, title } = params;
-    return { category, title };
-  },
   component: RouteComponent,
 });
 
@@ -29,6 +25,11 @@ function RouteComponent() {
   const itemsPerPage = 1; // Always show 1 item per "chunk"
   const [filteredDetails, setFilteredDetails] = useState<any[]>([]); // Filtered data displayed in the flipbook
   const [currentPage, setCurrentPage] = useState(0); // Current page index
+
+  // Find current index in the original data array
+  const currentGlobalIndex = data?.findIndex(
+    (item) => item.ID === filteredDetails?.[currentPage]?.ID
+  ); // Assuming `ID` is the unique identifier
 
   // Filter the initial set of data
   const initialFilteredDetails = useMemo(() => {
@@ -60,15 +61,17 @@ function RouteComponent() {
 
   // Update `filteredDetails` whenever `category` or `title` changes
   useEffect(() => {
-    const updatedDetails =
-      data?.filter(
-        (item) =>
-          item['ຊື່ພຣະສູດ']?.toLowerCase() === title?.toLowerCase() &&
-          item['ໝວດທັມ']?.toLowerCase() === category?.toLowerCase()
-      ) || [];
+    if (!data || !category || !title) return;
 
-    setFilteredDetails(updatedDetails.slice(0, itemsPerPage));
-    setCurrentPage(0); // Reset to the first page
+    const updatedDetails = data.filter(
+      (item) =>
+        item['ຊື່ພຣະສູດ']?.toLowerCase() === title?.toLowerCase() &&
+        item['ໝວດທັມ']?.toLowerCase() === category?.toLowerCase()
+    );
+    if (updatedDetails.length) {
+      setFilteredDetails(updatedDetails.slice(0, itemsPerPage));
+      setCurrentPage(0); // Reset only if there's content
+    }
   }, [category, title, data]);
 
   // The reusable function to get the next chunk of data
@@ -86,9 +89,10 @@ function RouteComponent() {
   // Navigate to the next page
   const goToNextPage = () => {
     setFilteredDetails((prev) =>
-      prev.concat(getNextData(currentPage, itemsPerPage, data))
+      prev.concat(getNextData(currentGlobalIndex, itemsPerPage, data))
     );
 
+    // Increment the current page to load the next batch of data
     setCurrentPage((prev) => prev + itemsPerPage);
   };
 
@@ -137,8 +141,11 @@ function RouteComponent() {
   };
 
   // Handlers for font size adjustments
-  const increaseFontSize = () => setFontSize((prev) => Math.min(prev + 2, 32)); // Max 32px
-  const decreaseFontSize = () => setFontSize((prev) => Math.max(prev - 2, 12)); // Min 12px
+  const increaseFontSize = () =>
+    setFontSize((prev) => (prev < 32 ? prev + 2 : prev)); // Max 32px
+
+  const decreaseFontSize = () =>
+    setFontSize((prev) => (prev > 12 ? prev - 2 : prev)); // Min 12px
 
   const renderPositionBar = () => (
     <div
@@ -165,7 +172,9 @@ function RouteComponent() {
         }}
       >
         <button
-          onClick={goToPreviousPage}
+          onClick={() => {
+            goToPreviousPage();
+          }}
           disabled={currentPage === 0}
           style={{
             display: 'flex', // Use flexbox for alignment
@@ -272,7 +281,9 @@ function RouteComponent() {
       {/* Next Page Button (Right Side) */}
       <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
         <button
-          onClick={goToNextPage}
+          onClick={() => {
+            goToNextPage();
+          }}
           style={{
             display: 'flex', // Use flexbox for alignment
             alignItems: 'center',
@@ -307,69 +318,71 @@ function RouteComponent() {
       <div className='relative flex justify-center items-center mb-24'>
         {/* Content of the Current Page */}
         {filteredDetails.length ? (
-          <div
-            className='page cursor-text mb-8'
-            contentEditable={true}
-            style={{ fontSize: `${fontSize}px` }}
-          >
-            {/* ຊື່ພຣະສູດ */}
-            <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-              <Highlighter
-                highlightClassName='bg-yellow-200 font-bold'
-                searchWords={[searchTerm || '']}
-                autoEscape={true}
-                textToHighlight={filteredDetails[currentPage]['ຊື່ພຣະສູດ']}
-                style={{ fontSize: '20px' }}
-              />
-            </div>
-
-            {/* ສຽງ */}
+          <>
             <div
-              style={{
-                display: 'flex', // Use flexbox
-                justifyContent: 'center', // Center horizontally
-                alignItems: 'center', // Center vertically (optional, if needed)
-                marginBottom: '1rem', // Match the original `mb-4` equivalent in Tailwind (1rem = 16px)
-              }}
+              className='page cursor-text mb-8'
+              contentEditable={true}
+              style={{ fontSize: `${fontSize}px` }}
             >
-              {filteredDetails[currentPage]['ສຽງ'] !== '/' && (
-                <audio controls>
-                  <source
-                    src={filteredDetails[currentPage]['ສຽງ']}
-                    type='audio/mpeg'
-                  />
-                </audio>
-              )}
-            </div>
+              {/* ຊື່ພຣະສູດ */}
+              <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                <Highlighter
+                  highlightClassName='bg-yellow-200 font-bold'
+                  searchWords={[searchTerm || '']}
+                  autoEscape={true}
+                  textToHighlight={filteredDetails[currentPage]['ຊື່ພຣະສູດ']}
+                  style={{ fontSize: '20px' }}
+                />
+              </div>
 
-            {/* Render ພຣະສູດ */}
-            {renderDetail(filteredDetails[currentPage]['ພຣະສູດ'], searchTerm)}
-            <br />
-
-            {/* Render ໝວດທັມ */}
-            <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-              <Highlighter
-                highlightClassName='bg-yellow-200 font-bold' // Highlight class
-                searchWords={[searchTerm || '']} // Highlight based on searchTerm
-                autoEscape={true} // Allow Auto Escape for search term
-                textToHighlight={filteredDetails[currentPage]['ໝວດທັມ']} // Text to highlight
+              {/* ສຽງ */}
+              <div
                 style={{
-                  fontSize: '20px', // Font size
-                  textAlign: 'center', // Ensure text alignment inside Highlighter
-                  display: 'inline-block', // Ensure it does not take full width
-                  fontStyle: 'italic',
-                  color: '#888',
+                  display: 'flex', // Use flexbox
+                  justifyContent: 'center', // Center horizontally
+                  alignItems: 'center', // Center vertically (optional, if needed)
+                  marginBottom: '1rem', // Match the original `mb-4` equivalent in Tailwind (1rem = 16px)
                 }}
-              />
+              >
+                {filteredDetails[currentPage]['ສຽງ'] !== '/' && (
+                  <audio controls>
+                    <source
+                      src={filteredDetails[currentPage]['ສຽງ']}
+                      type='audio/mpeg'
+                    />
+                  </audio>
+                )}
+              </div>
+
+              {/* Render ພຣະສູດ */}
+              {renderDetail(filteredDetails[currentPage]['ພຣະສູດ'], searchTerm)}
+              <br />
+
+              {/* Render ໝວດທັມ */}
+              <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                <Highlighter
+                  highlightClassName='bg-yellow-200 font-bold' // Highlight class
+                  searchWords={[searchTerm || '']} // Highlight based on searchTerm
+                  autoEscape={true} // Allow Auto Escape for search term
+                  textToHighlight={filteredDetails[currentPage]['ໝວດທັມ']} // Text to highlight
+                  style={{
+                    fontSize: '20px', // Font size
+                    textAlign: 'center', // Ensure text alignment inside Highlighter
+                    display: 'inline-block', // Ensure it does not take full width
+                    fontStyle: 'italic',
+                    color: '#888',
+                  }}
+                />
+              </div>
             </div>
-          </div>
+
+            {/* Navigation Controls */}
+            {renderPositionBar()}
+          </>
         ) : (
           <p>No content available</p>
         )}
       </div>
-
-      {/* Navigation Controls */}
-      {renderPositionBar()}
     </>
   );
 }
