@@ -21,7 +21,6 @@ export const SearchDropdown = () => {
 
   const handleResultClick = () => {
     setIsDropdownOpen(false); // Close dropdown on selection
-    setSearchTerm(''); // Reset search if necessary
     setIsMenuOpen(false);
   };
 

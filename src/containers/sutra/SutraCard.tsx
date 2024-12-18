@@ -70,7 +70,7 @@ function SutraCard({
 
   return (
     <Card>
-      <CardBody className='text-xl flex flex-col'>
+      <CardBody className='text-xl flex flex-col' onClick={onClick}>
         <div className='flex items-center gap-2'>
           {/* Toggle Button */}
           {/* <span
@@ -85,11 +85,7 @@ function SutraCard({
               <FiPlus className='text-gray-600' /> // Plus icon
             )}
           </span> */}
-          <Link
-            to={route}
-            className='flex justify-between items-center w-full'
-            onClick={onClick}
-          >
+          <Link to={route} className='flex justify-between items-center w-full'>
             <Highlighter
               highlightClassName='bg-yellow-200 font-bold'
               searchWords={[searchTerm || '']}
