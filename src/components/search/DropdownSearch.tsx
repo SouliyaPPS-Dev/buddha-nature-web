@@ -52,7 +52,6 @@ const DropdownSearch: React.FC<DropdownProps> = ({
         style={{
           width: '100%',
           maxWidth: '40rem', // Adjust maximum width for larger screens
-          padding: '0.5rem',
         }}
       >
         <ul

@@ -1,35 +1,40 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useFontSizeContext } from '@/components/FontSizeProvider';
-import { useSearchContext } from '@/components/search/SearchContext';
-import { useSutra } from '@/hooks/sutra/useSutra';
-import { createFileRoute } from '@tanstack/react-router';
-import DOMPurify from 'dompurify';
-import { useEffect, useMemo, useState } from 'react';
-import Highlighter from 'react-highlight-words';
-import ReactHtmlParser from 'react-html-parser';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { useFontSizeContext } from '@/components/FontSizeProvider'
+import { useSearchContext } from '@/components/search/SearchContext'
+import { useSutra } from '@/hooks/sutra/useSutra'
+import { createLazyFileRoute } from '@tanstack/react-router'
+import DOMPurify from 'dompurify'
+import { useEffect, useMemo, useState } from 'react'
+import Highlighter from 'react-highlight-words'
+import ReactHtmlParser from 'react-html-parser'
+import { FaCheck, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
+import { GrCopy } from 'react-icons/gr'
+import { IoShareSocialSharp } from 'react-icons/io5'
 
-export const Route = createFileRoute('/sutra/details/$category/$title')({
-  component: RouteComponent,
-});
+export const Route = createLazyFileRoute('/sutra/details/$category/$title')({
+  component: () => <RouteComponent />,
+})
 
 function RouteComponent() {
-  const params = Route.useParams();
-  const { category, title } = params;
-  const { data } = useSutra();
-  const { searchTerm } = useSearchContext();
-  const { fontSize, setFontSize } = useFontSizeContext();
+  const params = Route.useParams()
+  const { category, title } = params
+  const { data } = useSutra()
+  const { searchTerm } = useSearchContext()
+  const { fontSize, setFontSize } = useFontSizeContext()
+
+  // Inside your component
+  const [isCopied, setIsCopied] = useState(false) // State to manage copy success
 
   // State for font size
-  const itemsPerPage = 1; // Always show 1 item per "chunk"
-  const [filteredDetails, setFilteredDetails] = useState<any[]>([]); // Filtered data displayed in the flipbook
-  const [currentPage, setCurrentPage] = useState(0); // Current page index
+  const itemsPerPage = 1 // Always show 1 item per "chunk"
+  const [filteredDetails, setFilteredDetails] = useState<any[]>([]) // Filtered data displayed in the flipbook
+  const [currentPage, setCurrentPage] = useState(0) // Current page index
 
   // Find current index in the original data array
   const currentGlobalIndex = data?.findIndex(
-    (item) => item.ID === filteredDetails?.[currentPage]?.ID
-  ); // Assuming `ID` is the unique identifier
+    (item) => item.ID === filteredDetails?.[currentPage]?.ID,
+  ) // Assuming `ID` is the unique identifier
 
   // Filter the initial set of data
   const initialFilteredDetails = useMemo(() => {
@@ -42,128 +47,152 @@ function RouteComponent() {
           !title ||
           !category
         ) {
-          return false;
+          return false
         }
         return (
           item['ຊື່ພຣະສູດ'].toLowerCase() === title.toLowerCase() &&
           item['ໝວດທັມ'].toLowerCase() === category.toLowerCase()
-        );
+        )
       }) || []
-    );
-  }, [data, title, category]);
+    )
+  }, [data, title, category])
 
   // Initialize `filteredDetails` with the first chunk of data
   useEffect(() => {
     if (initialFilteredDetails.length > 0) {
-      setFilteredDetails(initialFilteredDetails.slice(0, itemsPerPage));
+      setFilteredDetails(initialFilteredDetails.slice(0, itemsPerPage))
     }
-  }, [initialFilteredDetails, itemsPerPage]);
+  }, [initialFilteredDetails, itemsPerPage])
 
   // Update `filteredDetails` whenever `category` or `title` changes
   useEffect(() => {
-    if (!data || !category || !title) return;
+    if (!data || !category || !title) return
 
     const updatedDetails = data.filter(
       (item) =>
         item['ຊື່ພຣະສູດ']?.toLowerCase() === title?.toLowerCase() &&
-        item['ໝວດທັມ']?.toLowerCase() === category?.toLowerCase()
-    );
+        item['ໝວດທັມ']?.toLowerCase() === category?.toLowerCase(),
+    )
     if (updatedDetails.length) {
-      setFilteredDetails(updatedDetails.slice(0, itemsPerPage));
-      setCurrentPage(0); // Reset only if there's content
+      setFilteredDetails(updatedDetails.slice(0, itemsPerPage))
+      setCurrentPage(0) // Reset only if there's content
     }
-  }, [category, title, data]);
+  }, [category, title, data])
 
   // The reusable function to get the next chunk of data
   const getNextData = (
     latestIndex: number,
     itemsPerPage: number,
-    fullData: any[]
+    fullData: any[],
   ): any[] => {
     if (latestIndex + 1 < fullData.length) {
-      return fullData.slice(latestIndex + 1, latestIndex + 1 + itemsPerPage); // Get next `itemsPerPage` items
+      return fullData.slice(latestIndex + 1, latestIndex + 1 + itemsPerPage) // Get next `itemsPerPage` items
     }
-    return []; // Return empty array if no data is left
-  };
+    return [] // Return empty array if no data is left
+  }
 
   // Navigate to the next page
   const goToNextPage = () => {
     setFilteredDetails((prev) =>
-      prev.concat(getNextData(currentGlobalIndex, itemsPerPage, data))
-    );
+      prev.concat(getNextData(currentGlobalIndex, itemsPerPage, data)),
+    )
 
     // Increment the current page to load the next batch of data
-    setCurrentPage((prev) => prev + itemsPerPage);
-  };
+    setCurrentPage((prev) => prev + itemsPerPage)
+  }
 
   // Navigate to the previous page
   const goToPreviousPage = () => {
-    setFilteredDetails((prev) => prev.slice(0, prev.length - itemsPerPage));
-    setCurrentPage((prev) => prev - itemsPerPage);
-  };
+    setFilteredDetails((prev) => prev.slice(0, prev.length - itemsPerPage))
+    setCurrentPage((prev) => prev - itemsPerPage)
+  }
 
   // Function to sanitize and parse HTML content
   const renderDetail = (htmlContent: string, searchTerm?: string) => {
-    const sanitizedHtmlContent = DOMPurify.sanitize(htmlContent);
-    const contentWithBreaks = sanitizedHtmlContent.replace(/\n/g, '<br/>');
+    const sanitizedHtmlContent = DOMPurify.sanitize(htmlContent)
+    const contentWithBreaks = sanitizedHtmlContent.replace(/\n/g, '<br/>')
 
     if (!searchTerm?.trim()) {
       return (
         <div
           contentEditable={true}
           style={{ fontSize: `${fontSize}px` }}
-          className='cursor-text'
+          className="cursor-text"
         >
           {ReactHtmlParser(contentWithBreaks)}
         </div>
-      );
+      )
     } else {
       // Highlighting functionality if searchTerm is provided
-      const parts = contentWithBreaks.split(
-        new RegExp(`(${searchTerm})`, 'gi')
-      );
+      const parts = contentWithBreaks.split(new RegExp(`(${searchTerm})`, 'gi'))
       return parts.map((part, index) => {
         if (part.toLowerCase() === searchTerm.toLowerCase()) {
           return (
             <span
               key={index}
-              className='bg-yellow-200 font-bold text-black cursor-text'
+              className="bg-yellow-200 font-bold text-black cursor-text"
               contentEditable={true}
               style={{ fontSize: `${fontSize}px` }}
             >
               {ReactHtmlParser(part)}
             </span>
-          );
+          )
         }
-        return <span key={index}>{ReactHtmlParser(part)}</span>;
-      });
+        return <span key={index}>{ReactHtmlParser(part)}</span>
+      })
     }
-  };
+  }
 
   // Handlers for font size adjustments
   const increaseFontSize = () =>
-    setFontSize((prev) => (prev < 32 ? prev + 2 : prev)); // Max 32px
+    setFontSize((prev) => (prev < 32 ? prev + 2 : prev)) // Max 32px
 
   const decreaseFontSize = () =>
-    setFontSize((prev) => (prev > 12 ? prev - 2 : prev)); // Min 12px
+    setFontSize((prev) => (prev > 12 ? prev - 2 : prev)) // Min 12px
+
+  // **Copy to Clipboard Handler**
+  const copyToClipboard = () => {
+    if (filteredDetails.length) {
+      const currentItem = filteredDetails[currentPage]
+      const textToCopy = `
+       ${currentItem['ຊື່ພຣະສູດ']}
+       ${currentItem['ພຣະສູດ']}
+       ${currentItem['ໝວດທັມ']}
+    `.trim() // Using trim() to remove extra leading/trailing whitespace or newlines
+
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        setIsCopied(true) // Set the state to true (show success icon)
+        setTimeout(() => setIsCopied(false), 2000) // Reset after 2 seconds
+      })
+    }
+  }
+
+  const handleShare = async () => {
+    const title = filteredDetails[currentPage]['ຊື່ພຣະສູດ']
+    const category = filteredDetails[currentPage]['ໝວດທັມ']
+    const url = `${window.location.origin}/sutra/details/${category}/${title}`
+
+    // Sharing the content using the Web Share API
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title, // Shared title
+          text: category, // Shared text with category
+          url, // Share a link to the content (the page with the HTML)
+        })
+        console.log('Shared successfully')
+      } catch (error) {
+        console.error('Error sharing:', error)
+      }
+    } else {
+      // Fallback for browsers that don't support the Web Share API
+      alert('Sharing is not supported on this device.')
+    }
+  }
 
   const renderPositionBar = () => (
-    <div
-      style={{
-        position: 'fixed', // Fixed at the bottom of the viewport
-        bottom: '0', // Align to the bottom
-        left: '0', // Full viewport width
-        right: '0', // Full viewport width
-        zIndex: 50, // Stay on top of other components
-        padding: '1rem', // Vertical padding
-        display: 'flex', // Flexbox layout
-        justifyContent: 'space-between', // Balance the layout for left, center, and right items
-        alignItems: 'center', // Vertically center all items
-        marginBottom: '58px',
-      }}
-    >
+    <div className="fixed bottom-0 left-0 right-0 z-10 px-4 py-4 flex justify-between items-center md:mb-[58px] ">
       {/* Previous Page Button (Left Side) */}
-
       <div
         style={{
           flex: 1,
@@ -172,9 +201,7 @@ function RouteComponent() {
         }}
       >
         <button
-          onClick={() => {
-            goToPreviousPage();
-          }}
+          onClick={goToPreviousPage}
           disabled={currentPage === 0}
           style={{
             display: 'flex', // Use flexbox for alignment
@@ -192,14 +219,14 @@ function RouteComponent() {
           }}
           onMouseOver={(e) => {
             if (currentPage !== 0) {
-              e.currentTarget.style.background = '#704214'; // Darker brown hover effect
-              e.currentTarget.style.transform = 'scale(1.1)'; // Slight zoom effect
+              e.currentTarget.style.background = '#704214' // Darker brown hover effect
+              e.currentTarget.style.transform = 'scale(1.1)' // Slight zoom effect
             }
           }}
           onMouseOut={(e) => {
             if (currentPage !== 0) {
-              e.currentTarget.style.background = '#8B5E3C'; // Reset color
-              e.currentTarget.style.transform = 'scale(1)'; // Reset zoom
+              e.currentTarget.style.background = '#8B5E3C' // Reset color
+              e.currentTarget.style.transform = 'scale(1)' // Reset zoom
             }
           }}
         >
@@ -216,11 +243,46 @@ function RouteComponent() {
           alignItems: 'center',
         }}
       >
+        {/* Copy to Clipboard Button */}
+        <button
+          onClick={copyToClipboard}
+          style={{
+            borderRadius: '0.5rem',
+            padding: '0.25rem 0.75rem',
+            fontSize: '0.875rem',
+            fontWeight: '500',
+            color: '#fff',
+            border: 'none',
+            background: 'linear-gradient(135deg, #5E412D, #8B5E3C)',
+            cursor: 'pointer',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+          onMouseOver={(e) =>
+            Object.assign(e.currentTarget.style, {
+              transform: 'scale(1.05)', // Enlarge slightly on hover
+              boxShadow: '0 6px 8px rgba(0, 0, 0, 0.2)', // Enhanced shadow
+            })
+          }
+          onMouseOut={(e) =>
+            Object.assign(e.currentTarget.style, {
+              transform: 'scale(1)', // Reset scale
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Reset shadow
+            })
+          }
+        >
+          {isCopied ? (
+            <FaCheck size={20} color="green" />
+          ) : (
+            <GrCopy size={20} />
+          )}
+        </button>
+
         {/* Decrease Font Size Button */}
         <button
           onClick={decreaseFontSize}
           style={{
-            borderRadius: '0.25rem',
+            borderRadius: '0.5rem',
             padding: '0.25rem 0.75rem',
             fontSize: '0.875rem',
             fontWeight: '500',
@@ -251,7 +313,7 @@ function RouteComponent() {
         <button
           onClick={increaseFontSize}
           style={{
-            borderRadius: '0.25rem',
+            borderRadius: '0.5rem',
             padding: '0.25rem 0.75rem',
             fontSize: '0.875rem',
             fontWeight: '500',
@@ -277,13 +339,43 @@ function RouteComponent() {
         >
           A+
         </button>
+
+        {/* Share Button */}
+        <button
+          onClick={handleShare}
+          style={{
+            borderRadius: '0.5rem',
+            padding: '0.25rem 0.75rem',
+            fontSize: '0.875rem',
+            fontWeight: '500',
+            color: '#fff',
+            border: 'none',
+            background: 'linear-gradient(135deg, #5E412D, #8B5E3C)',
+            cursor: 'pointer',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+          onMouseOver={(e) =>
+            Object.assign(e.currentTarget.style, {
+              transform: 'scale(1.05)', // Enlarge slightly on hover
+              boxShadow: '0 6px 8px rgba(0, 0, 0, 0.2)', // Enhanced shadow
+            })
+          }
+          onMouseOut={(e) =>
+            Object.assign(e.currentTarget.style, {
+              transform: 'scale(1)', // Reset scale
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Reset shadow
+            })
+          }
+        >
+          <IoShareSocialSharp size={20} /> {/* Share Icon */}
+        </button>
       </div>
+
       {/* Next Page Button (Right Side) */}
       <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
         <button
-          onClick={() => {
-            goToNextPage();
-          }}
+          onClick={goToNextPage}
           style={{
             display: 'flex', // Use flexbox for alignment
             alignItems: 'center',
@@ -299,35 +391,35 @@ function RouteComponent() {
             transition: 'all 0.3s ease',
           }}
           onMouseOver={(e) => {
-            e.currentTarget.style.background = '#704214'; // Darker hover color
-            e.currentTarget.style.transform = 'scale(1.1)'; // Slight zoom
+            e.currentTarget.style.background = '#704214' // Darker hover color
+            e.currentTarget.style.transform = 'scale(1.1)' // Slight zoom
           }}
           onMouseOut={(e) => {
-            e.currentTarget.style.background = '#8B5E3C'; // Reset color
-            e.currentTarget.style.transform = 'scale(1)'; // Reset zoom
+            e.currentTarget.style.background = '#8B5E3C' // Reset color
+            e.currentTarget.style.transform = 'scale(1)' // Reset zoom
           }}
         >
           <FaChevronRight size={18} /> {/* Chevron Right Icon */}
         </button>
       </div>
     </div>
-  );
+  )
 
   return (
     <>
-      <div className='relative flex justify-center items-center mb-24'>
+      <div className="relative flex justify-center items-center mb-24 mt-4 px-3">
         {/* Content of the Current Page */}
         {filteredDetails.length ? (
           <>
             <div
-              className='page cursor-text mb-8'
+              className="page cursor-text mb-8"
               contentEditable={true}
               style={{ fontSize: `${fontSize}px` }}
             >
               {/* ຊື່ພຣະສູດ */}
               <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
                 <Highlighter
-                  highlightClassName='bg-yellow-200 font-bold'
+                  highlightClassName="bg-yellow-200 font-bold"
                   searchWords={[searchTerm || '']}
                   autoEscape={true}
                   textToHighlight={filteredDetails[currentPage]['ຊື່ພຣະສູດ']}
@@ -348,7 +440,7 @@ function RouteComponent() {
                   <audio controls>
                     <source
                       src={filteredDetails[currentPage]['ສຽງ']}
-                      type='audio/mpeg'
+                      type="audio/mpeg"
                     />
                   </audio>
                 )}
@@ -361,7 +453,7 @@ function RouteComponent() {
               {/* Render ໝວດທັມ */}
               <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
                 <Highlighter
-                  highlightClassName='bg-yellow-200 font-bold' // Highlight class
+                  highlightClassName="bg-yellow-200 font-bold" // Highlight class
                   searchWords={[searchTerm || '']} // Highlight based on searchTerm
                   autoEscape={true} // Allow Auto Escape for search term
                   textToHighlight={filteredDetails[currentPage]['ໝວດທັມ']} // Text to highlight
@@ -375,14 +467,14 @@ function RouteComponent() {
                 />
               </div>
             </div>
-
-            {/* Navigation Controls */}
-            {renderPositionBar()}
           </>
         ) : (
           <p>No content available</p>
         )}
       </div>
+
+      {/* Navigation Controls */}
+      {renderPositionBar()}
     </>
-  );
+  )
 }

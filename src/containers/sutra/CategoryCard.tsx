@@ -14,7 +14,7 @@ function CategoryCard({ category, item, isLoading }: CategoryCardProps) {
   return (
     <Link
       to={`/sutra/${category}`}
-      className='flex justify-center items-center z-1'
+      className='flex justify-center items-center z-1 cursor-pointer'
     >
       <Card
         isHoverable

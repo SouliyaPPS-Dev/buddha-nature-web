@@ -6,6 +6,7 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { RouterProvider } from '@tanstack/react-router';
 import { HelmetProvider } from 'react-helmet-async';
 import { router } from './router';
+import PageTransition from './components/PageTransition';
 
 function App() {
   return (
@@ -21,7 +22,11 @@ function App() {
           client={queryClient}
           persistOptions={{ persister }}
         >
-          <RouterProvider router={router} />
+          {/* Wrapping only the page content inside the transition */}
+          <PageTransition>
+            <RouterProvider router={router} />
+          </PageTransition>
+
           {/* Add React Query Devtools */}
           <ReactQueryDevtools initialIsOpen={false} />
         </PersistQueryClientProvider>

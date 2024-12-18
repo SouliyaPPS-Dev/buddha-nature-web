@@ -8,7 +8,7 @@ export const Route = createFileRoute('/about')({
 function RouteComponent() {
   return (
     <>
-      <section className='text-lg py-10 px-4 md:px-10 mx-auto rounded-lg shadow-md mb-20'>
+      <section className='text-lg py-10 px-4 md:px-10 mx-auto rounded-lg mb-20'>
         {/* About Section */}
         <div className='max-w-5xl mx-auto text-center mb-10'>
           <h1 className={`font-bold mb-6 text-2xl md:text-3xl`}>

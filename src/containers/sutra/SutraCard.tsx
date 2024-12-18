@@ -5,7 +5,7 @@ import DOMPurify from 'dompurify';
 import { useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import ReactHtmlParser from 'react-html-parser';
-import { FiMinus, FiPlus } from 'react-icons/fi';
+// import { FiMinus, FiPlus } from 'react-icons/fi';
 import { GrView } from 'react-icons/gr';
 
 function SutraCard({
@@ -21,7 +21,7 @@ function SutraCard({
   route?: string;
   onClick?: () => void;
 }) {
-  const [isExpanded, setIsExpanded] = useState(false); // State to track collapse/expand
+  const [isExpanded, _setIsExpanded] = useState(false); // State to track collapse/expand
   const { fontSize, setFontSize } = useFontSizeContext();
 
   // Function to parse, sanitize, and highlight content with bold tags
@@ -36,9 +36,6 @@ function SutraCard({
           contentEditable={true}
           style={{
             fontSize: `${fontSize}px`,
-            display: 'flex', // Use flexbox
-            justifyContent: 'center', // Center horizontally
-            alignItems: 'center', // Center vertically (optional, if needed)
           }}
           className='cursor-text'
         >
@@ -76,7 +73,7 @@ function SutraCard({
       <CardBody className='text-xl flex flex-col'>
         <div className='flex items-center gap-2'>
           {/* Toggle Button */}
-          <span
+          {/* <span
             onClick={() => {
               setIsExpanded(!isExpanded);
             }} // Toggle the state
@@ -87,7 +84,7 @@ function SutraCard({
             ) : (
               <FiPlus className='text-gray-600' /> // Plus icon
             )}
-          </span>
+          </span> */}
           <Link
             to={route}
             className='flex justify-between items-center w-full'

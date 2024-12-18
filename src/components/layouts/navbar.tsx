@@ -45,6 +45,7 @@ export const Navbar = () => {
       position='sticky'
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
+      className='bg-[#795548] text-white max-h-[50px]'
     >
       {/* Left: Brand and Nav Items */}
       <NavbarContent className='basis-1/5 sm:basis-full' justify='start'>
@@ -55,16 +56,22 @@ export const Navbar = () => {
             href='/'
           >
             <Logo />
-            <p className='font-bold text-inherit'>Buddhaword</p>
           </Link>
         </NavbarBrand>
-        <div className='hidden lg:flex gap-4 justify-start ml-2'>
+      </NavbarContent>
+
+      {/* Right: Search, Theme Switch */}
+      <NavbarContent
+        className='hidden sm:flex basis-1/5 sm:basis-full'
+        justify='end'
+      >
+        <div className='hidden lg:flex gap-4 justify-start ml-2 mr-3 mt-1'>
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <Link
                 className={clsx(
                   linkStyles({ color: 'foreground' }),
-                  'data-[active=true]:text-primary data-[active=true]:font-medium'
+                  'data-[active=true]:text-primary data-[active=true]:font-medium  text-white'
                 )}
                 color='foreground'
                 href={item.href}
@@ -74,14 +81,8 @@ export const Navbar = () => {
             </NavbarItem>
           ))}
         </div>
-      </NavbarContent>
 
-      {/* Right: Search, Theme Switch */}
-      <NavbarContent
-        className='hidden sm:flex basis-1/5 sm:basis-full'
-        justify='end'
-      >
-        <NavbarItem className='hidden sm:flex gap-2'>
+        <NavbarItem className='hidden sm:flex gap-2 '>
           <ThemeSwitch />
         </NavbarItem>
         {/* Conditionally hide search input when the current path is '/sutra' */}

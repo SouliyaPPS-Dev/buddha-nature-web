@@ -8,18 +8,25 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as VideoIndexImport } from './routes/video/index'
-import { Route as SutraIndexImport } from './routes/sutra/index'
 import { Route as DhammaIndexImport } from './routes/dhamma/index'
 import { Route as CalendarIndexImport } from './routes/calendar/index'
 import { Route as BookIndexImport } from './routes/book/index'
-import { Route as SutraCategoryImport } from './routes/sutra/$category'
-import { Route as SutraDetailsCategoryTitleImport } from './routes/sutra/details.$category.$title'
+
+// Create Virtual Routes
+
+const SutraIndexLazyImport = createFileRoute('/sutra/')()
+const SutraCategoryLazyImport = createFileRoute('/sutra/$category')()
+const SutraDetailsCategoryTitleLazyImport = createFileRoute(
+  '/sutra/details/$category/$title',
+)()
 
 // Create/Update Routes
 
@@ -35,15 +42,15 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const SutraIndexLazyRoute = SutraIndexLazyImport.update({
+  id: '/sutra/',
+  path: '/sutra/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/sutra/index.lazy').then((d) => d.Route))
+
 const VideoIndexRoute = VideoIndexImport.update({
   id: '/video/',
   path: '/video/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const SutraIndexRoute = SutraIndexImport.update({
-  id: '/sutra/',
-  path: '/sutra/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -65,17 +72,22 @@ const BookIndexRoute = BookIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const SutraCategoryRoute = SutraCategoryImport.update({
+const SutraCategoryLazyRoute = SutraCategoryLazyImport.update({
   id: '/sutra/$category',
   path: '/sutra/$category',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/sutra/$category.lazy').then((d) => d.Route),
+)
 
-const SutraDetailsCategoryTitleRoute = SutraDetailsCategoryTitleImport.update({
-  id: '/sutra/details/$category/$title',
-  path: '/sutra/details/$category/$title',
-  getParentRoute: () => rootRoute,
-} as any)
+const SutraDetailsCategoryTitleLazyRoute =
+  SutraDetailsCategoryTitleLazyImport.update({
+    id: '/sutra/details/$category/$title',
+    path: '/sutra/details/$category/$title',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/sutra/details.$category.$title.lazy').then((d) => d.Route),
+  )
 
 // Populate the FileRoutesByPath interface
 
@@ -99,7 +111,7 @@ declare module '@tanstack/react-router' {
       id: '/sutra/$category'
       path: '/sutra/$category'
       fullPath: '/sutra/$category'
-      preLoaderRoute: typeof SutraCategoryImport
+      preLoaderRoute: typeof SutraCategoryLazyImport
       parentRoute: typeof rootRoute
     }
     '/book/': {
@@ -123,13 +135,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DhammaIndexImport
       parentRoute: typeof rootRoute
     }
-    '/sutra/': {
-      id: '/sutra/'
-      path: '/sutra'
-      fullPath: '/sutra'
-      preLoaderRoute: typeof SutraIndexImport
-      parentRoute: typeof rootRoute
-    }
     '/video/': {
       id: '/video/'
       path: '/video'
@@ -137,11 +142,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VideoIndexImport
       parentRoute: typeof rootRoute
     }
+    '/sutra/': {
+      id: '/sutra/'
+      path: '/sutra'
+      fullPath: '/sutra'
+      preLoaderRoute: typeof SutraIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/sutra/details/$category/$title': {
       id: '/sutra/details/$category/$title'
       path: '/sutra/details/$category/$title'
       fullPath: '/sutra/details/$category/$title'
-      preLoaderRoute: typeof SutraDetailsCategoryTitleImport
+      preLoaderRoute: typeof SutraDetailsCategoryTitleLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -152,38 +164,38 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/sutra/$category': typeof SutraCategoryRoute
+  '/sutra/$category': typeof SutraCategoryLazyRoute
   '/book': typeof BookIndexRoute
   '/calendar': typeof CalendarIndexRoute
   '/dhamma': typeof DhammaIndexRoute
-  '/sutra': typeof SutraIndexRoute
   '/video': typeof VideoIndexRoute
-  '/sutra/details/$category/$title': typeof SutraDetailsCategoryTitleRoute
+  '/sutra': typeof SutraIndexLazyRoute
+  '/sutra/details/$category/$title': typeof SutraDetailsCategoryTitleLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/sutra/$category': typeof SutraCategoryRoute
+  '/sutra/$category': typeof SutraCategoryLazyRoute
   '/book': typeof BookIndexRoute
   '/calendar': typeof CalendarIndexRoute
   '/dhamma': typeof DhammaIndexRoute
-  '/sutra': typeof SutraIndexRoute
   '/video': typeof VideoIndexRoute
-  '/sutra/details/$category/$title': typeof SutraDetailsCategoryTitleRoute
+  '/sutra': typeof SutraIndexLazyRoute
+  '/sutra/details/$category/$title': typeof SutraDetailsCategoryTitleLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/sutra/$category': typeof SutraCategoryRoute
+  '/sutra/$category': typeof SutraCategoryLazyRoute
   '/book/': typeof BookIndexRoute
   '/calendar/': typeof CalendarIndexRoute
   '/dhamma/': typeof DhammaIndexRoute
-  '/sutra/': typeof SutraIndexRoute
   '/video/': typeof VideoIndexRoute
-  '/sutra/details/$category/$title': typeof SutraDetailsCategoryTitleRoute
+  '/sutra/': typeof SutraIndexLazyRoute
+  '/sutra/details/$category/$title': typeof SutraDetailsCategoryTitleLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -195,8 +207,8 @@ export interface FileRouteTypes {
     | '/book'
     | '/calendar'
     | '/dhamma'
-    | '/sutra'
     | '/video'
+    | '/sutra'
     | '/sutra/details/$category/$title'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -206,8 +218,8 @@ export interface FileRouteTypes {
     | '/book'
     | '/calendar'
     | '/dhamma'
-    | '/sutra'
     | '/video'
+    | '/sutra'
     | '/sutra/details/$category/$title'
   id:
     | '__root__'
@@ -217,8 +229,8 @@ export interface FileRouteTypes {
     | '/book/'
     | '/calendar/'
     | '/dhamma/'
-    | '/sutra/'
     | '/video/'
+    | '/sutra/'
     | '/sutra/details/$category/$title'
   fileRoutesById: FileRoutesById
 }
@@ -226,25 +238,25 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  SutraCategoryRoute: typeof SutraCategoryRoute
+  SutraCategoryLazyRoute: typeof SutraCategoryLazyRoute
   BookIndexRoute: typeof BookIndexRoute
   CalendarIndexRoute: typeof CalendarIndexRoute
   DhammaIndexRoute: typeof DhammaIndexRoute
-  SutraIndexRoute: typeof SutraIndexRoute
   VideoIndexRoute: typeof VideoIndexRoute
-  SutraDetailsCategoryTitleRoute: typeof SutraDetailsCategoryTitleRoute
+  SutraIndexLazyRoute: typeof SutraIndexLazyRoute
+  SutraDetailsCategoryTitleLazyRoute: typeof SutraDetailsCategoryTitleLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  SutraCategoryRoute: SutraCategoryRoute,
+  SutraCategoryLazyRoute: SutraCategoryLazyRoute,
   BookIndexRoute: BookIndexRoute,
   CalendarIndexRoute: CalendarIndexRoute,
   DhammaIndexRoute: DhammaIndexRoute,
-  SutraIndexRoute: SutraIndexRoute,
   VideoIndexRoute: VideoIndexRoute,
-  SutraDetailsCategoryTitleRoute: SutraDetailsCategoryTitleRoute,
+  SutraIndexLazyRoute: SutraIndexLazyRoute,
+  SutraDetailsCategoryTitleLazyRoute: SutraDetailsCategoryTitleLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -263,8 +275,8 @@ export const routeTree = rootRoute
         "/book/",
         "/calendar/",
         "/dhamma/",
-        "/sutra/",
         "/video/",
+        "/sutra/",
         "/sutra/details/$category/$title"
       ]
     },
@@ -275,7 +287,7 @@ export const routeTree = rootRoute
       "filePath": "about.tsx"
     },
     "/sutra/$category": {
-      "filePath": "sutra/$category.tsx"
+      "filePath": "sutra/$category.lazy.tsx"
     },
     "/book/": {
       "filePath": "book/index.tsx"
@@ -286,14 +298,14 @@ export const routeTree = rootRoute
     "/dhamma/": {
       "filePath": "dhamma/index.tsx"
     },
-    "/sutra/": {
-      "filePath": "sutra/index.tsx"
-    },
     "/video/": {
       "filePath": "video/index.tsx"
     },
+    "/sutra/": {
+      "filePath": "sutra/index.lazy.tsx"
+    },
     "/sutra/details/$category/$title": {
-      "filePath": "sutra/details.$category.$title.tsx"
+      "filePath": "sutra/details.$category.$title.lazy.tsx"
     }
   }
 }
