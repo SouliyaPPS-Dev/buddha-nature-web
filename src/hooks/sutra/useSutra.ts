@@ -23,23 +23,26 @@ export const useSutra = () => {
                     .includes(debouncedSearchTerm.toLowerCase())
           );
      }, [debouncedSearchTerm, data]);
-     
+
      /* Helper Function: Group data by category */
-     const getGroupedData = () => {
+     const getGroupedData = useMemo(() => {
           if (!data) return [];
 
           // Group data by category ('ໝວດທັມ')
-          const groupedData = data.reduce<Record<string, typeof data[number]>>(
-               (acc, item) => ({
-                    ...acc,
-                    [item['ໝວດທັມ']]: item, // Overwrite key with the latest item in that category
-               }),
+          const groupedData = data.reduce<Record<string, typeof data[number][]>>(
+               (acc, item) => {
+                    if (!acc[item['ໝວດທັມ']]) {
+                         acc[item['ໝວດທັມ']] = [];
+                    }
+                    acc[item['ໝວດທັມ']].push(item); // Group items under the same category
+                    return acc;
+               },
                {}
           );
 
           // Convert the grouped object into an array of key-value pairs
           return Object.entries(groupedData);
-     };
+     }, [data]); // Only recompute when `data` changes
 
      return { data: filteredData, getGroupedData, isLoading, searchTerm, setSearchTerm };
 };
