@@ -8,6 +8,8 @@ import {
   VideoIcon,
 } from '@/components/layouts/icons';
 import { ThemeSwitch } from '@/components/layouts/theme-switch';
+import { useNavigation } from '@/components/NavigationProvider';
+import { ButtonUpdateData } from '@/containers/sutra/ButtonUpdateData';
 import { siteConfig } from '@/layouts/site';
 import {
   NavbarBrand,
@@ -22,16 +24,18 @@ import { link as linkStyles } from '@nextui-org/theme';
 import { Link, useRouterState } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { useState } from 'react';
+import { SearchProvider } from '../search/SearchContext';
 import { SearchDropdown } from '../search/SearchDropdown';
 import { useMenuContext } from './MenuProvider';
-import { ButtonUpdateData } from '@/containers/sutra/ButtonUpdateData';
-import { SearchProvider } from '../search/SearchContext';
+import { IoIosArrowBack } from 'react-icons/io';
 
 export const Navbar = () => {
   const [activeItem, setActiveItem] = useState<string>('');
   const { isMenuOpen, setIsMenuOpen } = useMenuContext(); // Use the context
 
   const location = useRouterState({ select: (s) => s.location });
+
+  const { back } = useNavigation();
 
   const currentPath = location.pathname;
 
@@ -52,15 +56,32 @@ export const Navbar = () => {
       >
         {/* Left: Brand and Nav Items */}
         <NavbarContent className='basis-1/5 sm:basis-full' justify='start'>
-          <NavbarBrand className='gap-3 max-w-fit'>
-            <Link
-              className='flex justify-start items-center gap-1'
-              color='foreground'
-              href='/'
-            >
-              <Logo />
-            </Link>
-          </NavbarBrand>
+          <div className='flex items-center gap-2'>
+            {/* Back Icon Button */}
+            {currentPath !== '/sutra' && (
+              <button
+                onClick={back}
+                className='text-white mr-4'
+                style={{
+                  marginLeft: '-20px',
+                  zIndex: 999,
+                }}
+              >
+                <IoIosArrowBack size={24} />
+              </button>
+            )}
+
+            {/* Brand Logo */}
+            <NavbarBrand className='gap-3 max-w-fit'>
+              <Link
+                className='flex justify-start items-center gap-1'
+                color='foreground'
+                href='/'
+              >
+                <Logo />
+              </Link>
+            </NavbarBrand>
+          </div>
         </NavbarContent>
 
         {/* Right: Search, Theme Switch */}

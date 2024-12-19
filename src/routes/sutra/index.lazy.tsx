@@ -54,7 +54,7 @@ function RouteComponent() {
                 title={item['ຊື່ພຣະສູດ']}
                 detail={item['ພຣະສູດ']}
                 searchTerm={searchTerm}
-                route={`/sutra/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}`}
+                route={`/sutra/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}${window.location.search}`}
               />
             ))}
 

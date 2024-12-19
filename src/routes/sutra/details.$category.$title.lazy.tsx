@@ -68,16 +68,14 @@ function RouteComponent() {
   useEffect(() => {
     if (getFilteredData().length) {
       setFilteredDetails(getFilteredData().slice(0, itemsPerPage));
-    } else {
-      setFilteredDetails([]);
     }
   }, [getFilteredData, itemsPerPage]);
 
   useEffect(() => {
     if (searchTerm === '') {
-      setFilteredDetails([]);
-    } else {
       setFilteredDetails(getFilteredData().slice(0, itemsPerPage));
+    } else {
+      setFilteredDetails(getFilteredData());
     }
   }, [searchTerm]);
 

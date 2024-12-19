@@ -50,10 +50,10 @@ function RouteComponent() {
               searchTerm={searchTerm}
               onClick={() => {
                 router.navigate({
-                  to: `/sutra/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}`,
+                  to: `/sutra/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}${window.location.search}`,
                 });
               }}
-              route={`/sutra/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}`}
+              route={`/sutra/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}${window.location.search}`}
             />
           ))}
 

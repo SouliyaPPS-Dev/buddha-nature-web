@@ -5,8 +5,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { RouterProvider } from '@tanstack/react-router';
 import { HelmetProvider } from 'react-helmet-async';
-import { router } from './router';
 import PageTransition from './components/PageTransition';
+import { router } from './router';
 
 function App() {
   return (

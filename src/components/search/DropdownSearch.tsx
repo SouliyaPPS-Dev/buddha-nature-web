@@ -43,9 +43,7 @@ const DropdownSearch: React.FC<DropdownProps> = ({
   }, [setIsDropdownOpen]);
 
   return (
-    isDropdownOpen &&
-    searchResults?.length &&
-    searchResults.length > 0 && (
+    (isDropdownOpen && searchResults?.length && searchResults.length > 0 && (
       <div
         ref={dropdownRef}
         onClick={(e) => e.stopPropagation()}
@@ -70,18 +68,19 @@ const DropdownSearch: React.FC<DropdownProps> = ({
             overflowY: 'auto',
             overflowX: 'hidden',
             border: '1px solid #e5e7eb',
+            background: 'paper',
           }}
         >
           {[...searchResults].reverse().map((result, index) => (
             <React.Fragment key={index}>
-              <div className='mb-1'>
+              <div className='mb-1 bg-paper'>
                 <SutraCard
                   key={result.ID}
                   title={result['ຊື່ພຣະສູດ']}
                   detail={result['ພຣະສູດ']}
                   searchTerm={searchTerm}
                   onClick={() => handleResultClick(result)}
-                  route={`/sutra/details/${result['ໝວດທັມ']}/${result['ຊື່ພຣະສູດ']}?search=${searchTerm}`}
+                  route={`/sutra/details/${result['ໝວດທັມ']}/${result['ຊື່ພຣະສູດ']}${window.location.search}`}
                 />
                 {index < searchResults.length - 1 && (
                   <li className='h-pxmx-4' aria-hidden='true'></li>
@@ -91,8 +90,9 @@ const DropdownSearch: React.FC<DropdownProps> = ({
           ))}
         </ul>
       </div>
-    )
-  ) || null;
+    )) ||
+    null
+  );
 };
 
 export default DropdownSearch;

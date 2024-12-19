@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-refresh/only-export-components */
 import React, {
   createContext,
   useContext,
@@ -35,11 +33,12 @@ export const SearchProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       const currentSearch = searchParams.search || '';
+      const trimmedSearchTerm = searchTerm.trim();
 
       // Avoid unnecessary `router.navigate` calls
-      if (currentSearch !== searchTerm.trim()) {
+      if (currentSearch !== trimmedSearchTerm) {
         router.navigate({
-          search: searchTerm ? { search: searchTerm.trim() } : {}, // Add/Remove the search parameter
+          search: trimmedSearchTerm ? { search: trimmedSearchTerm } : {}, // Add/Remove the search parameter
           replace: true, // Avoid adding multiple history entries
         } as any);
       }
@@ -47,6 +46,14 @@ export const SearchProvider: React.FC<{ children: React.ReactNode }> = ({
 
     return () => clearTimeout(timeoutId); // Cleanup on unmount
   }, [searchTerm, searchParams.search]);
+
+  // Update the `searchTerm` when `searchParams.search` changes (to avoid desync)
+  useEffect(() => {
+    const currentSearch = searchParams.search || '';
+    if (currentSearch !== searchTerm) {
+      setSearchTerm(currentSearch);
+    }
+  }, [searchParams.search]);
 
   // Memoize the context value
   const contextValue = useMemo(
