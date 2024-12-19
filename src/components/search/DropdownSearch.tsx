@@ -81,7 +81,7 @@ const DropdownSearch: React.FC<DropdownProps> = ({
                   detail={result['ພຣະສູດ']}
                   searchTerm={searchTerm}
                   onClick={() => handleResultClick(result)}
-                  route={`/sutra/details/${result['ໝວດທັມ']}/${result['ຊື່ພຣະສູດ']}`}
+                  route={`/sutra/details/${result['ໝວດທັມ']}/${result['ຊື່ພຣະສູດ']}?search=${searchTerm}`}
                 />
                 {index < searchResults.length - 1 && (
                   <li className='h-pxmx-4' aria-hidden='true'></li>
@@ -92,7 +92,7 @@ const DropdownSearch: React.FC<DropdownProps> = ({
         </ul>
       </div>
     )
-  );
+  ) || null;
 };
 
 export default DropdownSearch;

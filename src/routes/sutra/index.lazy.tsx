@@ -16,6 +16,9 @@ function RouteComponent() {
       <section className='flex flex-col items-center justify-center mb-4'>
         {/* Search Bar */}
         <Input
+          aria-label='Search'
+          labelPlacement='outside'
+          type='search'
           placeholder='ຄົ້ນຫາພຣະສູດທັງໝົດ...' // Translates to "Search for Sutra"
           classNames={{
             inputWrapper: 'bg-default-100',

@@ -30,16 +30,16 @@ export const SearchDropdown = () => {
       {/* Search Input */}
       <Input
         aria-label='Search'
+        labelPlacement='outside'
+        type='search'
+        placeholder='ຄົ້ນຫາພຣະສູດທັງໝົດ...'
         classNames={{
           inputWrapper: 'bg-default-100',
           input: 'text-sm',
         }}
-        labelPlacement='outside'
-        placeholder='ຄົ້ນຫາພຣະສູດທັງໝົດ...'
         startContent={
           <SearchIcon className='text-base text-default-400 pointer-events-none flex-shrink-0' />
         }
-        type='search'
         value={searchTerm}
         onChange={handleInputChange}
         onFocus={() => searchTerm.trim().length > 0 && setIsDropdownOpen(true)} // Prevent opening empty dropdown on focus

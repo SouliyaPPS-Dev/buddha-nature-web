@@ -24,6 +24,8 @@ import clsx from 'clsx';
 import { useState } from 'react';
 import { SearchDropdown } from '../search/SearchDropdown';
 import { useMenuContext } from './MenuProvider';
+import { ButtonUpdateData } from '@/containers/sutra/ButtonUpdateData';
+import { SearchProvider } from '../search/SearchContext';
 
 export const Navbar = () => {
   const [activeItem, setActiveItem] = useState<string>('');
@@ -40,112 +42,125 @@ export const Navbar = () => {
   };
 
   return (
-    <NextUINavbar
-      maxWidth='xl'
-      position='sticky'
-      isMenuOpen={isMenuOpen}
-      onMenuOpenChange={setIsMenuOpen}
-      className='bg-[#795548] text-white max-h-[50px]'
-    >
-      {/* Left: Brand and Nav Items */}
-      <NavbarContent className='basis-1/5 sm:basis-full' justify='start'>
-        <NavbarBrand className='gap-3 max-w-fit'>
-          <Link
-            className='flex justify-start items-center gap-1'
-            color='foreground'
-            href='/'
-          >
-            <Logo />
-          </Link>
-        </NavbarBrand>
-      </NavbarContent>
-
-      {/* Right: Search, Theme Switch */}
-      <NavbarContent
-        className='hidden sm:flex basis-1/5 sm:basis-full'
-        justify='end'
+    <SearchProvider>
+      <NextUINavbar
+        maxWidth='xl'
+        position='sticky'
+        isMenuOpen={isMenuOpen}
+        onMenuOpenChange={setIsMenuOpen}
+        className='bg-[#795548] text-white max-h-[50px]'
       >
-        <div className='hidden lg:flex gap-4 justify-start ml-2 mr-3 mt-1'>
-          {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
-              <Link
-                className={clsx(
-                  linkStyles({ color: 'foreground' }),
-                  'data-[active=true]:text-primary data-[active=true]:font-medium  text-white'
-                )}
-                color='foreground'
-                href={item.href}
-              >
-                {item.label}
-              </Link>
-            </NavbarItem>
-          ))}
-        </div>
+        {/* Left: Brand and Nav Items */}
+        <NavbarContent className='basis-1/5 sm:basis-full' justify='start'>
+          <NavbarBrand className='gap-3 max-w-fit'>
+            <Link
+              className='flex justify-start items-center gap-1'
+              color='foreground'
+              href='/'
+            >
+              <Logo />
+            </Link>
+          </NavbarBrand>
+        </NavbarContent>
 
-        <NavbarItem className='hidden sm:flex gap-2 '>
-          <ThemeSwitch />
-        </NavbarItem>
-        {/* Conditionally hide search input when the current path is '/sutra' */}
-        {currentPath !== '/sutra' && (
-          <NavbarItem className='hidden lg:flex'>
-            <SearchDropdown />
-          </NavbarItem>
-        )}
-      </NavbarContent>
-
-      {/* Mobile Menu Toggle */}
-      <NavbarContent className='sm:hidden basis-1 pl-4' justify='end'>
-        <ThemeSwitch />
-        <NavbarMenuToggle />
-      </NavbarContent>
-
-      {/* Mobile Menu */}
-      <NavbarMenu>
-        <SearchDropdown />
-        <div className='mx-4 mt-2 flex flex-col gap-4'>
-          {siteConfig.navMenuItems.map((item, index) => {
-            // Define a function or object to map items to icons
-            const getIcon = (label: string) => {
-              switch (label) {
-                case 'ພຣະສູດ':
-                  return <SutraIcon />;
-                case 'ປື້ມ':
-                  return <BookIcon />;
-                case 'Video':
-                  return <VideoIcon />;
-                case 'ປະຕິທິນ':
-                  return <CalendarIcon />;
-                case 'ພຣະທັມ':
-                  return <DhammaIcon />;
-                case 'ຂໍ້ມູນຕິດຕໍ່':
-                  return <AboutIcon />;
-                default:
-                  return null;
-              }
-            };
-
-            return (
-              <NavbarMenuItem key={`${item}-${index}`} className='w-full'>
+        {/* Right: Search, Theme Switch */}
+        <NavbarContent
+          className='hidden sm:flex basis-1/5 sm:basis-full'
+          justify='end'
+        >
+          <div className='hidden lg:flex gap-4 justify-start ml-2 mr-2 mt-1'>
+            {siteConfig.navItems.map((item) => (
+              <NavbarItem key={item.href}>
                 <Link
                   className={clsx(
                     linkStyles({ color: 'foreground' }),
-                    'data-[active=true]:text-primary data-[active=true]:font-medium',
-                    'flex items-center gap-2', // Add flex and gap for icon and label
-                    activeItem === item.href ? 'text-primary font-medium' : '',
-                    'text-4xl font-bold' // Added font-bold to make the text bold
+                    'data-[active=true]:text-primary data-[active=true]:font-medium  text-white'
                   )}
                   color='foreground'
                   href={item.href}
-                  onClick={() => handleMobileNavigation(item.href)} // Set active item on click
                 >
-                  {getIcon(item.label)} {/* Render icon */}
-                  <span>{item.label}</span> {/* Menu label */}
+                  {item.label}
                 </Link>
-              </NavbarMenuItem>
-            );
-          })}
-        </div>
-      </NavbarMenu>
-    </NextUINavbar>
+              </NavbarItem>
+            ))}
+          </div>
+
+          <NavbarItem className='hidden sm:flex gap-2 '>
+            <ButtonUpdateData />
+          </NavbarItem>
+
+          <NavbarItem className='hidden sm:flex gap-2 '>
+            <ThemeSwitch />
+          </NavbarItem>
+          {/* Conditionally hide search input when the current path is '/sutra' */}
+          {currentPath !== '/sutra' && (
+            <NavbarItem className='hidden lg:flex'>
+              <SearchDropdown />
+            </NavbarItem>
+          )}
+        </NavbarContent>
+
+        {/* Mobile Menu Toggle */}
+        <NavbarContent className='sm:hidden basis-1 pl-4' justify='end'>
+          <ButtonUpdateData />
+          <ThemeSwitch />
+          <NavbarMenuToggle />
+        </NavbarContent>
+
+        {/* Mobile Menu */}
+        <NavbarMenu
+          style={{
+            top: '50px',
+          }}
+        >
+          <SearchDropdown />
+          <div className='mx-4 mt-2 flex flex-col gap-4'>
+            {siteConfig.navMenuItems.map((item, index) => {
+              // Define a function or object to map items to icons
+              const getIcon = (label: string) => {
+                switch (label) {
+                  case 'ພຣະສູດ':
+                    return <SutraIcon />;
+                  case 'ປື້ມ':
+                    return <BookIcon />;
+                  case 'Video':
+                    return <VideoIcon />;
+                  case 'ປະຕິທິນ':
+                    return <CalendarIcon />;
+                  case 'ພຣະທັມ':
+                    return <DhammaIcon />;
+                  case 'ຂໍ້ມູນຕິດຕໍ່':
+                    return <AboutIcon />;
+                  default:
+                    return null;
+                }
+              };
+
+              return (
+                <NavbarMenuItem key={`${item}-${index}`} className='w-full'>
+                  <Link
+                    className={clsx(
+                      linkStyles({ color: 'foreground' }),
+                      'data-[active=true]:text-primary data-[active=true]:font-medium',
+                      'flex items-center gap-2', // Add flex and gap for icon and label
+                      activeItem === item.href
+                        ? 'text-primary font-medium'
+                        : '',
+                      'text-4xl font-bold' // Added font-bold to make the text bold
+                    )}
+                    color='foreground'
+                    href={item.href}
+                    onClick={() => handleMobileNavigation(item.href)} // Set active item on click
+                  >
+                    {getIcon(item.label)} {/* Render icon */}
+                    <span>{item.label}</span> {/* Menu label */}
+                  </Link>
+                </NavbarMenuItem>
+              );
+            })}
+          </div>
+        </NavbarMenu>
+      </NextUINavbar>
+    </SearchProvider>
   );
 };

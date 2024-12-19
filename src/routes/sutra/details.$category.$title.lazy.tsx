@@ -39,57 +39,77 @@ function RouteComponent() {
   // **Filter Data Based on Search Term or Category/Title**
   const getFilteredData = useCallback(() => {
     if (!data) return [];
-    // If there's a search term, prioritize filtering based on it
-    if (searchTerm !== '') {
+
+    const normalizedSearchTerm =
+      typeof searchTerm === 'string' ? searchTerm.toLowerCase() : '';
+
+    if (normalizedSearchTerm !== '') {
       return data.filter((item) =>
         [item['ຊື່ພຣະສູດ'], item['ພຣະສູດ'], item['ໝວດທັມ']]
-          .join(' ')
+          .join('')
           .toLowerCase()
-          .includes(searchTerm.toLowerCase())
+          .includes(normalizedSearchTerm)
+      );
+    } else {
+      // If there's no search term, filter based on category and title
+      return data.filter(
+        (item) =>
+          item['ຊື່ພຣະສູດ']?.toLowerCase() === title?.toLowerCase() &&
+          item['ໝວດທັມ']?.toLowerCase() === category?.toLowerCase()
       );
     }
-    // Otherwise, filter based on category and title
-    return data.filter(
-      (item) =>
-        item['ຊື່ພຣະສູດ']?.toLowerCase() === title?.toLowerCase() &&
-        item['ໝວດທັມ']?.toLowerCase() === category?.toLowerCase()
-    );
   }, [data, searchTerm, category, title]);
 
   const isDisabled = getFilteredData().length < 1;
   const isDisabledEmptySearch =
-    getFilteredData().length <= 1;
+    getFilteredData().length <= filteredDetails.length;
 
-  // Initialize `filteredDetails` with the first chunk of data
+  // Initialize filteredDetails with the first chunk of data
   useEffect(() => {
-    if (getFilteredData().length > 0) {
+    if (getFilteredData().length) {
       setFilteredDetails(getFilteredData().slice(0, itemsPerPage));
+    } else {
+      setFilteredDetails([]);
     }
   }, [getFilteredData, itemsPerPage]);
 
-  // Update `filteredDetails` whenever `category` or `title` changes
   useEffect(() => {
-    if (!data || !category || !title) return;
+    if (searchTerm === '') {
+      setFilteredDetails([]);
+    } else {
+      setFilteredDetails(getFilteredData().slice(0, itemsPerPage));
+    }
+  }, [searchTerm]);
 
+  useEffect(() => {
+    // Filter data based on category and title
     const updatedDetails = data.filter(
       (item) =>
         item['ຊື່ພຣະສູດ']?.toLowerCase() === title?.toLowerCase() &&
         item['ໝວດທັມ']?.toLowerCase() === category?.toLowerCase()
     );
-    if (updatedDetails.length) {
+    if (updatedDetails.length > 0) {
       setFilteredDetails(updatedDetails.slice(0, itemsPerPage));
-      setCurrentPage(0); // Reset only if there's content
+    } else {
+      setFilteredDetails([]);
     }
-  }, [category, title, data]);
+  }, [data, category, title]);
 
   // The reusable function to get the next chunk of data
   const getNextData = (
     latestIndex: number,
     itemsPerPage: number,
-    fullData: any[]
+    filteredData: any[]
   ): any[] => {
-    if (latestIndex + 1 < fullData.length) {
-      return fullData.slice(latestIndex + 1, latestIndex + 1 + itemsPerPage); // Get next `itemsPerPage` items
+    if (latestIndex + 1 < filteredData.length) {
+      return filteredData.slice(
+        latestIndex + 1,
+        latestIndex + 1 + itemsPerPage
+      ); // Get next `itemsPerPage` items
+    }
+
+    if (searchTerm !== '') {
+      return filteredData.slice(0, itemsPerPage);
     }
     return []; // Return empty array if no data is left
   };
@@ -108,6 +128,51 @@ function RouteComponent() {
   const goToPreviousPage = () => {
     setFilteredDetails((prev) => prev.slice(0, prev.length - itemsPerPage));
     setCurrentPage((prev) => prev - itemsPerPage);
+  };
+
+  // Handlers for font size adjustments
+  const increaseFontSize = () =>
+    setFontSize((prev) => (prev < 32 ? prev + 2 : prev)); // Max 32px
+
+  const decreaseFontSize = () =>
+    setFontSize((prev) => (prev > 12 ? prev - 2 : prev)); // Min 12px
+
+  // **Copy to Clipboard Handler**
+  const copyToClipboard = () => {
+    if (filteredDetails.length) {
+      const currentItem = filteredDetails[currentPage];
+      const textToCopy = `
+       ${currentItem['ຊື່ພຣະສູດ']}
+       ${currentItem['ພຣະສູດ']}
+       ${currentItem['ໝວດທັມ']}
+    `.trim(); // Using trim() to remove extra leading/trailing whitespace or newlines
+
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        setIsCopied(true); // Set the state to true (show success icon)
+        setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+      });
+    }
+  };
+
+  const handleShare = async () => {
+    const text = filteredDetails[currentPage]['ຊື່ພຣະສູດ'];
+    const url = `${window.location.origin}/sutra/details/${category}/${title}${window.location.search}`;
+
+    // Sharing the content using the Web Share API
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          text, // Shared text with category
+          url, // Share a link to the content (the page with the HTML)
+        });
+        console.log('Shared successfully');
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      // Fallback for browsers that don't support the Web Share API
+      alert('Sharing is not supported on this device.');
+    }
   };
 
   // Function to sanitize and parse HTML content
@@ -145,51 +210,6 @@ function RouteComponent() {
         }
         return <span key={index}>{ReactHtmlParser(part)}</span>;
       });
-    }
-  };
-
-  // Handlers for font size adjustments
-  const increaseFontSize = () =>
-    setFontSize((prev) => (prev < 32 ? prev + 2 : prev)); // Max 32px
-
-  const decreaseFontSize = () =>
-    setFontSize((prev) => (prev > 12 ? prev - 2 : prev)); // Min 12px
-
-  // **Copy to Clipboard Handler**
-  const copyToClipboard = () => {
-    if (filteredDetails.length) {
-      const currentItem = filteredDetails[currentPage];
-      const textToCopy = `
-       ${currentItem['ຊື່ພຣະສູດ']}
-       ${currentItem['ພຣະສູດ']}
-       ${currentItem['ໝວດທັມ']}
-    `.trim(); // Using trim() to remove extra leading/trailing whitespace or newlines
-
-      navigator.clipboard.writeText(textToCopy).then(() => {
-        setIsCopied(true); // Set the state to true (show success icon)
-        setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
-      });
-    }
-  };
-
-  const handleShare = async () => {
-    const text = filteredDetails[currentPage]['ຊື່ພຣະສູດ'];
-    const url = `${window.location.origin}/sutra/details/${category}/${title}`;
-
-    // Sharing the content using the Web Share API
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          text, // Shared text with category
-          url, // Share a link to the content (the page with the HTML)
-        });
-        console.log('Shared successfully');
-      } catch (error) {
-        console.error('Error sharing:', error);
-      }
-    } else {
-      // Fallback for browsers that don't support the Web Share API
-      alert('Sharing is not supported on this device.');
     }
   };
 
@@ -454,7 +474,7 @@ function RouteComponent() {
     <>
       <div className='relative flex justify-center items-center mb-24 mt-4 px-3'>
         {/* Content of the Current Page */}
-        {filteredDetails?.length ? (
+        {filteredDetails?.length > 0 ? (
           <>
             <div
               className='page cursor-text mb-8'
@@ -519,7 +539,7 @@ function RouteComponent() {
             </div>
           </>
         ) : (
-          <p>No content available</p>
+          <div className='text-center'>No content available</div>
         )}
       </div>
 
