@@ -69,9 +69,9 @@ function SutraCard({
   const decreaseFontSize = () => setFontSize((prev) => Math.max(prev - 2, 12)); // Min 12px
 
   return (
-    <Card>
+    <Card onClick={onClick}>
       <CardBody className='text-xl flex flex-col' onClick={onClick}>
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center gap-2' onClick={onClick}>
           {/* Toggle Button */}
           {/* <span
             onClick={() => {
