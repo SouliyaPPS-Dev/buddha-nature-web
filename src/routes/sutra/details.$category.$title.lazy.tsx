@@ -30,8 +30,6 @@ function RouteComponent() {
   const { searchTerm } = useSearchContext();
   const { fontSize, setFontSize } = useFontSizeContext();
 
-  const [isFlipping, setIsFlipping] = useState(false); // Animation state
-
   // Inside your component
   const [isCopied, setIsCopied] = useState(false); // State to manage copy success
 
@@ -124,10 +122,8 @@ function RouteComponent() {
   // Navigate to the next page
   const goToNextPage = () => {
     if (currentPage < filteredDetails.length - 1) {
-      setIsFlipping(true);
       setTimeout(() => {
         setCurrentPage(currentPage + 1);
-        setIsFlipping(false);
       }, 600); // Match duration of animation
     }
 
@@ -142,10 +138,8 @@ function RouteComponent() {
   // Navigate to the previous page
   const goToPreviousPage = () => {
     if (currentPage > 0) {
-      setIsFlipping(true);
       setTimeout(() => {
         setCurrentPage(currentPage - 1);
-        setIsFlipping(false);
       }, 600);
     }
 
@@ -506,10 +500,6 @@ function RouteComponent() {
                 fontSize: `${fontSize}px`,
                 perspective: '1000px', // Perspective for flip effect
                 position: 'relative', // Ensure stacking context for shadow effect
-              }}
-              animate={{
-                rotateY: isFlipping ? 0.98 : 1, // Flip animation
-                scale: isFlipping ? 0.98 : 1, // Slightly scale down during flip
               }}
               transition={{
                 duration: 0.6,
