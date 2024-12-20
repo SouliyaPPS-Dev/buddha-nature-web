@@ -172,8 +172,8 @@ function RouteComponent() {
   };
 
   const handleShare = async () => {
-    const text = filteredDetails[currentPage]['ຊື່ພຣະສູດ'];
-    const url = `${window.location.origin}/sutra/details/${category}/${title}${window.location.search}`;
+    const text = filteredDetails?.[currentPage]?.['ຊື່ພຣະສູດ'];
+    const url = `${window.location.origin}/sutra/details/${filteredDetails?.[currentPage]?.['ໝວດທັມ']}/${filteredDetails?.[currentPage]?.['ຊື່ພຣະສູດ']}${window.location.search}`;
 
     // Sharing the content using the Web Share API
     if (navigator.share) {
