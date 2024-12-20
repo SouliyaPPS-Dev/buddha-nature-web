@@ -42,6 +42,7 @@ body {
   line-height: 1.6; /* Better line spacing */
 }
 
+ /* CSS for the fade animation */
 .fade {
   transition: opacity 0.5s ease-in-out;
 }
@@ -59,4 +60,19 @@ body {
 .fade-exit-active {
   opacity: 0;
   transition: opacity 300ms ease-out;
+}
+
+/* CSS for the dropdown container */
+.dropdown-container {
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.dropdown-container.opacity-0 {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.dropdown-container.opacity-100 {
+  opacity: 1;
+  visibility: visible;
 }

@@ -1,8 +1,8 @@
-import SutraCard from '@/containers/sutra/SutraCard';
 import React, { useEffect, useRef } from 'react';
+import SutraCard from '@/containers/sutra/SutraCard';
 
 interface SearchResult {
-  ID: string; // Adjust the type of ID if necessary
+  ID: string;
   ຊື່ພຣະສູດ: string;
   ພຣະສູດ: string;
   ໝວດທັມ: string;
@@ -10,9 +10,9 @@ interface SearchResult {
 
 interface DropdownProps {
   isDropdownOpen?: boolean;
-  searchResults?: SearchResult[] | null; // Array of search results or null if no results
+  searchResults?: SearchResult[] | null;
   searchTerm?: string;
-  handleResultClick: (result: SearchResult) => void; // Function that handles the click on a result
+  handleResultClick: (result: SearchResult) => void;
   setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -36,63 +36,65 @@ const DropdownSearch: React.FC<DropdownProps> = ({
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [setIsDropdownOpen]);
 
+  useEffect(() => {
+    if (isDropdownOpen && dropdownRef.current) {
+      dropdownRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [isDropdownOpen]);
+
+  if (!isDropdownOpen || !searchResults?.length) return null;
+
   return (
-    (isDropdownOpen && searchResults?.length && searchResults.length > 0 && (
-      <div
-        ref={dropdownRef}
-        onClick={(e) => e.stopPropagation()}
+    <div
+      ref={dropdownRef}
+      className={`dropdown-container transition-all duration-300 ease-in-out ${
+        isDropdownOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+      }`}
+      onClick={(e) => e.stopPropagation()}
+      style={{
+        width: '100%',
+        maxWidth: '40rem',
+      }}
+    >
+      <ul
+        className='dropdown-list'
         style={{
-          width: '100%',
-          maxWidth: '40rem', // Adjust maximum width for larger screens
+          position: 'fixed',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '90%',
+          maxWidth: '40rem',
+          zIndex: 50,
+          marginTop: '0.5rem',
+          maxHeight: '32rem',
+          borderRadius: '0.375rem',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          overflowY: 'auto',
+          background: 'theme.default',
         }}
       >
-        <ul
-          id='dropdown'
-          style={{
-            position: 'fixed',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '90%', // Adjust width for smaller screens
-            maxWidth: '40rem', // Max width for desktops
-            zIndex: 50,
-            marginTop: '0.5rem',
-            maxHeight: '32rem',
-            borderRadius: '0.375rem',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            border: '1px solid #e5e7eb',
-            background: 'paper',
-          }}
-        >
-          {[...searchResults].reverse().map((result, index) => (
-            <React.Fragment key={index}>
-              <div className='mb-1 bg-paper'>
-                <SutraCard
-                  key={result.ID}
-                  title={result['ຊື່ພຣະສູດ']}
-                  detail={result['ພຣະສູດ']}
-                  searchTerm={searchTerm}
-                  onClick={() => handleResultClick(result)}
-                  route={`/sutra/details/${result['ໝວດທັມ']}/${result['ຊື່ພຣະສູດ']}${window.location.search}`}
-                />
-                {index < searchResults.length - 1 && (
-                  <li className='h-pxmx-4' aria-hidden='true'></li>
-                )}
-              </div>
-            </React.Fragment>
+        {searchResults
+          .slice()
+          .reverse()
+          .map((result) => (
+            <li key={result.ID} className='mb-1 bg-paper'>
+              <SutraCard
+                title={result['ຊື່ພຣະສູດ']}
+                detail={result['ພຣະສູດ']}
+                searchTerm={searchTerm}
+                onClick={() => handleResultClick(result)}
+                route={`/sutra/details/${result['ໝວດທັມ']}/${result['ຊື່ພຣະສູດ']}${window.location.search}`}
+              />
+            </li>
           ))}
-        </ul>
-      </div>
-    )) ||
-    null
+      </ul>
+    </div>
   );
 };
 
-export default DropdownSearch;
+export default React.memo(DropdownSearch);

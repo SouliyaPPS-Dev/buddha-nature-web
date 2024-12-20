@@ -3,7 +3,6 @@ import { MenuProvider } from '@/components/layouts/MenuProvider';
 import { Navbar } from '@/components/layouts/navbar';
 import { NavigationTabs } from '@/components/layouts/NavigationTabs';
 import { SearchProvider } from '@/components/search/SearchContext';
-import '@/styles/globals.css';
 import React from 'react';
 import ScrollToBottom from 'react-scroll-to-bottom';
 

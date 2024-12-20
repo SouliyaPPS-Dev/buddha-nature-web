@@ -45,3 +45,15 @@ export const rememberMe = (() => {
      };
 })();
 
+
+export const clearCache = () => {
+     if ('caches' in window) {
+          caches.keys().then((cacheNames) => {
+               cacheNames.forEach((cacheName) => {
+                    caches.delete(cacheName).then(() => {
+                         console.log(`Cache ${cacheName} deleted`);
+                    });
+               });
+          });
+     }
+};

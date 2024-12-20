@@ -2,10 +2,12 @@ import { router } from '@/router';
 import { useRouterState } from '@tanstack/react-router';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-const NavigationContext = createContext<{
+type NavigationContextType = {
   history: string[];
   back: () => void;
-} | null>(null);
+};
+
+const NavigationContext = createContext<NavigationContextType | null>(null);
 
 export const NavigationProvider = ({
   children,
@@ -14,7 +16,6 @@ export const NavigationProvider = ({
 }) => {
   const [history, setHistory] = useState<string[]>([]);
 
-  // Ensure the router state is only accessed when the router is active
   let location;
   try {
     const routerState = useRouterState({ select: (state) => state });
@@ -25,9 +26,27 @@ export const NavigationProvider = ({
   }
 
   useEffect(() => {
-    if (location) {
-      setHistory((prev) => [...prev, location.pathname]);
-    }
+    const currentPath = window.location.pathname;
+
+    setHistory((prev) => {
+      const lastPath = prev[prev.length - 1];
+      if (lastPath === currentPath) return prev; // Avoid duplicates
+      return [...prev, currentPath];
+    });
+
+    const handlePopState = () => {
+      const currentPath = window.location.pathname;
+      setHistory((prev) => {
+        if (prev[prev.length - 1] === currentPath) return prev;
+        return [...prev, currentPath];
+      });
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
   }, [location?.pathname]);
 
   const back = () => {
@@ -38,8 +57,11 @@ export const NavigationProvider = ({
       const previousPath = history[history.length - 2];
       if (previousPath) {
         router.navigate({ to: previousPath });
+        return;
       }
     }
+
+    router.navigate({ to: '/' });
   };
 
   return (

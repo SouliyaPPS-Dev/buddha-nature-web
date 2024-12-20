@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSutra } from "./useSutra";
 import { toast } from "react-toastify";
+import { clearCache } from "@/services/cache";
 
 export const useUpdateSutraData = () => {
      const [isLoading, setIsLoading] = useState(false);
@@ -14,8 +15,8 @@ export const useUpdateSutraData = () => {
                // Remove cached data from localStorage
                localStorage.removeItem('REACT_QUERY_OFFLINE_CACHE');
 
-               // Clear sessionStorage
-               sessionStorage.clear();
+               // Clear Cache Storage
+               clearCache();
 
                // Refetch the data after update
                await refetch();

@@ -11,6 +11,8 @@ import ReactHtmlParser from 'react-html-parser';
 import { FaCheck, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { GrCopy } from 'react-icons/gr';
 import { IoShareSocialSharp } from 'react-icons/io5';
+import { FaPlus } from 'react-icons/fa';
+import { FaMinus } from 'react-icons/fa';
 
 export const Route = createLazyFileRoute('/sutra/details/$category/$title')({
   component: () => <RouteComponent />,
@@ -212,7 +214,7 @@ function RouteComponent() {
   };
 
   const renderPositionBar = () => (
-    <div className='fixed bottom-0 left-0 right-0 z-10 px-4 py-4 flex justify-between items-center md:mb-[58px] '>
+    <div className='fixed bottom-0 left-0 right-0 z-10 px-4 py-4 flex justify-between items-center md:mb-[60px]'>
       {/* Previous Page Button (Left Side) */}
       <div
         style={{
@@ -228,8 +230,8 @@ function RouteComponent() {
             display: 'flex', // Use flexbox for alignment
             alignItems: 'center',
             justifyContent: 'center',
-            width: '25px', // Smaller width
-            height: '25px', // Smaller height
+            width: '30px',
+            height: '30px',
             borderRadius: '15px', // Fully rounded button
             border: 'none',
             background: currentPage === 0 ? '#E0E0E0' : '#8B5E3C', // Gray for disabled, brown for active
@@ -268,13 +270,14 @@ function RouteComponent() {
         <button
           onClick={copyToClipboard}
           style={{
-            borderRadius: '0.5rem',
-            padding: '0.25rem 0.75rem',
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            color: '#fff',
-            border: 'none',
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             background: 'linear-gradient(135deg, #5E412D, #8B5E3C)',
+            border: 'none',
             cursor: 'pointer',
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
             transition: 'transform 0.2s ease, box-shadow 0.2s ease',
@@ -293,9 +296,9 @@ function RouteComponent() {
           }
         >
           {isCopied ? (
-            <FaCheck size={20} color='green' />
+            <FaCheck size={18} color='green' />
           ) : (
-            <GrCopy size={20} />
+            <GrCopy size={18} />
           )}
         </button>
 
@@ -303,16 +306,16 @@ function RouteComponent() {
         <button
           onClick={decreaseFontSize}
           style={{
-            borderRadius: '0.5rem',
-            padding: '0.25rem 0.75rem',
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            color: '#fff',
-            border: 'none',
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             background: 'linear-gradient(135deg, #8B5E3C, #D4A054)',
+            border: 'none',
             cursor: 'pointer',
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           }}
           onMouseOver={(e) =>
             Object.assign(e.currentTarget.style, {
@@ -327,23 +330,23 @@ function RouteComponent() {
             })
           }
         >
-          A-
+          <FaMinus size={20} />
         </button>
 
         {/* Increase Font Size Button */}
         <button
           onClick={increaseFontSize}
           style={{
-            borderRadius: '0.5rem',
-            padding: '0.25rem 0.75rem',
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            color: '#fff',
-            border: 'none',
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             background: 'linear-gradient(135deg, #5E412D, #8B5E3C)',
+            border: 'none',
             cursor: 'pointer',
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           }}
           onMouseOver={(e) =>
             Object.assign(e.currentTarget.style, {
@@ -358,23 +361,23 @@ function RouteComponent() {
             })
           }
         >
-          A+
+          <FaPlus size={20} />
         </button>
 
         {/* Share Button */}
         <button
           onClick={handleShare}
           style={{
-            borderRadius: '0.5rem',
-            padding: '0.25rem 0.75rem',
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            color: '#fff',
-            border: 'none',
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             background: 'linear-gradient(135deg, #5E412D, #8B5E3C)',
+            border: 'none',
             cursor: 'pointer',
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           }}
           onMouseOver={(e) =>
             Object.assign(e.currentTarget.style, {
@@ -405,7 +408,7 @@ function RouteComponent() {
               justifyContent: 'center',
               width: '25px',
               height: '25px',
-              borderRadius: '15px',
+              borderRadius: '50%',
               border: 'none',
               background: isDisabled ? '#E0E0E0' : '#8B5E3C',
               color: isDisabled ? '#999' : '#fff',
@@ -438,9 +441,9 @@ function RouteComponent() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '25px',
-              height: '25px',
-              borderRadius: '15px',
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
               border: 'none',
               background: isDisabledEmptySearch ? '#E0E0E0' : '#8B5E3C',
               color: isDisabledEmptySearch ? '#999' : '#fff',
