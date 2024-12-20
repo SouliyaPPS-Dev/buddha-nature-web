@@ -15,18 +15,10 @@ export const NavigationProvider = ({
   children: React.ReactNode;
 }) => {
   const [history, setHistory] = useState<string[]>([]);
-
-  let location;
-  try {
-    const routerState = useRouterState({ select: (state) => state });
-    location = routerState.location;
-  } catch (error) {
-    console.error('useRouterState must be used within RouterProvider');
-    location = null;
-  }
+  const location = useRouterState({ select: (state) => state.location });
 
   useEffect(() => {
-    const currentPath = window.location.pathname;
+    const currentPath = location.pathname;
 
     setHistory((prev) => {
       const lastPath = prev[prev.length - 1];
@@ -34,6 +26,7 @@ export const NavigationProvider = ({
       return [...prev, currentPath];
     });
 
+    // Handle back/forward browser navigation
     const handlePopState = () => {
       const currentPath = window.location.pathname;
       setHistory((prev) => {
@@ -47,20 +40,22 @@ export const NavigationProvider = ({
     return () => {
       window.removeEventListener('popstate', handlePopState);
     };
-  }, [location?.pathname]);
+  }, [location.pathname]);
 
   const back = () => {
     if (history.length > 1) {
       const newHistory = history.slice(0, -1);
+      const previousPath = history[history.length - 2];
+
       setHistory(newHistory);
 
-      const previousPath = history[history.length - 2];
       if (previousPath) {
-        router.navigate({ to: previousPath });
+        router.navigate({ to: previousPath }); // Ensure `previousPath` is a valid route name or path
         return;
       }
     }
 
+    // Fallback to the root route
     router.navigate({ to: '/' });
   };
 

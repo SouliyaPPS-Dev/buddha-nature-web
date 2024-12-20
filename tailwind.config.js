@@ -64,7 +64,7 @@ export default {
         light: {
           colors: {
             // Override colors for the light theme
-            background: '#FAFAFA', // Light grayish background
+            background: '#F5F5F5', // Light grayish background
             foreground: '#1a202c', // Dark text
             primary: '#DDCFBC', // Light green for primary color
             secondary: '#ff9800', // Orange for secondary

@@ -55,7 +55,7 @@
     "dompurify": "^3.2.3",
     "emotion": "^11.0.0",
     "firebase-tools": "^13.27.0",
-    "framer-motion": "^11.12.0",
+    "framer-motion": "^11.15.0",
     "html-react-parser": "^5.2.0",
     "path-browserify": "^1.0.1",
     "react": "^19.0.0",

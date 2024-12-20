@@ -11,13 +11,7 @@ import { router } from './router';
 function App() {
   return (
     <HelmetProvider>
-      <NextUIProvider
-        navigate={(path) => {
-          return router.navigate({
-            to: path,
-          });
-        }}
-      >
+      <NextUIProvider>
         <PersistQueryClientProvider
           client={queryClient}
           persistOptions={{ persister }}

@@ -5,14 +5,19 @@ import { useSearchContext } from '@/components/search/SearchContext';
 import { useSutra } from '@/hooks/sutra/useSutra';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import DOMPurify from 'dompurify';
+import { motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import ReactHtmlParser from 'react-html-parser';
-import { FaCheck, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import {
+  FaCheck,
+  FaChevronLeft,
+  FaChevronRight,
+  FaMinus,
+  FaPlus,
+} from 'react-icons/fa';
 import { GrCopy } from 'react-icons/gr';
 import { IoShareSocialSharp } from 'react-icons/io5';
-import { FaPlus } from 'react-icons/fa';
-import { FaMinus } from 'react-icons/fa';
 
 export const Route = createLazyFileRoute('/sutra/details/$category/$title')({
   component: () => <RouteComponent />,
@@ -24,6 +29,8 @@ function RouteComponent() {
   const { data } = useSutra();
   const { searchTerm } = useSearchContext();
   const { fontSize, setFontSize } = useFontSizeContext();
+
+  const [isFlipping, setIsFlipping] = useState(false); // Animation state
 
   // Inside your component
   const [isCopied, setIsCopied] = useState(false); // State to manage copy success
@@ -116,6 +123,14 @@ function RouteComponent() {
 
   // Navigate to the next page
   const goToNextPage = () => {
+    if (currentPage < filteredDetails.length - 1) {
+      setIsFlipping(true);
+      setTimeout(() => {
+        setCurrentPage(currentPage + 1);
+        setIsFlipping(false);
+      }, 600); // Match duration of animation
+    }
+
     setFilteredDetails((prev) =>
       prev.concat(getNextData(currentGlobalIndex, itemsPerPage, data))
     );
@@ -126,6 +141,14 @@ function RouteComponent() {
 
   // Navigate to the previous page
   const goToPreviousPage = () => {
+    if (currentPage > 0) {
+      setIsFlipping(true);
+      setTimeout(() => {
+        setCurrentPage(currentPage - 1);
+        setIsFlipping(false);
+      }, 600);
+    }
+
     setFilteredDetails((prev) => prev.slice(0, prev.length - itemsPerPage));
     setCurrentPage((prev) => prev - itemsPerPage);
   };
@@ -214,7 +237,7 @@ function RouteComponent() {
   };
 
   const renderPositionBar = () => (
-    <div className='fixed bottom-0 left-0 right-0 z-10 px-4 py-4 flex justify-between items-center md:mb-[60px]'>
+    <div className='fixed bottom-0 left-0 right-0 z-10 px-4 py-4 flex justify-between items-center md:mb-[64px] mb-5 text-white'>
       {/* Previous Page Button (Left Side) */}
       <div
         style={{
@@ -406,8 +429,8 @@ function RouteComponent() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '25px',
-              height: '25px',
+              width: '32px',
+              height: '32px',
               borderRadius: '50%',
               border: 'none',
               background: isDisabled ? '#E0E0E0' : '#8B5E3C',
@@ -474,70 +497,96 @@ function RouteComponent() {
   return (
     <>
       <div className='relative flex justify-center items-center mb-24 mt-4 px-3'>
-        {/* Content of the Current Page */}
+        {/* Content of the Current Page Flipbook Animation */}
         {filteredDetails?.length > 0 ? (
           <>
-            <div
+            <motion.div
               className='page cursor-text mb-8'
-              contentEditable={true}
-              style={{ fontSize: `${fontSize}px` }}
+              style={{
+                fontSize: `${fontSize}px`,
+                perspective: '1000px', // Perspective for flip effect
+                position: 'relative', // Ensure stacking context for shadow effect
+              }}
+              animate={{
+                rotateY: isFlipping ? 0.98 : 1, // Flip animation
+                scale: isFlipping ? 0.98 : 1, // Slightly scale down during flip
+              }}
+              transition={{
+                duration: 0.6,
+                ease: 'easeInOut',
+              }}
+              drag='x' // Enable dragging only on the x-axis
+              dragConstraints={{ left: 0, right: 0 }} // Limit drag direction
+              onDragStart={(event) => {
+                // Prevent scrolling during horizontal drag
+                event.stopPropagation();
+              }}
+              onDragEnd={(_event, info) => {
+                if (info.offset.x < -100) {
+                  goToNextPage(); // Go to the next page on left swipe
+                } else if (info.offset.x > 100 && currentPage > 0) {
+                  goToPreviousPage(); // Go to the previous page on right swipe
+                }
+              }}
             >
-              {/* ຊື່ພຣະສູດ */}
-              <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-                <Highlighter
-                  highlightClassName='bg-yellow-200 font-bold'
-                  searchWords={[searchTerm || '']}
-                  autoEscape={true}
-                  textToHighlight={
-                    filteredDetails?.[currentPage]?.['ຊື່ພຣະສູດ']
-                  }
-                  style={{ fontSize: '20px' }}
-                />
-              </div>
+              <div contentEditable={true}>
+                {/* ຊື່ພຣະສູດ */}
+                <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                  <Highlighter
+                    highlightClassName='bg-yellow-200 font-bold'
+                    searchWords={[searchTerm || '']}
+                    autoEscape={true}
+                    textToHighlight={
+                      filteredDetails?.[currentPage]?.['ຊື່ພຣະສູດ']
+                    }
+                    style={{ fontSize: '20px' }}
+                  />
+                </div>
 
-              {/* ສຽງ */}
-              <div
-                style={{
-                  display: 'flex', // Use flexbox
-                  justifyContent: 'center', // Center horizontally
-                  alignItems: 'center', // Center vertically (optional, if needed)
-                  marginBottom: '1rem', // Match the original `mb-4` equivalent in Tailwind (1rem = 16px)
-                }}
-              >
-                {filteredDetails?.[currentPage]?.['ສຽງ'] !== '/' && (
-                  <audio controls>
-                    <source
-                      src={filteredDetails?.[currentPage]?.['ສຽງ']}
-                      type='audio/mpeg'
-                    />
-                  </audio>
-                )}
-              </div>
-
-              {/* Render ພຣະສູດ */}
-              {renderDetail(
-                filteredDetails?.[currentPage]?.['ພຣະສູດ'],
-                searchTerm
-              )}
-              <br />
-
-              {/* Render ໝວດທັມ */}
-              <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-                <Highlighter
-                  highlightClassName='bg-yellow-200 font-bold' // Highlight class
-                  searchWords={[searchTerm || '']} // Highlight based on searchTerm
-                  autoEscape={true} // Allow Auto Escape for search term
-                  textToHighlight={filteredDetails?.[currentPage]?.['ໝວດທັມ']} // Text to highlight
+                {/* ສຽງ */}
+                <div
                   style={{
-                    fontSize: '20px', // Font size
-                    textAlign: 'center', // Ensure text alignment inside Highlighter
-                    display: 'inline-block', // Ensure it does not take full width
-                    fontStyle: 'italic',
-                    color: '#888',
+                    display: 'flex', // Use flexbox
+                    justifyContent: 'center', // Center horizontally
+                    alignItems: 'center', // Center vertically (optional, if needed)
+                    marginBottom: '1rem', // Match the original `mb-4` equivalent in Tailwind (1rem = 16px)
                   }}
-                />
+                >
+                  {filteredDetails?.[currentPage]?.['ສຽງ'] !== '/' && (
+                    <audio controls>
+                      <source
+                        src={filteredDetails?.[currentPage]?.['ສຽງ']}
+                        type='audio/mpeg'
+                      />
+                    </audio>
+                  )}
+                </div>
+
+                {/* Render ພຣະສູດ */}
+                {renderDetail(
+                  filteredDetails?.[currentPage]?.['ພຣະສູດ'],
+                  searchTerm
+                )}
+                <br />
+
+                {/* Render ໝວດທັມ */}
+                <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                  <Highlighter
+                    highlightClassName='bg-yellow-200 font-bold' // Highlight class
+                    searchWords={[searchTerm || '']} // Highlight based on searchTerm
+                    autoEscape={true} // Allow Auto Escape for search term
+                    textToHighlight={filteredDetails?.[currentPage]?.['ໝວດທັມ']} // Text to highlight
+                    style={{
+                      fontSize: '20px', // Font size
+                      textAlign: 'center', // Ensure text alignment inside Highlighter
+                      display: 'inline-block', // Ensure it does not take full width
+                      fontStyle: 'italic',
+                      color: '#888',
+                    }}
+                  />
+                </div>
               </div>
-            </div>
+            </motion.div>
           </>
         ) : (
           <div className='text-center'>No content available</div>

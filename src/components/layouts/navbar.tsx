@@ -54,23 +54,35 @@ export const Navbar = () => {
         onMenuOpenChange={setIsMenuOpen}
         className='bg-[#795548] text-white max-h-[50px]'
       >
+        {/* Back Icon Button */}
+        {currentPath !== '/sutra' && (
+          <div
+            onClick={back}
+            style={{
+              position: 'relative',
+              marginLeft: '-20px',
+              zIndex: 999,
+              cursor: 'pointer', // Show pointer cursor on hover
+            }}
+          >
+            <button
+              onClick={back}
+              className='text-white mr-1'
+              style={{
+                padding: '10px', // Add padding for a larger clickable area
+                borderRadius: '50%', // Optional: makes the button rounder
+                backgroundColor: 'transparent', // Optional: maintain a transparent background
+                border: 'none', // Optional: remove default button borders
+              }}
+            >
+              <IoIosArrowBack size={24} />
+            </button>
+          </div>
+        )}
+
         {/* Left: Brand and Nav Items */}
         <NavbarContent className='basis-1/5 sm:basis-full' justify='start'>
           <div className='flex items-center gap-2'>
-            {/* Back Icon Button */}
-            {currentPath !== '/sutra' && (
-              <button
-                onClick={back}
-                className='text-white mr-4'
-                style={{
-                  marginLeft: '-20px',
-                  zIndex: 999,
-                }}
-              >
-                <IoIosArrowBack size={24} />
-              </button>
-            )}
-
             {/* Brand Logo */}
             <NavbarBrand className='gap-3 max-w-fit'>
               <Link
@@ -83,7 +95,6 @@ export const Navbar = () => {
             </NavbarBrand>
           </div>
         </NavbarContent>
-
         {/* Right: Search, Theme Switch */}
         <NavbarContent
           className='hidden sm:flex basis-1/5 sm:basis-full'
@@ -120,14 +131,12 @@ export const Navbar = () => {
             </NavbarItem>
           )}
         </NavbarContent>
-
         {/* Mobile Menu Toggle */}
         <NavbarContent className='sm:hidden basis-1 pl-4' justify='end'>
           <ButtonUpdateData />
           <ThemeSwitch />
           <NavbarMenuToggle />
         </NavbarContent>
-
         {/* Mobile Menu */}
         <NavbarMenu
           style={{
