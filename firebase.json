@@ -1,7 +1,7 @@
 {
      "hosting": [
           {
-               "site": "sutra",
+               "site": "buddha-nature",
                "public": "dist",
                "ignore": [
                     "firebase.json",

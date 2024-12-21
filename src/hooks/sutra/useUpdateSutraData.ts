@@ -1,50 +1,83 @@
-import { useState } from "react";
-import { useSutra } from "./useSutra";
-import { toast } from "react-toastify";
-import { clearCache } from "@/services/cache";
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useSutra } from './useSutra';
+import { toast } from 'react-toastify';
+import { clearCache } from '@/services/cache';
+
+const LAST_UPDATE_KEY = 'LAST_SUTRA_UPDATE';
+const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
 export const useUpdateSutraData = () => {
      const [isLoading, setIsLoading] = useState(false);
-
      const { isLoading: isLoadingSutra, refetch } = useSutra();
+     const hasShownToast = useRef(false); // Prevent multiple toast notifications
 
-     const handleUpdate = async () => {
+     /**
+      * Check if 24 hours have passed since the last update
+      */
+     const shouldUpdate = useCallback((): boolean => {
+          const lastUpdate = localStorage.getItem(LAST_UPDATE_KEY);
+          if (!lastUpdate) return true; // No previous record, proceed with the update
+
+          const lastUpdateTime = new Date(lastUpdate).getTime();
+          const currentTime = Date.now();
+
+          return currentTime - lastUpdateTime > ONE_DAY_IN_MS;
+     }, []);
+
+     /**
+      * Handle Data Update
+      */
+     const handleUpdate = useCallback(async () => {
           setIsLoading(true);
 
           try {
-               // Remove cached data from localStorage
+               // Clear cached data
                localStorage.removeItem('REACT_QUERY_OFFLINE_CACHE');
+               await clearCache();
 
-               // Clear Cache Storage
-               clearCache();
-
-               // Refetch the data after update
+               // Refetch data
                await refetch();
 
-               // Simulate a data update (replace with actual update logic)
-               await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate 2-second wait
+               // Simulate a slight delay (e.g., network request)
+               await new Promise((resolve) => setTimeout(resolve, 1000));
 
-               if (!isLoadingSutra) {
-                    // Show success toast message after data is updated
+               if (!isLoadingSutra && !hasShownToast.current) {
+                    // Save the current timestamp
+                    localStorage.setItem(LAST_UPDATE_KEY, new Date().toISOString());
+
+                    // Show toast only once
                     toast.success('Data updated successfully!', {
                          position: 'top-right',
                          autoClose: 2000,
                     });
+
+                    hasShownToast.current = true; // Prevent repeated toasts
                }
           } catch (error) {
-               // Handle errors with a more informative message
-               toast.error('Failed to update data. Please try again later.', {
-                    position: 'top-right',
-                    autoClose: 2000,
-               });
-               console.error('Error updating data:', error); // Log error for debugging
+               if (!hasShownToast.current) {
+                    toast.error('Failed to update data. Please try again later.', {
+                         position: 'top-right',
+                         autoClose: 2000,
+                    });
+                    hasShownToast.current = true; // Prevent repeated toasts
+               }
+               console.error('Error updating data:', error);
           } finally {
-               // Always stop loading state, even if there was an error
                setIsLoading(false);
           }
-     };
+     }, [isLoadingSutra, refetch]);
+
+     /**
+      * Run update only if 24 hours have passed since the last update
+      */
+     useEffect(() => {
+          if (shouldUpdate() && !hasShownToast.current) {
+               handleUpdate();
+          }
+     }, [shouldUpdate, handleUpdate]);
+
      return {
           isLoading,
-          handleUpdate
-     }
-}
+          handleUpdate,
+     };
+};
