@@ -7,24 +7,28 @@ import { RouterProvider } from '@tanstack/react-router';
 import { HelmetProvider } from 'react-helmet-async';
 import PageTransition from './components/PageTransition';
 import { router } from './router';
+import { ThemeProvider } from '@/hooks/use-theme';
+
 
 function App() {
   return (
     <HelmetProvider>
-      <NextUIProvider>
-        <PersistQueryClientProvider
-          client={queryClient}
-          persistOptions={{ persister }}
-        >
-          {/* Wrapping only the page content inside the transition */}
-          <PageTransition>
-            <RouterProvider router={router} />
-          </PageTransition>
+      <ThemeProvider>
+        <NextUIProvider>
+          <PersistQueryClientProvider
+            client={queryClient}
+            persistOptions={{ persister }}
+          >
+            {/* Wrapping only the page content inside the transition */}
+            <PageTransition>
+              <RouterProvider router={router} />
+            </PageTransition>
 
-          {/* Add React Query Devtools */}
-          <ReactQueryDevtools initialIsOpen={false} />
-        </PersistQueryClientProvider>
-      </NextUIProvider>
+            {/* Add React Query Devtools */}
+            <ReactQueryDevtools initialIsOpen={false} />
+          </PersistQueryClientProvider>
+        </NextUIProvider>
+      </ThemeProvider>
     </HelmetProvider>
   );
 }
