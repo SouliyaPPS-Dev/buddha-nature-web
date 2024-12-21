@@ -33,6 +33,9 @@ export const useUpdateSutraData = () => {
           try {
                // Clear cached data
                localStorage.removeItem('REACT_QUERY_OFFLINE_CACHE');
+
+               localStorage.clear();
+
                await clearCache();
 
                // Refetch data
