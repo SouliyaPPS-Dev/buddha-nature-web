@@ -3,10 +3,10 @@ import {
   BookIcon,
   CalendarIcon,
   DhammaIcon,
-  FavoritesIcon,
   Logo,
   SutraIcon,
   VideoIcon,
+  FavoritesIcon,
 } from '@/components/layouts/icons';
 import { ThemeSwitch } from '@/components/layouts/theme-switch';
 import { useNavigation } from '@/components/NavigationProvider';
