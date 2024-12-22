@@ -1,4 +1,6 @@
+// Get data from local storage
 export const localStorageData = (() => {
+     // Theme
      const getTheme = () => {
           return localStorage.getItem('theme');
      };
@@ -7,9 +9,23 @@ export const localStorageData = (() => {
           localStorage.setItem('theme', theme);
      };
 
+     // Favorite
+     const getFavorite = () => {
+          return localStorage.getItem('favorites');
+     };
+
+     const setFavorite = (favorite: string) => {
+          localStorage.setItem('favorites', favorite);
+     };
+
      return {
+          // Theme
           getTheme,
-          setTheme
+          setTheme,
+
+          // Favorite
+          getFavorite,
+          setFavorite,
      };
 })();
 

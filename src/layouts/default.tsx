@@ -37,7 +37,8 @@ export default function DefaultLayout({
           className='relative flex flex-col h-screen overflow-y-auto scrollbar-none smooth-scroll'
           style={{
             backgroundColor:
-              theme === 'light' && currentPath === '/sutra/details'
+              (theme === 'light' && currentPath === '/sutra/details') ||
+              currentPath === '/favorites/details'
                 ? '#F6EFD9' // Light theme specific background for this route
                 : theme === 'light'
                   ? '#F5F5F5' // Default light theme background

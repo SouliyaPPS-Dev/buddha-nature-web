@@ -9,12 +9,18 @@ import PageTransition from './components/PageTransition';
 import { router } from './router';
 import { ThemeProvider } from '@/hooks/use-theme';
 
-
 function App() {
   return (
     <HelmetProvider>
       <ThemeProvider>
-        <NextUIProvider>
+        <NextUIProvider
+          navigate={(to) => {
+            window.scrollTo(0, 0);
+            router.navigate({
+              to,
+            });
+          }}
+        >
           <PersistQueryClientProvider
             client={queryClient}
             persistOptions={{ persister }}

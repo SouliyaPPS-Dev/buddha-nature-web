@@ -1,12 +1,12 @@
 import { useFontSizeContext } from '@/components/FontSizeProvider';
 import { useSearchContext } from '@/components/search/SearchContext';
 import FavoriteButton from '@/containers/sutra/FavoriteButton';
-import { useSutra } from '@/hooks/sutra/useSutra';
+import { useFavorites } from '@/hooks/favorites/useFavorites';
 import { SutraDataModel } from '@/model/sutra';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import ReactHtmlParser from 'react-html-parser';
 import {
@@ -19,14 +19,16 @@ import {
 import { GrCopy } from 'react-icons/gr';
 import { IoShareSocialSharp } from 'react-icons/io5';
 
-export const Route = createLazyFileRoute('/sutra/details/$category/$title')({
-  component: RouteComponent,
-});
+export const Route = createLazyFileRoute('/favorites/details/$category/$title')(
+  {
+    component: RouteComponent,
+  }
+);
 
 function RouteComponent() {
   const params = Route.useParams();
   const { category, title } = params;
-  const { data } = useSutra();
+  const { data } = useFavorites();
   const { searchTerm } = useSearchContext();
   const { fontSize, setFontSize } = useFontSizeContext();
 
@@ -40,7 +42,7 @@ function RouteComponent() {
 
   // Find current index in the original data array
   const currentGlobalIndex = data?.findIndex(
-    (item) => item.ID === filteredDetails?.[currentPage]?.ID
+    (item: { ID: any }) => item.ID === filteredDetails?.[currentPage]?.ID
   ); // Assuming `ID` is the unique identifier
 
   // Filter items based on category and search term
@@ -68,14 +70,14 @@ function RouteComponent() {
     if (!searchTerm) {
       // If there's no search term, filter based on category and title
       return data.filter(
-        (item) =>
+        (item: { [x: string]: string }) =>
           item['ຊື່ພຣະສູດ']?.toLowerCase() === title?.toLowerCase() &&
           item['ໝວດທັມ']?.toLowerCase() === category?.toLowerCase()
       );
     }
 
     if (normalizedSearchTerm !== '') {
-      return data.filter((item) =>
+      return data.filter((item: { [x: string]: any }) =>
         [item['ຊື່ພຣະສູດ'], item['ພຣະສູດ'], item['ໝວດທັມ']]
           .join('')
           .toLowerCase()
@@ -84,16 +86,32 @@ function RouteComponent() {
     } else {
       // If there's no search term, filter based on category and title
       return data.filter(
-        (item) =>
+        (item: { [x: string]: string }) =>
           item['ຊື່ພຣະສູດ']?.toLowerCase() === title?.toLowerCase() &&
           item['ໝວດທັມ']?.toLowerCase() === category?.toLowerCase()
       );
     }
   }, [data, searchTerm, category, title]);
 
-  const isDisabled = getFilteredData().length < 1;
-  const isDisabledEmptySearch =
-    getFilteredData().length <= filteredDetails.length;
+  // Find the current index in the `data` array
+  // Dynamically calculate the current index in the global `data` array
+  const currentIndex = useCallback(() => {
+    if (!data || data.length === 0 || !filteredDetails[currentPage]) {
+      return -1; // Return a fallback index (`-1`) if data is not ready
+    }
+
+    // Find current item's index in the global `data` array
+    return data.findIndex(
+      (item: any) => item.ID === filteredDetails[currentPage]?.ID
+    );
+  }, [data, filteredDetails, currentPage]);
+
+  const isNextDisabled = useMemo(
+    () => currentIndex() + 1 >= data.length,
+    [currentIndex, data]
+  );
+
+  const isPreviousDisabled = useMemo(() => currentPage === 0, [currentPage]);
 
   // Initialize filteredDetails with the first chunk of data
   useEffect(() => {
@@ -113,7 +131,7 @@ function RouteComponent() {
   useEffect(() => {
     // Filter data based on category and title
     const updatedDetails = data?.filter(
-      (item) =>
+      (item: { [x: string]: string }) =>
         item['ຊື່ພຣະສູດ']?.toLowerCase() === title?.toLowerCase() &&
         item['ໝວດທັມ']?.toLowerCase() === category?.toLowerCase()
     );
@@ -273,7 +291,7 @@ function RouteComponent() {
       >
         <button
           onClick={goToPreviousPage}
-          disabled={currentPage === 0}
+          disabled={isPreviousDisabled}
           style={{
             display: 'flex', // Use flexbox for alignment
             alignItems: 'center',
@@ -282,20 +300,20 @@ function RouteComponent() {
             height: '30px',
             borderRadius: '15px', // Fully rounded button
             border: 'none',
-            background: currentPage === 0 ? '#E0E0E0' : '#8B5E3C', // Gray for disabled, brown for active
-            color: currentPage === 0 ? '#999' : '#fff', // Indicate disabled state
-            cursor: currentPage === 0 ? 'not-allowed' : 'pointer', // Disable interaction if not clickable
+            background: isPreviousDisabled ? '#E0E0E0' : '#8B5E3C', // Gray for disabled, brown for active
+            color: isPreviousDisabled ? '#999' : '#fff', // Indicate disabled state
+            cursor: isPreviousDisabled ? 'not-allowed' : 'pointer', // Disable interaction if not clickable
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.15)', // Subtle shadow for depth
             transition: 'all 0.3s ease', // Smooth transitions for hover and other changes
           }}
           onMouseOver={(e) => {
-            if (currentPage !== 0) {
+            if (!isPreviousDisabled) {
               e.currentTarget.style.background = '#704214'; // Darker brown hover effect
               e.currentTarget.style.transform = 'scale(1.1)'; // Slight zoom effect
             }
           }}
           onMouseOut={(e) => {
-            if (currentPage !== 0) {
+            if (!isPreviousDisabled) {
               e.currentTarget.style.background = '#8B5E3C'; // Reset color
               e.currentTarget.style.transform = 'scale(1)'; // Reset zoom
             }
@@ -450,75 +468,38 @@ function RouteComponent() {
 
       {/* Next Page Button (Right Side) */}
       <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
-        {searchTerm === '' && (
-          <button
-            onClick={goToNextPage}
-            disabled={isDisabled}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              border: 'none',
-              background: isDisabled ? '#E0E0E0' : '#8B5E3C',
-              color: isDisabled ? '#999' : '#fff',
-              cursor: isDisabled ? 'not-allowed' : 'pointer',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.15)',
-              transition: 'all 0.3s ease',
-            }}
-            onMouseOver={(e) => {
-              if (!isDisabled) {
-                e.currentTarget.style.background = '#704214';
-                e.currentTarget.style.transform = 'scale(1.1)';
-              }
-            }}
-            onMouseOut={(e) => {
-              if (!isDisabled) {
-                e.currentTarget.style.background = '#8B5E3C';
-                e.currentTarget.style.transform = 'scale(1)';
-              }
-            }}
-          >
-            <FaChevronRight size={18} /> {/* Chevron Right Icon */}
-          </button>
-        )}
-
-        {searchTerm !== '' && (
-          <button
-            onClick={goToNextPage}
-            disabled={isDisabledEmptySearch}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              border: 'none',
-              background: isDisabledEmptySearch ? '#E0E0E0' : '#8B5E3C',
-              color: isDisabledEmptySearch ? '#999' : '#fff',
-              cursor: isDisabledEmptySearch ? 'not-allowed' : 'pointer',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.15)',
-              transition: 'all 0.3s ease',
-            }}
-            onMouseOver={(e) => {
-              if (!isDisabledEmptySearch) {
-                e.currentTarget.style.background = '#704214';
-                e.currentTarget.style.transform = 'scale(1.1)';
-              }
-            }}
-            onMouseOut={(e) => {
-              if (!isDisabledEmptySearch) {
-                e.currentTarget.style.background = '#8B5E3C';
-                e.currentTarget.style.transform = 'scale(1)';
-              }
-            }}
-          >
-            <FaChevronRight size={18} /> {/* Chevron Right Icon */}
-          </button>
-        )}
+        <button
+          onClick={goToNextPage}
+          disabled={isNextDisabled}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            border: 'none',
+            background: isNextDisabled ? '#E0E0E0' : '#8B5E3C',
+            color: isNextDisabled ? '#999' : '#fff',
+            cursor: isNextDisabled ? 'not-allowed' : 'pointer',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.15)',
+            transition: 'all 0.3s ease',
+          }}
+          onMouseOver={(e) => {
+            if (!isNextDisabled) {
+              e.currentTarget.style.background = '#704214';
+              e.currentTarget.style.transform = 'scale(1.1)';
+            }
+          }}
+          onMouseOut={(e) => {
+            if (!isNextDisabled) {
+              e.currentTarget.style.background = '#8B5E3C';
+              e.currentTarget.style.transform = 'scale(1)';
+            }
+          }}
+        >
+          <FaChevronRight size={18} /> {/* Chevron Right Icon */}
+        </button>
       </div>
     </div>
   );
