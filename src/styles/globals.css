@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "Phetsarath";
-  src: url("@/assets/fonts/NotoSerifLao.ttf") format("truetype"); /* Adjust path if needed */
+  font-family: 'Phetsarath';
+  src: url('@/assets/fonts/NotoSerifLao.ttf') format('truetype'); /* Adjust path if needed */
   font-weight: normal;
   font-style: normal;
 }
@@ -14,10 +14,21 @@ body {
   @apply font-phetsarath;
 }
 
+/* Global Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Smooth scrolling for the container */
 .smooth-scroll {
   scroll-behavior: smooth; /* Enables smooth scrolling */
   -webkit-overflow-scrolling: touch; /* Adds smooth momentum scrolling on iOS */
+}
+
+@media (max-width: 768px) {
+  .smooth-scroll {
+    -webkit-overflow-scrolling: touch; /* For iOS smooth scrolling */
+  }
 }
 
 /* Hide the scrollbar visually but keep content scrollable */
@@ -42,7 +53,7 @@ body {
   line-height: 1.6; /* Better line spacing */
 }
 
- /* CSS for the fade animation */
+/* CSS for the fade animation */
 .fade {
   transition: opacity 0.5s ease-in-out;
 }
@@ -64,7 +75,9 @@ body {
 
 /* CSS for the dropdown container */
 .dropdown-container {
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
 }
 
 .dropdown-container.opacity-0 {

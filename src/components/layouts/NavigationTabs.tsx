@@ -4,6 +4,7 @@ import {
   DhammaIcon,
   SutraIcon,
   VideoIcon,
+  FavoritesIcon,
 } from '@/components/layouts/icons'; // Import icons for each tab
 import { siteConfig } from '@/layouts/site';
 import { Tab, Tabs } from '@nextui-org/react'; // Import NextUI Tabs
@@ -19,6 +20,7 @@ export const NavigationTabs: React.FC = () => {
   // Map icons for each tab
   const tabIcons: Record<string, JSX.Element> = {
     '/sutra': <SutraIcon />,
+    '/favorites': <FavoritesIcon />,
     '/book': <BookIcon />,
     '/video': <VideoIcon />,
     '/dhamma': <DhammaIcon />,

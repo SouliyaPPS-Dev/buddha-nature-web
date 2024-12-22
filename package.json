@@ -50,6 +50,7 @@
     "@types/react-scroll": "^1.8.10",
     "@types/react-scroll-to-bottom": "^4.2.5",
     "@types/react-transition-group": "^4.4.12",
+    "@types/smoothscroll-polyfill": "^0.3.4",
     "antd": "^5.22.3",
     "axios": "^1.7.8",
     "dompurify": "^3.2.3",
@@ -73,6 +74,7 @@
     "react-transition-group": "^4.4.5",
     "react-use": "^17.6.0",
     "react-use-scroll-direction": "^0.1.0",
+    "smoothscroll-polyfill": "^0.4.4",
     "use-debounce": "^10.0.4"
   },
   "devDependencies": {

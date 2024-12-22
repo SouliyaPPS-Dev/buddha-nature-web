@@ -1,6 +1,7 @@
 import PushNotificationA2HS from '@/components/layouts/PushNotificationA2HS';
 import Seo from '@/components/layouts/Seo';
 import { NavigationProvider } from '@/components/NavigationProvider';
+import { SearchProvider } from '@/components/search/SearchContext';
 import DefaultLayout from '@/layouts/default';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
@@ -9,7 +10,7 @@ const isDevelopment = import.meta.env.MODE === 'development';
 
 export const Route = createRootRoute({
   component: () => (
-    <>
+    <SearchProvider>
       <NavigationProvider>
         <DefaultLayout>
           <Seo />
@@ -18,6 +19,6 @@ export const Route = createRootRoute({
           {isDevelopment && <TanStackRouterDevtools />}
         </DefaultLayout>
       </NavigationProvider>
-    </>
+    </SearchProvider>
   ),
 });

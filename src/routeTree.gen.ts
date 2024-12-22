@@ -16,6 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as VideoIndexImport } from './routes/video/index'
+import { Route as FavoritesIndexImport } from './routes/favorites/index'
 import { Route as DhammaIndexImport } from './routes/dhamma/index'
 import { Route as CalendarIndexImport } from './routes/calendar/index'
 import { Route as BookIndexImport } from './routes/book/index'
@@ -51,6 +52,12 @@ const SutraIndexLazyRoute = SutraIndexLazyImport.update({
 const VideoIndexRoute = VideoIndexImport.update({
   id: '/video/',
   path: '/video/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FavoritesIndexRoute = FavoritesIndexImport.update({
+  id: '/favorites/',
+  path: '/favorites/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -135,6 +142,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DhammaIndexImport
       parentRoute: typeof rootRoute
     }
+    '/favorites/': {
+      id: '/favorites/'
+      path: '/favorites'
+      fullPath: '/favorites'
+      preLoaderRoute: typeof FavoritesIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/video/': {
       id: '/video/'
       path: '/video'
@@ -168,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/book': typeof BookIndexRoute
   '/calendar': typeof CalendarIndexRoute
   '/dhamma': typeof DhammaIndexRoute
+  '/favorites': typeof FavoritesIndexRoute
   '/video': typeof VideoIndexRoute
   '/sutra': typeof SutraIndexLazyRoute
   '/sutra/details/$category/$title': typeof SutraDetailsCategoryTitleLazyRoute
@@ -180,6 +195,7 @@ export interface FileRoutesByTo {
   '/book': typeof BookIndexRoute
   '/calendar': typeof CalendarIndexRoute
   '/dhamma': typeof DhammaIndexRoute
+  '/favorites': typeof FavoritesIndexRoute
   '/video': typeof VideoIndexRoute
   '/sutra': typeof SutraIndexLazyRoute
   '/sutra/details/$category/$title': typeof SutraDetailsCategoryTitleLazyRoute
@@ -193,6 +209,7 @@ export interface FileRoutesById {
   '/book/': typeof BookIndexRoute
   '/calendar/': typeof CalendarIndexRoute
   '/dhamma/': typeof DhammaIndexRoute
+  '/favorites/': typeof FavoritesIndexRoute
   '/video/': typeof VideoIndexRoute
   '/sutra/': typeof SutraIndexLazyRoute
   '/sutra/details/$category/$title': typeof SutraDetailsCategoryTitleLazyRoute
@@ -207,6 +224,7 @@ export interface FileRouteTypes {
     | '/book'
     | '/calendar'
     | '/dhamma'
+    | '/favorites'
     | '/video'
     | '/sutra'
     | '/sutra/details/$category/$title'
@@ -218,6 +236,7 @@ export interface FileRouteTypes {
     | '/book'
     | '/calendar'
     | '/dhamma'
+    | '/favorites'
     | '/video'
     | '/sutra'
     | '/sutra/details/$category/$title'
@@ -229,6 +248,7 @@ export interface FileRouteTypes {
     | '/book/'
     | '/calendar/'
     | '/dhamma/'
+    | '/favorites/'
     | '/video/'
     | '/sutra/'
     | '/sutra/details/$category/$title'
@@ -242,6 +262,7 @@ export interface RootRouteChildren {
   BookIndexRoute: typeof BookIndexRoute
   CalendarIndexRoute: typeof CalendarIndexRoute
   DhammaIndexRoute: typeof DhammaIndexRoute
+  FavoritesIndexRoute: typeof FavoritesIndexRoute
   VideoIndexRoute: typeof VideoIndexRoute
   SutraIndexLazyRoute: typeof SutraIndexLazyRoute
   SutraDetailsCategoryTitleLazyRoute: typeof SutraDetailsCategoryTitleLazyRoute
@@ -254,6 +275,7 @@ const rootRouteChildren: RootRouteChildren = {
   BookIndexRoute: BookIndexRoute,
   CalendarIndexRoute: CalendarIndexRoute,
   DhammaIndexRoute: DhammaIndexRoute,
+  FavoritesIndexRoute: FavoritesIndexRoute,
   VideoIndexRoute: VideoIndexRoute,
   SutraIndexLazyRoute: SutraIndexLazyRoute,
   SutraDetailsCategoryTitleLazyRoute: SutraDetailsCategoryTitleLazyRoute,
@@ -275,6 +297,7 @@ export const routeTree = rootRoute
         "/book/",
         "/calendar/",
         "/dhamma/",
+        "/favorites/",
         "/video/",
         "/sutra/",
         "/sutra/details/$category/$title"
@@ -297,6 +320,9 @@ export const routeTree = rootRoute
     },
     "/dhamma/": {
       "filePath": "dhamma/index.tsx"
+    },
+    "/favorites/": {
+      "filePath": "favorites/index.tsx"
     },
     "/video/": {
       "filePath": "video/index.tsx"

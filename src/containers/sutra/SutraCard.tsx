@@ -5,7 +5,6 @@ import DOMPurify from 'dompurify';
 import { useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import ReactHtmlParser from 'react-html-parser';
-// import { FiMinus, FiPlus } from 'react-icons/fi';
 import { GrView } from 'react-icons/gr';
 
 function SutraCard({

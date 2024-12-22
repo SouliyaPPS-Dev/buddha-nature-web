@@ -38,8 +38,8 @@ export const SearchProvider: React.FC<{ children: React.ReactNode }> = ({
       // Avoid unnecessary `router.navigate` calls
       if (currentSearch !== trimmedSearchTerm) {
         router.navigate({
-          search: trimmedSearchTerm ? { search: trimmedSearchTerm } : {}, // Add/Remove the search parameter
-          replace: true, // Avoid adding multiple history entries
+          search: searchTerm ? { search: searchTerm } : {},
+          replace: true,
         } as any);
       }
     }, 300); // Debounce update by 300ms

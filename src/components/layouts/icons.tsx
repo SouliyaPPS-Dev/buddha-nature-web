@@ -4,6 +4,7 @@ import book from '@/assets/icons/book.png';
 import calendar from '@/assets/icons/calendar.png';
 import home from '@/assets/icons/home.png';
 import sutra from '@/assets/icons/sutra.png';
+import favorites from '@/assets/icons/favorites.png';
 import video from '@/assets/icons/vdo.png';
 import dhamma from '@/assets/icons/dhamma.png';
 import about from '@/assets/icons/about.png';
@@ -275,10 +276,21 @@ export const AboutIcon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = (
   />
 );
 
-// Calendar Icon
-export const CalendarIcon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = (
+export const FavoritesIcon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = (
   props
 ) => (
+  <img
+    {...props}
+    src={favorites}
+    alt='Favorites'
+    className='w-6 h-6 mx-auto' // Consistent size for Sutra icon
+  />
+);
+
+// Calendar Icon
+export const CalendarIcon: React.FC<
+  React.ImgHTMLAttributes<HTMLImageElement>
+> = (props) => (
   <img {...props} src={calendar} alt='Calendar' className='w-6 h-6 mx-auto' />
 );
 

@@ -6,7 +6,7 @@ import { Input } from '@nextui-org/react'
 import { createLazyFileRoute } from '@tanstack/react-router'
 
 export const Route = createLazyFileRoute('/sutra/$category')({
-  component: () => <RouteComponent />,
+  component: RouteComponent,
 })
 
 function RouteComponent() {
@@ -21,27 +21,27 @@ function RouteComponent() {
 
   return (
     <>
-      <section className='max-w-lg mx-auto mb-20'>
+      <section className="max-w-lg mx-auto mb-20">
         {/* Search Bar */}
         <Input
-          aria-label='Search'
-          labelPlacement='outside'
-          type='search'
+          aria-label="Search"
+          labelPlacement="outside"
+          type="search"
           placeholder={`ຄົ້ນຫາພຣະສູດ${category}...`}
           classNames={{
             inputWrapper: 'bg-default-100',
             input: 'text-lg',
           }}
-          className='mb-4 sticky top-14 z-10 w-full sm:max-w-md md:max-w-lg lg:max-w-xl'
+          className="mb-4 sticky top-14 z-10 w-full sm:max-w-md md:max-w-lg lg:max-w-xl"
           value={searchTerm}
           startContent={
-            <SearchIcon className='text-base text-default-400 pointer-events-none flex-shrink-0' />
+            <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
           }
           onChange={(e) => setSearchTerm(e.target.value)} // Update search term
         />
 
         {/* Render Filtered Items */}
-        <div className='flex flex-col gap-2 mt-4 mb-4'>
+        <div className="flex flex-col gap-2 mt-4 mb-4">
           {data?.map((item) => (
             <SutraCard
               key={item.ID}
@@ -51,7 +51,7 @@ function RouteComponent() {
               onClick={() => {
                 router.navigate({
                   to: `/sutra/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}${window.location.search}`,
-                });
+                })
               }}
               route={`/sutra/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}${window.location.search}`}
             />
@@ -59,12 +59,12 @@ function RouteComponent() {
 
           {/* Fallback for Empty Data */}
           {!data?.length && (
-            <div className='text-center text-gray-600 text-lg'>
+            <div className="text-center text-gray-600 text-lg">
               ບໍ່ພົບຂໍ້ມູນ
             </div>
           )}
         </div>
       </section>
     </>
-  );
+  )
 }

@@ -14,6 +14,10 @@ export const siteConfig = {
       label: "ພຣະສູດ",
       href: "/sutra",
     },
+    {
+      label: "ຖືກໃຈ",
+      href: "/favorites",
+    },
     { label: "ປື້ມ", href: "/book" },
     {
       label: "Video",
@@ -37,6 +41,10 @@ export const siteConfig = {
       label: "ພຣະສູດ",
       href: "/sutra",
     },
+    {
+      label: "ຖືກໃຈ",
+      href: "/favorites",
+    },
     { label: "ປື້ມ", href: "/book" },
     {
       label: "Video",
@@ -52,10 +60,6 @@ export const siteConfig = {
     },
   ],
   links: {
-    github: "https://github.com/nextui-org/nextui",
-    twitter: "https://twitter.com/getnextui",
-    docs: "https://nextui.org",
-    discord: "https://discord.gg/9b6yyZKmH4",
-    sponsor: "https://patreon.com/jrgarciadev",
+    facebook: 'https://web.facebook.com/profile.php?id=100077638042542'
   },
 };

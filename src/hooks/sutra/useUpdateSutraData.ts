@@ -33,8 +33,7 @@ export const useUpdateSutraData = () => {
           try {
                // Clear cached data
                localStorage.removeItem('REACT_QUERY_OFFLINE_CACHE');
-
-               localStorage.clear();
+               localStorage.removeItem('theme');
 
                await clearCache();
 
