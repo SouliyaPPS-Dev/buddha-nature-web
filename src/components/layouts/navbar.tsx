@@ -28,6 +28,7 @@ import { useState } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import { SearchDropdown } from '../search/SearchDropdown';
 import { useMenuContext } from './MenuProvider';
+import { DeleteFavorites } from '@/containers/favorites/DeleteFavorites';
 
 export const Navbar = () => {
   const [activeItem, setActiveItem] = useState<string>('');
@@ -116,6 +117,14 @@ export const Navbar = () => {
           ))}
         </div>
 
+        {/* Delete Button */}
+        {currentPath === '/favorites' && (
+          <NavbarItem className='hidden sm:flex gap-2 '>
+            <DeleteFavorites />
+          </NavbarItem>
+        )}
+
+        {/* Update Data Button */}
         <NavbarItem className='hidden sm:flex gap-2 '>
           <ButtonUpdateData />
         </NavbarItem>
@@ -130,8 +139,12 @@ export const Navbar = () => {
           </NavbarItem>
         )}
       </NavbarContent>
+
       {/* Mobile Menu Toggle */}
       <NavbarContent className='sm:hidden basis-1 pl-4' justify='end'>
+        {/* Delete Button */}
+        {currentPath === '/favorites' && <DeleteFavorites />}
+
         <ButtonUpdateData />
         <ThemeSwitch />
         <NavbarMenuToggle />

@@ -2,32 +2,16 @@ import { SearchIcon } from '@/components/layouts/icons';
 import SutraCard from '@/containers/sutra/SutraCard';
 import { useFavorites } from '@/hooks/favorites/useFavorites';
 import { router } from '@/router';
-import {
-  Button,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  Select,
-  SelectItem,
-} from '@nextui-org/react';
+import { Input, Select, SelectItem } from '@nextui-org/react';
 import { createLazyFileRoute } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
-import { MdDeleteForever } from 'react-icons/md';
 
 export const Route = createLazyFileRoute('/favorites/')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
   const {
     data,
-    refetch,
     // Category
     selectedCategory,
     uniqueCategories,
@@ -38,35 +22,11 @@ function RouteComponent() {
     setSearchTerm,
   } = useFavorites();
 
-  const handleDelete = () => {
-    localStorage.removeItem('favorites');
-    refetch();
-    setIsModalOpen(false); // Close modal after deletion
-  };
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Adjust breakpoint if needed
-    };
-
-    // Initial check
-    handleResize();
-
-    // Listen to resize events
-    window.addEventListener('resize', handleResize);
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   return (
     <section className='max-w-lg mx-auto mb-0'>
-      <div className='grid grid-cols-3 md:grid-cols-3 gap-0 mt-3'>
+      <div className='grid grid-cols-2 md:grid-cols-2 gap-0 mt-3'>
         {/* Search Bar */}
-        <div
-          style={{
-            width: isMobile ? '165%' : '145%',
-          }}
-        >
+        <div>
           <Input
             aria-label='Search'
             labelPlacement='outside'
@@ -84,6 +44,7 @@ function RouteComponent() {
             onChange={(e) => setSearchTerm(e.target.value)} // Update search term
           />
         </div>
+
         {/* Dropdown for Category Filtering */}
         <div
           style={{
@@ -98,7 +59,7 @@ function RouteComponent() {
               setSelectedCategory(value);
             }}
             classNames={{
-              base: 'bg-default-100 text-lg rounded-lg w-full font-phetsarath h-10 mt-2 ml-20',
+              base: 'bg-default-100 text-lg rounded-lg w-full font-phetsarath mt-2 ml-1',
               trigger: 'font-phetsarath',
               listbox: 'font-phetsarath',
             }}
@@ -117,51 +78,6 @@ function RouteComponent() {
               </SelectItem>
             ))}
           </Select>
-        </div>
-        {/* Delete Button */}
-        <div
-          style={{
-            marginTop: '0.5rem',
-          }}
-        >
-          {/* Delete Button */}
-          <button
-            onClick={() => setIsModalOpen(true)} // Open Modal
-          >
-            <MdDeleteForever className='h-6 w-6 text-red-500 ml-24' />
-          </button>
-
-          {/* Confirmation Modal */}
-          <Modal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            placement='center'
-          >
-            <ModalContent>
-              <ModalHeader className='font-bold text-lg'>
-                Confirm Delete
-              </ModalHeader>
-              <ModalBody>
-                <p>ທ່ານຕ້ອງການລົບຂໍ້ມູນທັງໝົດບໍ່?</p>
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  variant='light'
-                  onClick={() => setIsModalOpen(false)}
-                  className='font-phetsarath'
-                >
-                  Cancel
-                </Button>
-                <Button
-                  color='danger'
-                  onClick={handleDelete}
-                  className='font-phetsarath'
-                >
-                  Delete
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
         </div>
       </div>
 
