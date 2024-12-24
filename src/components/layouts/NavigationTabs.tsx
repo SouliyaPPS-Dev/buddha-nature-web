@@ -5,6 +5,7 @@ import {
   SutraIcon,
   VideoIcon,
   FavoritesIcon,
+  AboutIcon,
 } from '@/components/layouts/icons'; // Import icons for each tab
 import { siteConfig } from '@/layouts/site';
 import { Tab, Tabs } from '@nextui-org/react'; // Import NextUI Tabs
@@ -25,6 +26,7 @@ export const NavigationTabs: React.FC = () => {
     '/video': <VideoIcon />,
     '/dhamma': <DhammaIcon />,
     '/calendar': <CalendarIcon />,
+    '/about': <AboutIcon />,
   };
 
   // Determine the selected key for highlighting

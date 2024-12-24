@@ -58,6 +58,10 @@ export const siteConfig = {
       label: "ພຣະທັມ",
       href: "/dhamma",
     },
+    {
+      label: "ຂໍ້ມູນຕິດຕໍ່",
+      href: "/about",
+    },
   ],
   links: {
     facebook: 'https://web.facebook.com/profile.php?id=100077638042542'

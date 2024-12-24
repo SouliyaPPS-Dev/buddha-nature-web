@@ -24,6 +24,7 @@ function RouteComponent() {
     // Audio
     currentlyPlayingId,
     handlePlayAudio,
+    handleNextAudio,
   } = useFavorites();
 
   return (
@@ -102,6 +103,7 @@ function RouteComponent() {
             route={`/favorites/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}${window.location.search}`}
             isPlaying={currentlyPlayingId === item.ID}
             onPlay={() => handlePlayAudio(item.ID)}
+            onAudioEnd={handleNextAudio} // Move to next audio
           />
         ))}
 

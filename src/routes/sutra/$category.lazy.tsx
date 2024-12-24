@@ -21,6 +21,7 @@ function RouteComponent() {
     // Audio
     currentlyPlayingId,
     handlePlayAudio,
+    handleNextAudio,
   } = useCategory();
 
   return (
@@ -61,6 +62,7 @@ function RouteComponent() {
               route={`/sutra/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}${window.location.search}`}
               isPlaying={currentlyPlayingId === item.ID}
               onPlay={() => handlePlayAudio(item.ID)}
+              onAudioEnd={handleNextAudio} // Move to next audio
             />
           ))}
 

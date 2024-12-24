@@ -101,7 +101,7 @@ export const Navbar = () => {
         justify='end'
       >
         <div className='hidden lg:flex gap-4 justify-start ml-2 mr-2 mt-1'>
-          {siteConfig.navItems.map((item) => (
+          {/* {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <Link
                 className={clsx(
@@ -114,7 +114,7 @@ export const Navbar = () => {
                 {item.label}
               </Link>
             </NavbarItem>
-          ))}
+          ))} */}
         </div>
 
         {/* Delete Button */}

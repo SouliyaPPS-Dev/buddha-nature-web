@@ -18,6 +18,7 @@ function SutraCard({
   onClick,
   isPlaying,
   onPlay,
+  onAudioEnd,
 }: {
   title: string;
   detail: string;
@@ -27,6 +28,7 @@ function SutraCard({
   onClick?: () => void;
   isPlaying?: boolean;
   onPlay?: () => void;
+  onAudioEnd?: () => void; // Notify parent when audio ends
 }) {
   const [isExpanded, _setIsExpanded] = useState(false); // State to track collapse/expand
   const { fontSize, setFontSize } = useFontSizeContext();
@@ -35,24 +37,24 @@ function SutraCard({
   const [playing, setPlaying] = useState(false); // State to track play/pause
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // Handle Play Event
+  // Play Audio
   const handlePlay = () => {
     if (audioRef.current) {
-      setPlaying(true); // Set playing to true when audio plays
-      onPlay?.(); // Notify parent about the currently playing audio
+      setPlaying(true);
+      onPlay?.();
       audioRef.current.play();
     }
   };
 
-  // Handle Pause Event
+  // Pause Audio
   const handlePause = () => {
     if (audioRef.current) {
-      setPlaying(false); // Set playing to false when audio pauses
+      setPlaying(false);
       audioRef.current.pause();
     }
   };
 
-  // Stop Audio on Unmount or Cleanup
+  // Stop Audio
   const handleStop = () => {
     if (audioRef.current) {
       audioRef.current.pause();
@@ -60,7 +62,12 @@ function SutraCard({
     }
   };
 
-  // Manage Playback State (for initial control)
+  // Notify parent when audio ends
+  const handleAudioEnd = () => {
+    setPlaying(false);
+    onAudioEnd?.();
+  };
+
   useEffect(() => {
     if (isPlaying) {
       handlePlay();
@@ -69,7 +76,6 @@ function SutraCard({
     }
   }, [isPlaying]);
 
-  // Cleanup
   useEffect(() => {
     return () => {
       handleStop();
@@ -256,12 +262,11 @@ function SutraCard({
         <div className='absolute top-2 right-2'>
           {audio && audio !== '/' && (
             <div>
-              {/* Center the button */}
               <audio
                 ref={audioRef}
                 onPlay={handlePlay}
                 onPause={handlePause}
-                onEnded={handleStop}
+                onEnded={handleAudioEnd} // Trigger next audio
               >
                 <source src={audio} type='audio/mpeg' />
               </audio>

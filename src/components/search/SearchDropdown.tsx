@@ -14,6 +14,7 @@ export const SearchDropdown = () => {
     isLoading, // Audio
     currentlyPlayingId,
     handlePlayAudio,
+    handleNextAudio,
   } = useSutra();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Controls dropdown visibility
   const { setIsMenuOpen } = useMenuContext(); // Use the context
@@ -59,6 +60,7 @@ export const SearchDropdown = () => {
         setIsDropdownOpen={setIsDropdownOpen}
         currentlyPlayingId={currentlyPlayingId}
         handlePlayAudio={handlePlayAudio}
+        handleNextAudio={handleNextAudio}
       />
 
       {/* No Results Message */}

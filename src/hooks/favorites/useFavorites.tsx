@@ -1,7 +1,7 @@
 import { useSearchContext } from '@/components/search/SearchContext';
 import { localStorageData } from '@/services/cache';
 import { useQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 
 export const useFavorites = () => {
   const { searchTerm, setSearchTerm } = useSearchContext();
@@ -10,10 +10,7 @@ export const useFavorites = () => {
     null
   );
 
-  // Pause other audios when a new one is played
-  const handlePlayAudio = (id: string) => {
-    setCurrentlyPlayingId(id);
-  };
+  const audioRef = useRef<HTMLAudioElement | null>(null); // Ref for audio element
 
   const favoritesData = async () => {
     const data = localStorageData.getFavorite();
@@ -50,6 +47,50 @@ export const useFavorites = () => {
     new Set(data?.map((item: any) => item['ໝວດທັມ']).filter(Boolean))
   ) as any;
 
+  // Play selected audio
+  const handlePlayAudio = (id: string) => {
+    setCurrentlyPlayingId(id);
+
+    if (audioRef.current) {
+      audioRef.current.src =
+        data?.find((item: any) => item.ID === id)?.audioUrl || '';
+      audioRef.current.play();
+    }
+  };
+
+  // Find and play the next audio
+  const handleNextAudio = () => {
+    if (!data) return;
+
+    let currentIndex = data.findIndex(
+      (item: any) => item.ID === currentlyPlayingId
+    );
+
+    // Loop to find the next valid audio (skip if data is '/')
+    while (currentIndex + 1 < data.length) {
+      currentIndex += 1;
+      if (data[currentIndex]?.ສຽງ && data[currentIndex]?.ສຽງ !== '/') {
+        handlePlayAudio(data[currentIndex].ID);
+        break;
+      }
+    }
+  };
+
+  // Listen for audio end event
+  useEffect(() => {
+    const audio = audioRef.current;
+
+    if (audio) {
+      audio.addEventListener('ended', handleNextAudio);
+    }
+
+    return () => {
+      if (audio) {
+        audio.removeEventListener('ended', handleNextAudio);
+      }
+    };
+  }, [currentlyPlayingId, data]);
+
   return {
     data: filteredData,
     refetch,
@@ -66,5 +107,7 @@ export const useFavorites = () => {
     // Audio
     currentlyPlayingId,
     handlePlayAudio,
+    handleNextAudio,
+    audioRef,
   };
 };

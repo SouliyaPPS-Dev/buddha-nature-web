@@ -17,6 +17,7 @@ interface DropdownProps {
   setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
   currentlyPlayingId?: string | null;
   handlePlayAudio: (id: string) => void;
+  handleNextAudio: () => void;
 }
 
 const DropdownSearch: React.FC<DropdownProps> = ({
@@ -27,6 +28,7 @@ const DropdownSearch: React.FC<DropdownProps> = ({
   setIsDropdownOpen,
   currentlyPlayingId,
   handlePlayAudio,
+  handleNextAudio,
 }) => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -97,6 +99,7 @@ const DropdownSearch: React.FC<DropdownProps> = ({
                 route={`/sutra/details/${result['ໝວດທັມ']}/${result['ຊື່ພຣະສູດ']}${window.location.search}`}
                 isPlaying={currentlyPlayingId === result.ID}
                 onPlay={() => handlePlayAudio(result.ID)}
+                onAudioEnd={handleNextAudio} // Move to next audio
               />
             </li>
           ))}
