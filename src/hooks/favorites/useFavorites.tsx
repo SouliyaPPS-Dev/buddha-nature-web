@@ -6,6 +6,14 @@ import { useMemo, useState } from 'react';
 export const useFavorites = () => {
   const { searchTerm, setSearchTerm } = useSearchContext();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // State for filtering by category
+  const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(
+    null
+  );
+
+  // Pause other audios when a new one is played
+  const handlePlayAudio = (id: string) => {
+    setCurrentlyPlayingId(id);
+  };
 
   const favoritesData = async () => {
     const data = localStorageData.getFavorite();
@@ -44,8 +52,8 @@ export const useFavorites = () => {
 
   return {
     data: filteredData,
-       refetch,
-    
+    refetch,
+
     // Category
     selectedCategory,
     uniqueCategories,
@@ -54,5 +62,9 @@ export const useFavorites = () => {
     // Search
     searchTerm,
     setSearchTerm,
+
+    // Audio
+    currentlyPlayingId,
+    handlePlayAudio,
   };
 };

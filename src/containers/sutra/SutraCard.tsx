@@ -1,8 +1,10 @@
+import PauseIcon from '@/assets/images/pause.png';
+import PlayIcon from '@/assets/images/play.png';
 import { useFontSizeContext } from '@/components/FontSizeProvider';
 import { Card, CardBody } from '@nextui-org/react';
 import { Link } from '@tanstack/react-router';
 import DOMPurify from 'dompurify';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import ReactHtmlParser from 'react-html-parser';
 import { GrView } from 'react-icons/gr';
@@ -10,18 +12,69 @@ import { GrView } from 'react-icons/gr';
 function SutraCard({
   title,
   detail,
+  audio,
   searchTerm,
   route,
   onClick,
+  isPlaying,
+  onPlay,
 }: {
   title: string;
   detail: string;
+  audio?: string;
   searchTerm?: string;
   route?: string;
   onClick?: () => void;
+  isPlaying?: boolean;
+  onPlay?: () => void;
 }) {
   const [isExpanded, _setIsExpanded] = useState(false); // State to track collapse/expand
   const { fontSize, setFontSize } = useFontSizeContext();
+
+  // Manage Playback
+  const [playing, setPlaying] = useState(false); // State to track play/pause
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Handle Play Event
+  const handlePlay = () => {
+    if (audioRef.current) {
+      setPlaying(true); // Set playing to true when audio plays
+      onPlay?.(); // Notify parent about the currently playing audio
+      audioRef.current.play();
+    }
+  };
+
+  // Handle Pause Event
+  const handlePause = () => {
+    if (audioRef.current) {
+      setPlaying(false); // Set playing to false when audio pauses
+      audioRef.current.pause();
+    }
+  };
+
+  // Stop Audio on Unmount or Cleanup
+  const handleStop = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+  };
+
+  // Manage Playback State (for initial control)
+  useEffect(() => {
+    if (isPlaying) {
+      handlePlay();
+    } else {
+      handlePause();
+    }
+  }, [isPlaying]);
+
+  // Cleanup
+  useEffect(() => {
+    return () => {
+      handleStop();
+    };
+  }, []);
 
   // Function to parse, sanitize, and highlight content with bold tags
   const renderDetail = (htmlContent: string, searchTerm?: string) => {
@@ -68,11 +121,10 @@ function SutraCard({
   const decreaseFontSize = () => setFontSize((prev) => Math.max(prev - 2, 12)); // Min 12px
 
   return (
-    <Card onClick={onClick}>
-      <CardBody className='text-xl flex flex-col' onClick={onClick}>
-        <div className='flex items-center gap-2' onClick={onClick}>
-          {/* Toggle Button */}
-          {/* <span
+    <Card>
+      <CardBody className='text-xl flex flex-col'>
+        {/* Toggle Button */}
+        {/* <span
             onClick={() => {
               setIsExpanded(!isExpanded);
             }} // Toggle the state
@@ -84,19 +136,61 @@ function SutraCard({
               <FiPlus className='text-gray-600' /> // Plus icon
             )}
           </span> */}
-          <Link to={route} className='flex justify-between items-center w-full'>
-            <Highlighter
-              highlightClassName='bg-yellow-200 font-bold'
-              searchWords={[searchTerm || '']}
-              autoEscape={true}
-              textToHighlight={title}
-              style={{ fontSize: '18px' }}
-            />
-            <GrView
-              onClick={onClick}
-              className='cursor-pointer text-gray-600 hidden'
-            />
-          </Link>
+        <div className='flex items-center gap-2 w-full'>
+          <>
+            <Link
+              to={route}
+              className='flex justify-between items-center w-full'
+            >
+              <Highlighter
+                highlightClassName='bg-yellow-200 font-bold'
+                searchWords={[searchTerm || '']}
+                autoEscape={true}
+                textToHighlight={title}
+                style={{
+                  fontSize: '18px',
+                  display: 'inline-block',
+                  whiteSpace: 'normal',
+                  wordBreak: 'break-word',
+                  lineHeight: '1.5',
+                  maxWidth: '100%',
+                }}
+              />
+              <GrView
+                onClick={onClick}
+                className='cursor-pointer text-gray-600 hidden'
+              />
+            </Link>
+          </>
+          {audio && audio !== '/' && (
+            <>
+              {/* Center the button */}
+              <audio
+                ref={audioRef}
+                onPlay={handlePlay}
+                onPause={handlePause}
+                onEnded={handleStop}
+              >
+                <source src={audio} type='audio/mpeg' />
+              </audio>
+              <button
+                onClick={() => {
+                  if (playing) {
+                    handlePause();
+                  } else {
+                    handlePlay();
+                  }
+                }}
+                className='flex justify-center items-center'
+              >
+                {playing ? (
+                  <img src={PauseIcon} alt='Pause' className='w-9' />
+                ) : (
+                  <img src={PlayIcon} alt='Play' className='w-10' />
+                )}
+              </button>
+            </>
+          )}
         </div>
 
         {/* Collapsible Content (with scrollable area) */}

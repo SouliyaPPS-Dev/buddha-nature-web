@@ -10,7 +10,7 @@ export const useCategory = () => {
      const { category } = params;
 
      // Fetch Sutra Data
-     const { data } = useSutra();
+     const { data, currentlyPlayingId, handlePlayAudio } = useSutra();
 
      // Filter items based on category and search term
      const filteredItemsCategory = data?.filter((item: SutraDataModel) => {
@@ -33,5 +33,9 @@ export const useCategory = () => {
           // Search
           searchTerm,
           setSearchTerm,
+
+          // Audio
+          currentlyPlayingId,
+          handlePlayAudio
      };
 };

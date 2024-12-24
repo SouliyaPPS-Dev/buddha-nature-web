@@ -1,3 +1,4 @@
+import AudioPlayerStyled from '@/components/AudioPlayer';
 import { useFontSizeContext } from '@/components/FontSizeProvider';
 import { useSearchContext } from '@/components/search/SearchContext';
 import FavoriteButton from '@/containers/sutra/FavoriteButton';
@@ -559,12 +560,9 @@ function RouteComponent() {
                   }}
                 >
                   {filteredDetails?.[currentPage]?.['ສຽງ'] !== '/' && (
-                    <audio controls>
-                      <source
-                        src={filteredDetails?.[currentPage]?.['ສຽງ']}
-                        type='audio/mpeg'
-                      />
-                    </audio>
+                    <AudioPlayerStyled
+                      audio={filteredDetails?.[currentPage]?.['ສຽງ']}
+                    />
                   )}
                 </div>
 

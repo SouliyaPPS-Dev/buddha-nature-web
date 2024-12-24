@@ -20,6 +20,10 @@ function RouteComponent() {
     // Search
     searchTerm,
     setSearchTerm,
+
+    // Audio
+    currentlyPlayingId,
+    handlePlayAudio,
   } = useFavorites();
 
   return (
@@ -88,6 +92,7 @@ function RouteComponent() {
             key={item.ID}
             title={item['ຊື່ພຣະສູດ']}
             detail={item['ພຣະສູດ']}
+            audio={item['ສຽງ']}
             searchTerm={searchTerm}
             onClick={() => {
               router.navigate({
@@ -95,6 +100,8 @@ function RouteComponent() {
               });
             }}
             route={`/favorites/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}${window.location.search}`}
+            isPlaying={currentlyPlayingId === item.ID}
+            onPlay={() => handlePlayAudio(item.ID)}
           />
         ))}
 

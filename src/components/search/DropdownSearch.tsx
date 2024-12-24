@@ -1,11 +1,12 @@
-import React, { useEffect, useRef } from 'react';
 import SutraCard from '@/containers/sutra/SutraCard';
+import React, { useEffect, useRef } from 'react';
 
 interface SearchResult {
   ID: string;
   ຊື່ພຣະສູດ: string;
   ພຣະສູດ: string;
   ໝວດທັມ: string;
+  ສຽງ: string;
 }
 
 interface DropdownProps {
@@ -14,6 +15,8 @@ interface DropdownProps {
   searchTerm?: string;
   handleResultClick: (result: SearchResult) => void;
   setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  currentlyPlayingId?: string | null;
+  handlePlayAudio: (id: string) => void;
 }
 
 const DropdownSearch: React.FC<DropdownProps> = ({
@@ -22,6 +25,8 @@ const DropdownSearch: React.FC<DropdownProps> = ({
   searchTerm,
   handleResultClick,
   setIsDropdownOpen,
+  currentlyPlayingId,
+  handlePlayAudio,
 }) => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -86,9 +91,12 @@ const DropdownSearch: React.FC<DropdownProps> = ({
               <SutraCard
                 title={result['ຊື່ພຣະສູດ']}
                 detail={result['ພຣະສູດ']}
+                audio={result['ສຽງ']}
                 searchTerm={searchTerm}
                 onClick={() => handleResultClick(result)}
                 route={`/sutra/details/${result['ໝວດທັມ']}/${result['ຊື່ພຣະສູດ']}${window.location.search}`}
+                isPlaying={currentlyPlayingId === result.ID}
+                onPlay={() => handlePlayAudio(result.ID)}
               />
             </li>
           ))}

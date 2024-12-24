@@ -9,7 +9,12 @@ import { useSearchContext } from './SearchContext';
 
 export const SearchDropdown = () => {
   const { searchTerm, setSearchTerm } = useSearchContext();
-  const { data: searchResults, isLoading } = useSutra();
+  const {
+    data: searchResults,
+    isLoading, // Audio
+    currentlyPlayingId,
+    handlePlayAudio,
+  } = useSutra();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Controls dropdown visibility
   const { setIsMenuOpen } = useMenuContext(); // Use the context
 
@@ -52,6 +57,8 @@ export const SearchDropdown = () => {
         searchTerm={searchTerm}
         handleResultClick={handleResultClick}
         setIsDropdownOpen={setIsDropdownOpen}
+        currentlyPlayingId={currentlyPlayingId}
+        handlePlayAudio={handlePlayAudio}
       />
 
       {/* No Results Message */}

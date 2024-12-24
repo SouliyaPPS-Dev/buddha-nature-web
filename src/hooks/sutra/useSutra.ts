@@ -1,10 +1,18 @@
 import { useSearchContext } from '@/components/search/SearchContext';
 import { sutraApi } from '@/services/https/sutra';
 import { useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 export const useSutra = () => {
      const { searchTerm, setSearchTerm } = useSearchContext();
+     const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(
+          null
+     );
+
+     // Pause other audios when a new one is played
+     const handlePlayAudio = (id: string) => {
+          setCurrentlyPlayingId(id);
+     };
 
      const { data, isLoading, refetch } = useQuery({
           queryKey: ['sutra'],
@@ -47,5 +55,12 @@ export const useSutra = () => {
      }, [data]);
 
 
-     return { data: filteredData, getGroupedData, isLoading, searchTerm, setSearchTerm, refetch };
+     return {
+          // Data
+          data: filteredData, getGroupedData,
+          // Search
+          isLoading, searchTerm, setSearchTerm, refetch,
+          // Audio
+          currentlyPlayingId, handlePlayAudio
+     };
 };

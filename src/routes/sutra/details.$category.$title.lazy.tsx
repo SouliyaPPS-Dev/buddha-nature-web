@@ -1,3 +1,4 @@
+import AudioPlayerStyled from '@/components/AudioPlayer';
 import { useFontSizeContext } from '@/components/FontSizeProvider';
 import { useSearchContext } from '@/components/search/SearchContext';
 import FavoriteButton from '@/containers/sutra/FavoriteButton';
@@ -7,6 +8,7 @@ import { createLazyFileRoute } from '@tanstack/react-router';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
+import 'react-h5-audio-player/lib/styles.css';
 import Highlighter from 'react-highlight-words';
 import ReactHtmlParser from 'react-html-parser';
 import {
@@ -578,12 +580,9 @@ function RouteComponent() {
                   }}
                 >
                   {filteredDetails?.[currentPage]?.['ສຽງ'] !== '/' && (
-                    <audio controls>
-                      <source
-                        src={filteredDetails?.[currentPage]?.['ສຽງ']}
-                        type='audio/mpeg'
-                      />
-                    </audio>
+                    <AudioPlayerStyled
+                      audio={filteredDetails?.[currentPage]?.['ສຽງ']}
+                    />
                   )}
                 </div>
 
