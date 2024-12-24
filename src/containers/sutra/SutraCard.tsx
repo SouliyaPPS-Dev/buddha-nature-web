@@ -122,9 +122,14 @@ function SutraCard({
 
   return (
     <Card>
-      <CardBody className='text-xl flex flex-col'>
-        {/* Toggle Button */}
-        {/* <span
+      <div className='justify-between'>
+        <div>
+          <CardBody
+            className='text-xl flex flex-col cursor-pointer'
+            onClick={onClick}
+          >
+            {/* Toggle Button */}
+            {/* <span
             onClick={() => {
               setIsExpanded(!isExpanded);
             }} // Toggle the state
@@ -136,34 +141,121 @@ function SutraCard({
               <FiPlus className='text-gray-600' /> // Plus icon
             )}
           </span> */}
-        <div className='flex items-center gap-2 w-full'>
-          <>
-            <Link
-              to={route}
-              className='flex justify-between items-center w-full'
-            >
-              <Highlighter
-                highlightClassName='bg-yellow-200 font-bold'
-                searchWords={[searchTerm || '']}
-                autoEscape={true}
-                textToHighlight={title}
-                style={{
-                  fontSize: '18px',
-                  display: 'inline-block',
-                  whiteSpace: 'normal',
-                  wordBreak: 'break-word',
-                  lineHeight: '1.5',
-                  maxWidth: '100%',
-                }}
-              />
-              <GrView
-                onClick={onClick}
-                className='cursor-pointer text-gray-600 hidden'
-              />
-            </Link>
-          </>
+            <div className='flex items-center gap-2 w-full justify-between'>
+              <div onClick={onClick}>
+                <Link
+                  to={route}
+                  className='flex justify-between items-center w-full'
+                >
+                  <Highlighter
+                    highlightClassName='bg-yellow-200 font-bold'
+                    searchWords={[searchTerm || '']}
+                    autoEscape={true}
+                    textToHighlight={title}
+                    style={{
+                      fontSize: '18px',
+                      display: 'inline-block',
+                      whiteSpace: 'normal',
+                      wordBreak: 'break-word',
+                      lineHeight: '1.5',
+                      maxWidth: '100%',
+                    }}
+                  />
+                </Link>
+              </div>
+              <div>
+                <GrView
+                  onClick={onClick}
+                  className='cursor-pointer'
+                  style={{ color: 'transparent' }}
+                />
+              </div>
+            </div>
+
+            {/* Collapsible Content (with scrollable area) */}
+            {isExpanded && (
+              <>
+                {/* Scrollable Content */}
+                <div
+                  contentEditable={true}
+                  className='mt-2 prose mx-auto overflow-y-auto border rounded-md p-4 w-full'
+                  style={{
+                    maxHeight: '200px', // Scrollable content area
+                    fontSize: `${fontSize}px`, // Dynamic font size
+                  }}
+                >
+                  {renderDetail(detail, searchTerm)}
+                  {/* Font Size Controls */}
+                  <div className='flex justify-end gap-2 mt-2 sticky bottom-0 cursor-pointer'>
+                    <button
+                      onClick={decreaseFontSize}
+                      className='rounded px-2 py-1 text-sm border'
+                      style={{
+                        borderRadius: '0.25rem', // Smaller rounded corners
+                        padding: '0.25rem 0.75rem', // Compact padding
+                        fontSize: '0.875rem', // Slightly smaller font
+                        fontWeight: '500', // Medium weight for text
+                        color: '#fff', // White text
+                        border: 'none', // No border
+                        background: 'linear-gradient(135deg, #8B5E3C, #D4A054)', // Subtle brown gradient
+                        cursor: 'pointer', // Pointer cursor
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Minimal shadow
+                        transition: 'transform 0.2s ease, box-shadow 0.2s ease', // Smooth animation
+                      }}
+                      onMouseOver={(e) =>
+                        Object.assign(e.currentTarget.style, {
+                          transform: 'scale(1.05)', // Slightly enlarge button on hover
+                          boxShadow: '0 6px 8px rgba(0, 0, 0, 0.2)', // Enhance shadow on hover
+                        })
+                      }
+                      onMouseOut={(e) =>
+                        Object.assign(e.currentTarget.style, {
+                          transform: 'scale(1)', // Reset scale
+                          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Reset shadow
+                        })
+                      }
+                    >
+                      A-
+                    </button>
+                    <button
+                      onClick={increaseFontSize}
+                      className='rounded px-2 py-1 text-sm border'
+                      style={{
+                        borderRadius: '0.25rem', // Smaller rounded corners
+                        padding: '0.25rem 0.75rem', // Compact padding
+                        fontSize: '0.875rem', // Slightly smaller font
+                        fontWeight: '500', // Medium weight for text
+                        color: '#fff', // White text
+                        border: 'none', // No border
+                        background: 'linear-gradient(135deg, #5E412D, #8B5E3C)', // Subtle earthy gradient
+                        cursor: 'pointer', // Pointer cursor
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Minimal shadow
+                        transition: 'transform 0.2s ease, box-shadow 0.2s ease', // Smooth animation
+                      }}
+                      onMouseOver={(e) =>
+                        Object.assign(e.currentTarget.style, {
+                          transform: 'scale(1.05)', // Slightly enlarge button on hover
+                          boxShadow: '0 6px 8px rgba(0, 0, 0, 0.2)', // Enhance shadow on hover
+                        })
+                      }
+                      onMouseOut={(e) =>
+                        Object.assign(e.currentTarget.style, {
+                          transform: 'scale(1)', // Reset scale
+                          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Reset shadow
+                        })
+                      }
+                    >
+                      A+
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </CardBody>
+        </div>
+        <div className='absolute top-2 right-2'>
           {audio && audio !== '/' && (
-            <>
+            <div>
               {/* Center the button */}
               <audio
                 ref={audioRef}
@@ -181,98 +273,18 @@ function SutraCard({
                     handlePlay();
                   }
                 }}
-                className='flex justify-center items-center'
+                className='flex justify-center items-center w-9'
               >
                 {playing ? (
                   <img src={PauseIcon} alt='Pause' className='w-9' />
                 ) : (
-                  <img src={PlayIcon} alt='Play' className='w-10' />
+                  <img src={PlayIcon} alt='Play' className='w-9' />
                 )}
               </button>
-            </>
+            </div>
           )}
         </div>
-
-        {/* Collapsible Content (with scrollable area) */}
-        {isExpanded && (
-          <>
-            {/* Scrollable Content */}
-            <div
-              contentEditable={true}
-              className='mt-2 prose mx-auto overflow-y-auto border rounded-md p-4 w-full'
-              style={{
-                maxHeight: '200px', // Scrollable content area
-                fontSize: `${fontSize}px`, // Dynamic font size
-              }}
-            >
-              {renderDetail(detail, searchTerm)}
-              {/* Font Size Controls */}
-              <div className='flex justify-end gap-2 mt-2 sticky bottom-0 cursor-pointer'>
-                <button
-                  onClick={decreaseFontSize}
-                  className='rounded px-2 py-1 text-sm border'
-                  style={{
-                    borderRadius: '0.25rem', // Smaller rounded corners
-                    padding: '0.25rem 0.75rem', // Compact padding
-                    fontSize: '0.875rem', // Slightly smaller font
-                    fontWeight: '500', // Medium weight for text
-                    color: '#fff', // White text
-                    border: 'none', // No border
-                    background: 'linear-gradient(135deg, #8B5E3C, #D4A054)', // Subtle brown gradient
-                    cursor: 'pointer', // Pointer cursor
-                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Minimal shadow
-                    transition: 'transform 0.2s ease, box-shadow 0.2s ease', // Smooth animation
-                  }}
-                  onMouseOver={(e) =>
-                    Object.assign(e.currentTarget.style, {
-                      transform: 'scale(1.05)', // Slightly enlarge button on hover
-                      boxShadow: '0 6px 8px rgba(0, 0, 0, 0.2)', // Enhance shadow on hover
-                    })
-                  }
-                  onMouseOut={(e) =>
-                    Object.assign(e.currentTarget.style, {
-                      transform: 'scale(1)', // Reset scale
-                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Reset shadow
-                    })
-                  }
-                >
-                  A-
-                </button>
-                <button
-                  onClick={increaseFontSize}
-                  className='rounded px-2 py-1 text-sm border'
-                  style={{
-                    borderRadius: '0.25rem', // Smaller rounded corners
-                    padding: '0.25rem 0.75rem', // Compact padding
-                    fontSize: '0.875rem', // Slightly smaller font
-                    fontWeight: '500', // Medium weight for text
-                    color: '#fff', // White text
-                    border: 'none', // No border
-                    background: 'linear-gradient(135deg, #5E412D, #8B5E3C)', // Subtle earthy gradient
-                    cursor: 'pointer', // Pointer cursor
-                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Minimal shadow
-                    transition: 'transform 0.2s ease, box-shadow 0.2s ease', // Smooth animation
-                  }}
-                  onMouseOver={(e) =>
-                    Object.assign(e.currentTarget.style, {
-                      transform: 'scale(1.05)', // Slightly enlarge button on hover
-                      boxShadow: '0 6px 8px rgba(0, 0, 0, 0.2)', // Enhance shadow on hover
-                    })
-                  }
-                  onMouseOut={(e) =>
-                    Object.assign(e.currentTarget.style, {
-                      transform: 'scale(1)', // Reset scale
-                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Reset shadow
-                    })
-                  }
-                >
-                  A+
-                </button>
-              </div>
-            </div>
-          </>
-        )}
-      </CardBody>
+      </div>
     </Card>
   );
 }
