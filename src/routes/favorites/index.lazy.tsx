@@ -32,65 +32,69 @@ function RouteComponent() {
 
   return (
     <section ref={scrollContainerRef} className='max-w-lg mx-auto mb-0'>
-      <div className='grid grid-cols-2 md:grid-cols-2 gap-0 mt-3'>
-        {/* Search Bar */}
-        <div>
-          <Input
-            aria-label='Search'
-            labelPlacement='outside'
-            type='search'
-            placeholder={`ຄົ້ນຫາພຣະສູດຖືກໃຈ...`}
-            classNames={{
-              inputWrapper: 'bg-default-100',
-              input: 'text-sm',
-            }}
-            className='mb-0 sticky top-14 z-10 w-full sm:max-w-md md:max-w-lg lg:max-w-xl'
-            value={searchTerm}
-            startContent={
-              <SearchIcon className='text-base text-default-400 pointer-events-none flex-shrink-0' />
-            }
-            onChange={(e) => setSearchTerm(e.target.value)} // Update search term
-          />
-        </div>
+      {/* Fixed Filter Controls */}
+      <div
+        className='fixed top-0 z-10 px-4 py-2 mt-12 w-full max-w-lg mx-auto'
+        style={{
+          marginLeft: '-4px',
+        }}
+      >
+        <div className='grid grid-cols-2 md:grid-cols-2 gap-2 items-center'>
+          {/* Search Bar */}
+          <div className='w-full'>
+            <Input
+              aria-label='Search'
+              labelPlacement='outside'
+              type='search'
+              placeholder='ຄົ້ນຫາພຣະສູດຖືກໃຈ...'
+              classNames={{
+                inputWrapper: 'bg-default-100',
+              }}
+              value={searchTerm}
+              startContent={
+                <SearchIcon className='text-base text-default-400 pointer-events-none flex-shrink-0' />
+              }
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
 
-        {/* Dropdown for Category Filtering */}
-        <div
-          style={{
-            marginTop: '-0.5rem',
-            fontSize: '26px',
-          }}
-        >
-          <Select
-            selectedKeys={[selectedCategory || '']}
-            onSelectionChange={(e) => {
-              const value = Array.from(e).pop() as string | null; // Ensure type matches
-              setSelectedCategory(value);
-            }}
-            classNames={{
-              base: 'bg-default-100 text-lg rounded-lg w-full font-phetsarath mt-2 ml-1',
-              trigger: 'font-phetsarath',
-              listbox: 'font-phetsarath',
-            }}
-            placeholder='ທຸກໝວດ'
-          >
-            <SelectItem key='' className='font-phetsarath'>
-              ທຸກໝວດ
-            </SelectItem>
-            {uniqueCategories.map((category: any) => (
-              <SelectItem
-                key={category}
-                value={category}
-                className='font-phetsarath'
-              >
-                {category}
+          {/* Dropdown for Category Filtering */}
+          <div className='w-full'>
+            <Select
+              selectedKeys={[selectedCategory || '']}
+              onSelectionChange={(e) => {
+                const value = Array.from(e).pop() as string | null;
+                setSelectedCategory(value);
+              }}
+              classNames={{
+                base: 'bg-default-100 text-lg rounded-lg w-full font-phetsarath',
+                trigger: 'font-phetsarath',
+                listbox: 'font-phetsarath',
+              }}
+              placeholder='ທຸກໝວດ'
+            >
+              <SelectItem key='' className='font-phetsarath text-lg'>
+                ທຸກໝວດ
               </SelectItem>
-            ))}
-          </Select>
+              {uniqueCategories.map((category: any) => (
+                <SelectItem
+                  key={category}
+                  value={category}
+                  className='font-phetsarath text-lg'
+                >
+                  {category}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
         </div>
       </div>
 
+      {/* Spacer to prevent content from being hidden behind fixed filters */}
+      <div className='h-8'></div>
+
       {/* Render Filtered Items */}
-      <div className='flex flex-col gap-2 mt-4 mb-20'>
+      <div className='flex flex-col gap-2 mt-4 mb-20 p-2'>
         {data?.map((item: any) => (
           <SutraCard
             key={item.ID}
@@ -106,7 +110,7 @@ function RouteComponent() {
             route={`/favorites/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}${window.location.search}`}
             isPlaying={currentlyPlayingId === item.ID}
             onPlay={() => handlePlayAudio(item.ID)}
-            onAudioEnd={handleNextAudio} // Move to next audio
+            onAudioEnd={handleNextAudio}
           />
         ))}
 
