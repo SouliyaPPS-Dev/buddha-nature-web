@@ -90,7 +90,7 @@ function RouteComponent() {
       </div>
 
       {/* Render Filtered Items */}
-      <div className='flex flex-col gap-2 mt-4 mb-4'>
+      <div className='flex flex-col gap-2 mt-4 mb-20'>
         {data?.map((item: any) => (
           <SutraCard
             key={item.ID}

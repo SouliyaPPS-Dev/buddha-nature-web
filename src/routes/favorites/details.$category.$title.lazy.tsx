@@ -34,6 +34,7 @@ function RouteComponent() {
   const { data } = useFavorites();
   const { searchTerm } = useSearchContext();
   const { fontSize, setFontSize } = useFontSizeContext();
+  const [isProcessing, setIsProcessing] = useState(false); // State to track if action is processing
 
   // Inside your component
   const [isCopied, setIsCopied] = useState(false); // State to manage copy success
@@ -114,7 +115,10 @@ function RouteComponent() {
     [currentIndex, data]
   );
 
-  const isPreviousDisabled = useMemo(() => currentPage === 0, [currentPage]);
+  const isPreviousDisabled = useMemo(
+    () => filteredDetails.length <= 1 || isProcessing,
+    [filteredDetails, isProcessing]
+  );
 
   // Initialize filteredDetails with the first chunk of data
   useEffect(() => {
@@ -189,10 +193,13 @@ function RouteComponent() {
 
   // Navigate to the previous page
   const goToPreviousPage = () => {
-    if (currentPage > 0) {
+    if (isProcessing) return; // Prevent double clicks while processing
+    setIsProcessing(true); // Lock the button after the first click
+    if (currentPage >= 1) {
       setTimeout(() => {
         setCurrentPage(currentPage - 1);
-      }, 600);
+        setIsProcessing(false); // Unlock the button after processing
+      }, 100);
     }
 
     setFilteredDetails((prev) => prev.slice(0, prev.length - itemsPerPage));

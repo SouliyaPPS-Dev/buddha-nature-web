@@ -50,7 +50,7 @@ function RouteComponent() {
 
       {/* Category Render */}
       {searchTerm.trim() === '' && !isLoading && (
-        <div className='grid gap-2 grid-cols-3 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-5'>
+        <div className='grid gap-2 grid-cols-3 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-5 mb-20'>
           {getGroupedData.map(([category, items]) => (
             <CategoryCard
               key={category}
@@ -64,7 +64,7 @@ function RouteComponent() {
 
       {/* Filtered Results Render */}
       {searchTerm.trim() !== '' && (
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-2 mb-20'>
           {data?.map((item) => (
             <SutraCard
               key={item.ID}

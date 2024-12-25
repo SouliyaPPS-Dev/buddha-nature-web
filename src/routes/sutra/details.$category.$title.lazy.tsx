@@ -8,7 +8,7 @@ import { SutraDataModel } from '@/model/sutra';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import 'react-h5-audio-player/lib/styles.css';
 import Highlighter from 'react-highlight-words';
 import ReactHtmlParser from 'react-html-parser';
@@ -231,6 +231,11 @@ function RouteComponent() {
     }
   };
 
+  const isPreviousDisabled = useMemo(
+    () => filteredDetails.length <= 1 || isProcessing,
+    [filteredDetails, isProcessing]
+  );
+
   // Function to sanitize and parse HTML content
   const renderDetail = (htmlContent: string, searchTerm?: string) => {
     const sanitizedHtmlContent = DOMPurify.sanitize(htmlContent);
@@ -281,7 +286,7 @@ function RouteComponent() {
       >
         <button
           onClick={goToPreviousPage}
-          disabled={filteredDetails.length <= 1 || isProcessing} // Disable based on filteredDetails length and processing state
+          disabled={isPreviousDisabled} // Disable based on filteredDetails length and processing state
           style={{
             display: 'flex', // Use flexbox for alignment
             alignItems: 'center',
@@ -290,16 +295,9 @@ function RouteComponent() {
             height: '30px',
             borderRadius: '15px', // Fully rounded button
             border: 'none',
-            background:
-              filteredDetails.length <= 1 || isProcessing
-                ? '#E0E0E0'
-                : '#8B5E3C', // Gray for disabled, brown for active
-            color:
-              filteredDetails.length <= 1 || isProcessing ? '#999' : '#fff', // Indicate disabled state
-            cursor:
-              filteredDetails.length <= 1 || isProcessing
-                ? 'not-allowed'
-                : 'pointer', // Disable interaction if not clickable
+            background: isPreviousDisabled ? '#E0E0E0' : '#8B5E3C', // Gray for disabled, brown for active
+            color: isPreviousDisabled ? '#999' : '#fff', // Indicate disabled state
+            cursor: isPreviousDisabled ? 'not-allowed' : 'pointer', // Disable interaction if not clickable
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.15)', // Subtle shadow for depth
             transition: 'all 0.3s ease', // Smooth transitions for hover and other changes
           }}
