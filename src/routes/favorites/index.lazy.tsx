@@ -1,6 +1,7 @@
 import { SearchIcon } from '@/components/layouts/icons';
 import SutraCard from '@/containers/sutra/SutraCard';
 import { useFavorites } from '@/hooks/favorites/useFavorites';
+import { useScrollingStore } from '@/hooks/useScrollingStore';
 import { router } from '@/router';
 import { Input, Select, SelectItem } from '@nextui-org/react';
 import { createLazyFileRoute } from '@tanstack/react-router';
@@ -10,6 +11,8 @@ export const Route = createLazyFileRoute('/favorites/')({
 });
 
 function RouteComponent() {
+  const { scrollContainerRef } = useScrollingStore();
+
   const {
     data,
     // Category
@@ -28,7 +31,7 @@ function RouteComponent() {
   } = useFavorites();
 
   return (
-    <section className='max-w-lg mx-auto mb-0'>
+    <section ref={scrollContainerRef} className='max-w-lg mx-auto mb-0'>
       <div className='grid grid-cols-2 md:grid-cols-2 gap-0 mt-3'>
         {/* Search Bar */}
         <div>

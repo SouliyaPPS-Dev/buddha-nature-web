@@ -7,7 +7,6 @@ import { defineConfig, loadEnv } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({ mode }) => {
-  // Load the appropriate .env file based on the mode
   const env = loadEnv(mode, process.cwd());
 
   return {
@@ -32,7 +31,7 @@ export default defineConfig(({ mode }) => {
       }),
       react(),
       VitePWA({
-        registerType: 'autoUpdate', // Automatically register service worker and auto-update
+        registerType: 'autoUpdate',
         manifest: {
           name: 'Buddhaword',
           short_name: 'Buddhaword',
@@ -54,43 +53,42 @@ export default defineConfig(({ mode }) => {
             },
           ],
         },
-        injectRegister: 'auto', // Automatically inject service worker registration script
+        injectRegister: 'auto',
         workbox: {
-          globPatterns: ['**/*.{js,css,html,svg,png,ico}'], // Match asset files to cache
-          cleanupOutdatedCaches: true, // Automatically delete outdated caches
-          skipWaiting: true, // The newly installed SW takes control of the page immediately
-          clientsClaim: true, // Take control of uncontrolled clients immediately
-          navigateFallback: '/index.html', // Handle SPA routing fallback
+          globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+          cleanupOutdatedCaches: true,
+          skipWaiting: true,
+          clientsClaim: true,
+          navigateFallback: '/index.html',
           runtimeCaching: [
             {
-              // Cache UI assets (CSS, JS, images, fonts, etc.)
               urlPattern:
                 /\.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|avif)$/i,
-              handler: 'StaleWhileRevalidate', // Fetch from network if possible, otherwise fall back to cache
+              handler: 'StaleWhileRevalidate',
               options: {
                 cacheName: 'static-assets',
                 expiration: {
-                  maxEntries: 200, // Up to 100 assets in cache
-                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days of max age for cached assets
+                  maxEntries: 200,
+                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
                 },
                 cacheableResponse: {
-                  statuses: [0, 200], // Cache valid HTTP responses
+                  statuses: [0, 200],
                 },
               },
             },
             {
-              urlPattern: /\/index\.html$/,
+              urlPattern: ({ request }) => request.mode === 'navigate',
               handler: 'NetworkFirst',
               options: {
                 cacheName: 'html-cache',
                 expiration: {
-                  maxEntries: 1,
+                  maxEntries: 50,
                   maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
                 },
               },
             },
             {
-              urlPattern: /^https:\/\/example-api\.com\/.*/, // Replace with your API endpoint
+              urlPattern: /^https:\/\/example-api\.com\/.*/,
               handler: 'NetworkFirst',
               options: {
                 cacheName: 'api-cache',
@@ -109,7 +107,6 @@ export default defineConfig(({ mode }) => {
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
-              // Separate all node_modules into individual chunks
               return id.toString().split('node_modules/')[1].split('/')[0];
             }
           },

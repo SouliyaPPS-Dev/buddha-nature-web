@@ -1,5 +1,8 @@
 // Load Workbox scripts using importScripts
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js');
+importScripts(
+  'https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js'
+);
+
 // Check if Workbox is available
 if (workbox) {
   console.log('Workbox is loaded.');
@@ -10,48 +13,31 @@ if (workbox) {
   // Clean up outdated caches
   workbox.precaching.cleanupOutdatedCaches();
 
-  // Cache **static assets** (e.g., JS, CSS, images, fonts)
+  // ⚙️ Cache Static Assets (JS, CSS, Fonts, Images)
   workbox.routing.registerRoute(
     /\.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|avif)$/i,
     new workbox.strategies.StaleWhileRevalidate({
       cacheName: 'static-assets',
       plugins: [
         new workbox.cacheableResponse.CacheableResponsePlugin({
-          statuses: [0, 200], // Cache successful and opaque responses
+          statuses: [0, 200],
         }),
         new workbox.expiration.ExpirationPlugin({
-          maxEntries: 200, // Limit cache size to 200 items
+          maxEntries: 200,
           maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
         }),
       ],
     })
   );
 
-  // Cache **HTML files** (e.g., index.html)
+  // ⚙️ Cache HTML Pages (Every Route for SPA)
   workbox.routing.registerRoute(
-    /\/index\.html$/,
+    ({ request }) => request.mode === 'navigate', // Caches all navigation requests
     new workbox.strategies.NetworkFirst({
       cacheName: 'html-cache',
       plugins: [
         new workbox.cacheableResponse.CacheableResponsePlugin({
           statuses: [0, 200],
-        }),
-        new workbox.expiration.ExpirationPlugin({
-          maxEntries: 1, // Only cache the latest index.html
-          maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
-        }),
-      ],
-    })
-  );
-
-  // Cache **API requests**
-  workbox.routing.registerRoute(
-    /^https:\/\/example-api\.com\/.*/, // Replace with your API URL
-    new workbox.strategies.NetworkFirst({
-      cacheName: 'api-cache',
-      plugins: [
-        new workbox.cacheableResponse.CacheableResponsePlugin({
-          statuses: [0, 200], // Cache successful and opaque responses
         }),
         new workbox.expiration.ExpirationPlugin({
           maxEntries: 50,
@@ -61,27 +47,40 @@ if (workbox) {
     })
   );
 
-  // Fallback route for offline mode
+  // ⚙️ Cache API Requests
+  workbox.routing.registerRoute(
+    /^https:\/\/example-api\.com\/.*/, // Replace with your API domain
+    new workbox.strategies.NetworkFirst({
+      cacheName: 'api-cache',
+      plugins: [
+        new workbox.cacheableResponse.CacheableResponsePlugin({
+          statuses: [0, 200],
+        }),
+        new workbox.expiration.ExpirationPlugin({
+          maxEntries: 50,
+          maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+        }),
+      ],
+    })
+  );
+
+  // ⚙️ Fallback for Offline Navigation (SPA Fallback)
   self.addEventListener('fetch', (event) => {
-    event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        // Return cached response if available; otherwise, fetch from network
-        return (
-          cachedResponse ||
-          fetch(event.request).catch(() => {
-            if (event.request.headers.get('accept')?.includes('text/html')) {
-              return caches.match('/index.html'); // Fallback to index.html for SPA navigation
-            }
-          })
-        );
-      })
-    );
+    if (event.request.mode === 'navigate') {
+      event.respondWith(
+        caches.match('/index.html').then((response) => {
+          return response || fetch(event.request);
+        })
+      );
+    }
   });
 
-  // Activate and take control of the page immediately
+  // Activate Service Worker Immediately
   self.addEventListener('activate', (event) => {
     event.waitUntil(self.clients.claim());
   });
 } else {
-  console.error('Workbox could not be loaded. Make sure to import the Workbox CDN.');
+  console.error(
+    'Workbox could not be loaded. Make sure to import the Workbox CDN.'
+  );
 }

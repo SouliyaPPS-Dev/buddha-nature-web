@@ -3,6 +3,7 @@ import { useFontSizeContext } from '@/components/FontSizeProvider';
 import { useSearchContext } from '@/components/search/SearchContext';
 import FavoriteButton from '@/containers/sutra/FavoriteButton';
 import { useSutra } from '@/hooks/sutra/useSutra';
+import { useScrollingStore } from '@/hooks/useScrollingStore';
 import { SutraDataModel } from '@/model/sutra';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import DOMPurify from 'dompurify';
@@ -26,11 +27,13 @@ export const Route = createLazyFileRoute('/sutra/details/$category/$title')({
 });
 
 function RouteComponent() {
+  const { scrollContainerRef } = useScrollingStore();
   const params = Route.useParams();
   const { category, title } = params;
   const { data } = useSutra();
   const { searchTerm } = useSearchContext();
   const { fontSize, setFontSize } = useFontSizeContext();
+  const [isProcessing, setIsProcessing] = useState(false); // State to track if action is processing
 
   // Inside your component
   const [isCopied, setIsCopied] = useState(false); // State to manage copy success
@@ -170,10 +173,13 @@ function RouteComponent() {
 
   // Navigate to the previous page
   const goToPreviousPage = () => {
-    if (currentPage > 0) {
+    if (isProcessing) return; // Prevent double clicks while processing
+    setIsProcessing(true); // Lock the button after the first click
+    if (currentPage >= 1) {
       setTimeout(() => {
         setCurrentPage(currentPage - 1);
-      }, 600);
+        setIsProcessing(false); // Unlock the button after processing
+      }, 100);
     }
 
     setFilteredDetails((prev) => prev.slice(0, prev.length - itemsPerPage));
@@ -275,7 +281,7 @@ function RouteComponent() {
       >
         <button
           onClick={goToPreviousPage}
-          disabled={currentPage === 0}
+          disabled={filteredDetails.length <= 1 || isProcessing} // Disable based on filteredDetails length and processing state
           style={{
             display: 'flex', // Use flexbox for alignment
             alignItems: 'center',
@@ -284,20 +290,27 @@ function RouteComponent() {
             height: '30px',
             borderRadius: '15px', // Fully rounded button
             border: 'none',
-            background: currentPage === 0 ? '#E0E0E0' : '#8B5E3C', // Gray for disabled, brown for active
-            color: currentPage === 0 ? '#999' : '#fff', // Indicate disabled state
-            cursor: currentPage === 0 ? 'not-allowed' : 'pointer', // Disable interaction if not clickable
+            background:
+              filteredDetails.length <= 1 || isProcessing
+                ? '#E0E0E0'
+                : '#8B5E3C', // Gray for disabled, brown for active
+            color:
+              filteredDetails.length <= 1 || isProcessing ? '#999' : '#fff', // Indicate disabled state
+            cursor:
+              filteredDetails.length <= 1 || isProcessing
+                ? 'not-allowed'
+                : 'pointer', // Disable interaction if not clickable
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.15)', // Subtle shadow for depth
             transition: 'all 0.3s ease', // Smooth transitions for hover and other changes
           }}
           onMouseOver={(e) => {
-            if (currentPage !== 0) {
+            if (filteredDetails.length > 1 && !isProcessing) {
               e.currentTarget.style.background = '#704214'; // Darker brown hover effect
               e.currentTarget.style.transform = 'scale(1.1)'; // Slight zoom effect
             }
           }}
           onMouseOut={(e) => {
-            if (currentPage !== 0) {
+            if (filteredDetails.length > 1 && !isProcessing) {
               e.currentTarget.style.background = '#8B5E3C'; // Reset color
               e.currentTarget.style.transform = 'scale(1)'; // Reset zoom
             }
@@ -527,7 +540,10 @@ function RouteComponent() {
 
   return (
     <>
-      <div className='relative flex justify-center items-center mb-24 mt-4 px-3'>
+      <div
+        ref={scrollContainerRef}
+        className='relative flex justify-center items-center mb-24 mt-4 px-3'
+      >
         {/* Content of the Current Page Flipbook Animation */}
         {filteredDetails?.length > 0 ? (
           <>

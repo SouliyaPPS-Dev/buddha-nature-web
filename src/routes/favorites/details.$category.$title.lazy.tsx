@@ -3,6 +3,7 @@ import { useFontSizeContext } from '@/components/FontSizeProvider';
 import { useSearchContext } from '@/components/search/SearchContext';
 import FavoriteButton from '@/containers/sutra/FavoriteButton';
 import { useFavorites } from '@/hooks/favorites/useFavorites';
+import { useScrollingStore } from '@/hooks/useScrollingStore';
 import { SutraDataModel } from '@/model/sutra';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import DOMPurify from 'dompurify';
@@ -27,6 +28,7 @@ export const Route = createLazyFileRoute('/favorites/details/$category/$title')(
 );
 
 function RouteComponent() {
+  const { scrollContainerRef } = useScrollingStore();
   const params = Route.useParams();
   const { category, title } = params;
   const { data } = useFavorites();
@@ -507,7 +509,10 @@ function RouteComponent() {
 
   return (
     <>
-      <div className='relative flex justify-center items-center mb-24 mt-4 px-3'>
+      <div
+        ref={scrollContainerRef}
+        className='relative flex justify-center items-center mb-24 mt-4 px-3'
+      >
         {/* Content of the Current Page Flipbook Animation */}
         {filteredDetails?.length > 0 ? (
           <>
