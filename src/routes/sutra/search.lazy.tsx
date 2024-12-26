@@ -74,6 +74,7 @@ function RouteComponent() {
           {/* Dropdown for Category Filtering */}
           <div className='w-full'>
             <Select
+              aria-label='Select a category'
               selectedKeys={[selectedCategory || '']}
               onSelectionChange={(e) => {
                 const value = Array.from(e).pop() as string | null;

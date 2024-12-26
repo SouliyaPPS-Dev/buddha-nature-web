@@ -15,7 +15,7 @@ function RouteComponent() {
   const {
     data,
     isLoading,
-    getGroupedData,
+    groupedData,
     searchTerm,
     setSearchTerm,
 
@@ -51,7 +51,7 @@ function RouteComponent() {
       {/* Category Render */}
       {searchTerm.trim() === '' && !isLoading && (
         <div className='grid gap-2 grid-cols-3 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-5 mb-20'>
-          {getGroupedData.map(([category, items]) => (
+          {groupedData.map(([category, items]) => (
             <CategoryCard
               key={category}
               category={category}

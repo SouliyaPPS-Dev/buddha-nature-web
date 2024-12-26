@@ -1,116 +1,130 @@
 import { useSearchContext } from '@/components/search/SearchContext';
 import { sutraApi } from '@/services/https/sutra';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+
 
 export const useSutra = () => {
      const { searchTerm, setSearchTerm } = useSearchContext();
-     const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // State for filtering by category
-     const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(
-          null
-     );
 
-     const audioRef = useRef<HTMLAudioElement | null>(null); // Ref for audio element
+     // State
+     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+     const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(null);
 
+     // Audio Ref
+     const audioRef = useRef<HTMLAudioElement | null>(null);
+
+     // Fetch Data
      const { data, isLoading, refetch } = useQuery({
           queryKey: ['sutra'],
           queryFn: async () => sutraApi(),
      });
 
-
+     /**
+      * 📝 Filtered Data
+      * - Filters data based on `searchTerm` and `selectedCategory`.
+      */
      const filteredData = useMemo(() => {
-          if (!data) return []; // Handle null or undefined `data`
+          if (!data) return [];
 
-          const normalizedSearchTerm =
-               typeof searchTerm === 'string' ? searchTerm.toLowerCase() : '';
+          const normalizedSearchTerm = searchTerm?.toLowerCase() || '';
 
           return data.filter((item: any) => {
-               const matchesCategory =
-                    !selectedCategory || item['ໝວດທັມ'] === selectedCategory; // Filter based on category
-               const matchesSearch =
-                    !normalizedSearchTerm || // If no search term, all items match
+               const matchesCategory = !selectedCategory || item['ໝວດທັມ'] === selectedCategory;
+               const matchesSearch = !normalizedSearchTerm ||
                     [item['ຊື່ພຣະສູດ'], item['ພຣະສູດ'], item['ໝວດທັມ']]
                          .join(' ')
                          .toLowerCase()
                          .includes(normalizedSearchTerm);
+
                return matchesCategory && matchesSearch;
           });
-     }, [data, searchTerm, selectedCategory]); // Dependencies are data, searchTerm, and selectedCategory
+     }, [data, searchTerm, selectedCategory]);
 
-
-     /* Helper Function: Group data by category */
-     const getGroupedData = useMemo(() => {
+     /**
+      * 🗂️ Grouped Data
+      * - Groups data by category.
+      */
+     const groupedData = useMemo(() => {
           if (!data) return [];
 
-          const groupedData = data.reduce<Record<string, typeof data[number][]>>(
-               (acc, item) => {
-                    if (!acc[item['ໝວດທັມ']]) {
-                         acc[item['ໝວດທັມ']] = [];
-                    }
+          return Object.entries(
+               data.reduce<Record<string, typeof data[number][]>>((acc, item) => {
+                    acc[item['ໝວດທັມ']] = acc[item['ໝວດທັມ']] || [];
                     acc[item['ໝວດທັມ']].push(item);
                     return acc;
-               },
-               {}
+               }, {})
           );
-
-          return Object.entries(groupedData);
      }, [data]);
 
-     // Derive unique categories for the dropdown from `data`
+     // Ensure categories are typed correctly
      const uniqueCategories = Array.from(
           new Set(data?.map((item: any) => item['ໝວດທັມ']).filter(Boolean))
      ) as any;
 
-     // Play selected audio
+     /**
+      * 🎵 Play Audio
+      * - Handles playing selected audio.
+      */
      const handlePlayAudio = (id: string) => {
           setCurrentlyPlayingId(id);
+          const audioSrc = data?.find((item: any) => item.ID === id)?.ສຽງ || '';
 
-          if (audioRef.current) {
-               audioRef.current.src =
-                    data?.find((item: any) => item.ID === id)?.ສຽງ || '';
+          if (audioRef.current && audioSrc) {
+               audioRef.current.src = audioSrc;
                audioRef.current.play();
           }
      };
 
-     // Find and play the next audio
+     /**
+      * ⏭️ Play Next Audio
+      * - Plays the next valid audio track.
+      */
      const handleNextAudio = () => {
           if (!data) return;
 
-          let currentIndex = data.findIndex((item: any) => item.ID === currentlyPlayingId);
+          const currentIndex = data.findIndex((item: any) => item.ID === currentlyPlayingId);
 
-          // Loop to find the next valid audio (skip if data is '/')
-          while (currentIndex + 1 < data.length) {
-               currentIndex += 1;
-               if (data[currentIndex]?.ສຽງ && data[currentIndex]?.ສຽງ !== '/') {
-                    handlePlayAudio(data[currentIndex].ID);
+          for (let i = currentIndex + 1; i < data.length; i++) {
+               if (data[i]?.ສຽງ && data[i]?.ສຽງ !== '/') {
+                    handlePlayAudio(data[i].ID);
                     break;
                }
           }
      };
 
-     // Listen for audio end event
+     /**
+      * 🎧 Audio Event Listener
+      * - Adds event listener for audio `ended` event.
+      */
      useEffect(() => {
           const audio = audioRef.current;
-
-          if (audio) {
-               audio.addEventListener('ended', handleNextAudio);
-          }
+          audio?.addEventListener('ended', handleNextAudio);
 
           return () => {
-               if (audio) {
-                    audio.removeEventListener('ended', handleNextAudio);
-               }
+               audio?.removeEventListener('ended', handleNextAudio);
           };
      }, [currentlyPlayingId, data]);
 
      return {
           // Data
-          data: filteredData, getGroupedData,
+          data: filteredData,
+          groupedData,
+          uniqueCategories,
+
           // Search
-          isLoading, searchTerm, setSearchTerm, refetch,
+          isLoading,
+          searchTerm,
+          setSearchTerm,
+          refetch,
+
           // Audio
-          currentlyPlayingId, handlePlayAudio, handleNextAudio,
+          currentlyPlayingId,
+          handlePlayAudio,
+          handleNextAudio,
+
           // Category
-          selectedCategory, setSelectedCategory, uniqueCategories
+          selectedCategory,
+          setSelectedCategory,
      };
 };

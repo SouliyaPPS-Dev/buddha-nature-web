@@ -6,6 +6,7 @@ import { useTheme } from '@/hooks/use-theme';
 import { useScrollingStore } from '@/hooks/useScrollingStore';
 import { useRouterState } from '@tanstack/react-router';
 import React, { Fragment } from 'react';
+import ScrollToBottom from 'react-scroll-to-bottom';
 
 export default function DefaultLayout({
   children,
@@ -32,21 +33,27 @@ export default function DefaultLayout({
                 : '#000000', // Default dark theme background
         }}
       >
-        <FontSizeProvider>
-          <MenuProvider>
-            {/* Top navbar */}
-            <Navbar />
-            {/* Main content */}
-            <main className='container mx-auto max-w-7xl px-2 flex-grow'>
-              {children}
-            </main>
-            {/* Bottom navigation tabs */}
-            <div className='hidden md:block'>
-              {/* Mobile screens only */}
-              <NavigationTabs />
-            </div>
-          </MenuProvider>
-        </FontSizeProvider>
+        <ScrollToBottom
+          className='flex flex-col h-screen overflow-y-auto smooth-scroll scrollbar-none'
+          mode='top'
+          initialScrollBehavior='smooth'
+        >
+          <FontSizeProvider>
+            <MenuProvider>
+              {/* Top navbar */}
+              <Navbar />
+              {/* Main content */}
+              <main className='container mx-auto max-w-7xl px-2 flex-grow'>
+                {children}
+              </main>
+              {/* Bottom navigation tabs */}
+              <div className='hidden md:block'>
+                {/* Mobile screens only */}
+                <NavigationTabs />
+              </div>
+            </MenuProvider>
+          </FontSizeProvider>
+        </ScrollToBottom>
       </div>
     </Fragment>
   );
