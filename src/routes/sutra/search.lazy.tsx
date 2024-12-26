@@ -46,7 +46,7 @@ function RouteComponent() {
     <section ref={scrollContainerRef} className='max-w-lg mx-auto mb-0'>
       {/* Fixed Filter Controls */}
       <div
-        className='fixed top-0 z-10 px-4 py-2 mt-12 w-full max-w-lg mx-auto'
+        className='absolute top-0 z-10 px-4 py-2 mt-12 w-full max-w-lg mx-auto'
         style={{
           marginLeft: '-4px',
         }}
@@ -120,10 +120,10 @@ function RouteComponent() {
               searchTerm={searchTerm}
               onClick={() => {
                 router.navigate({
-                  to: `/favorites/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}${window.location.search}`,
+                  to: `/sutra/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}${window.location.search}`,
                 });
               }}
-              route={`/favorites/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}${window.location.search}`}
+              route={`/sutra/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}${window.location.search}`}
               isPlaying={currentlyPlayingId === item.ID}
               onPlay={() => handlePlayAudio(item.ID)}
               onAudioEnd={handleNextAudio}

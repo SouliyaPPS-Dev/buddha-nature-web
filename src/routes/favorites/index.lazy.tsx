@@ -34,7 +34,7 @@ function RouteComponent() {
     <section ref={scrollContainerRef} className='max-w-lg mx-auto mb-0'>
       {/* Fixed Filter Controls */}
       <div
-        className='fixed top-0 z-10 px-4 py-2 mt-12 w-full max-w-lg mx-auto'
+        className='top-0 z-10 px-4 py-2 mt-12 w-full max-w-lg mx-auto absolute'
         style={{
           marginLeft: '-4px',
         }}
