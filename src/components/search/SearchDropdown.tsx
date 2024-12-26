@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useSutra } from '@/hooks/sutra/useSutra';
-import { Input } from '@nextui-org/react'; // Assuming you're using the Next.js UI framework
-import React, { useState } from 'react';
+import { Input } from '@nextui-org/react';
+import debounce from 'lodash.debounce';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SearchIcon } from '../layouts/icons';
 import { useMenuContext } from '../layouts/MenuProvider';
 import DropdownSearch from './DropdownSearch';
@@ -11,47 +11,59 @@ export const SearchDropdown = () => {
   const { searchTerm, setSearchTerm } = useSearchContext();
   const {
     data: searchResults,
-    isLoading, // Audio
+    isLoading,
     currentlyPlayingId,
     handlePlayAudio,
     handleNextAudio,
   } = useSutra();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Controls dropdown visibility
-  const { setIsMenuOpen } = useMenuContext(); // Use the context
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { setIsMenuOpen } = useMenuContext();
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Focus input on mobile screens
+  useEffect(() => {
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      inputRef.current?.focus();
+    }
+  }, []);
+
+  // Debounced Search Input Handler
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      setSearchTerm(value);
+      setIsDropdownOpen(value.trim().length > 0);
+    }, 300),
+    [setSearchTerm]
+  );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchTerm(value); // Update search term
-    setIsDropdownOpen(value.trim().length > 0); // Open dropdown only if input has valid text
+    debouncedSearch(value);
   };
 
   const handleResultClick = () => {
-    setIsDropdownOpen(false); // Close dropdown on selection
+    setIsDropdownOpen(false);
     setIsMenuOpen(false);
   };
 
-  //  Container for search and dropdown
   return (
     <div className='relative w-full max-w-md'>
-      {/* Search Input */}
       <Input
+        ref={inputRef}
         aria-label='Search'
         labelPlacement='outside'
         type='search'
         placeholder='ຄົ້ນຫາພຣະສູດທັງໝົດ...'
-        classNames={{
-          inputWrapper: 'bg-default-100',
-          input: 'text-sm',
-        }}
+        className='text-black'
         startContent={
           <SearchIcon className='text-base text-default-400 pointer-events-none flex-shrink-0' />
         }
         value={searchTerm}
         onChange={handleInputChange}
-        onFocus={() => searchTerm.trim().length > 0 && setIsDropdownOpen(true)} // Prevent opening empty dropdown on focus
+        onFocus={() => searchTerm.trim().length > 0 && setIsDropdownOpen(true)}
       />
 
-      {/* Search Results Dropdown */}
       <DropdownSearch
         isDropdownOpen={isDropdownOpen}
         searchResults={searchResults}
@@ -63,15 +75,16 @@ export const SearchDropdown = () => {
         handleNextAudio={handleNextAudio}
       />
 
-      {/* No Results Message */}
-      {isDropdownOpen && searchResults?.length === 0 && (
-        <div className='absolute z-10 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg p-4 text-center text-gray-500'>
+      {/* No Results */}
+      {isDropdownOpen && searchResults?.length === 0 && !isLoading && (
+        <div className='absolute mt-2 w-full bg-white border rounded-md shadow-lg p-4 text-center text-gray-500'>
           No results found
         </div>
       )}
+
       {/* Loading Spinner */}
       {isLoading && (
-        <div className='absolute z-10 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg p-4 text-center text-gray-500'>
+        <div className='absolute mt-2 w-full bg-white border rounded-md shadow-lg p-4 text-center text-gray-500'>
           Loading...
         </div>
       )}

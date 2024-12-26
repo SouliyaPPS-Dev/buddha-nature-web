@@ -4,7 +4,10 @@ import { toast } from 'react-toastify';
 import { clearCache } from '@/services/cache';
 
 const LAST_UPDATE_KEY = 'LAST_SUTRA_UPDATE';
-const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+// const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+const ONE_MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+// const ONE_YEAR_IN_MS = 365 * 24 * 60 * 60 * 1000; // 365 days in milliseconds
+
 
 // Singleton to ensure `handleUpdate` runs once globally
 let isUpdating = false;
@@ -23,7 +26,7 @@ export const useUpdateSutraData = () => {
           const lastUpdateTime = new Date(lastUpdate).getTime();
           const currentTime = Date.now();
 
-          return currentTime - lastUpdateTime > ONE_DAY_IN_MS;
+          return currentTime - lastUpdateTime > ONE_MONTH_IN_MS;
      }, []);
 
      /**

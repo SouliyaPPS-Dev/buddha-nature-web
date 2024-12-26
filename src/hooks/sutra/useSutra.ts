@@ -5,9 +5,11 @@ import { useEffect, useMemo, useState, useRef } from 'react';
 
 export const useSutra = () => {
      const { searchTerm, setSearchTerm } = useSearchContext();
+     const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // State for filtering by category
      const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(
           null
      );
+
      const audioRef = useRef<HTMLAudioElement | null>(null); // Ref for audio element
 
      const { data, isLoading, refetch } = useQuery({
@@ -15,22 +17,26 @@ export const useSutra = () => {
           queryFn: async () => sutraApi(),
      });
 
+
      const filteredData = useMemo(() => {
-          if (!data) return [];
+          if (!data) return []; // Handle null or undefined `data`
 
-          const normalizedSearchTerm = typeof searchTerm === 'string' ? searchTerm.toLowerCase() : '';
+          const normalizedSearchTerm =
+               typeof searchTerm === 'string' ? searchTerm.toLowerCase() : '';
 
-          if (normalizedSearchTerm !== '') {
-               return data.filter((item) =>
+          return data.filter((item: any) => {
+               const matchesCategory =
+                    !selectedCategory || item['ໝວດທັມ'] === selectedCategory; // Filter based on category
+               const matchesSearch =
+                    !normalizedSearchTerm || // If no search term, all items match
                     [item['ຊື່ພຣະສູດ'], item['ພຣະສູດ'], item['ໝວດທັມ']]
                          .join(' ')
                          .toLowerCase()
-                         .includes(normalizedSearchTerm)
-               );
-          } else {
-               return data;
-          }
-     }, [data, searchTerm]);
+                         .includes(normalizedSearchTerm);
+               return matchesCategory && matchesSearch;
+          });
+     }, [data, searchTerm, selectedCategory]); // Dependencies are data, searchTerm, and selectedCategory
+
 
      /* Helper Function: Group data by category */
      const getGroupedData = useMemo(() => {
@@ -50,6 +56,10 @@ export const useSutra = () => {
           return Object.entries(groupedData);
      }, [data]);
 
+     // Derive unique categories for the dropdown from `data`
+     const uniqueCategories = Array.from(
+          new Set(data?.map((item: any) => item['ໝວດທັມ']).filter(Boolean))
+     ) as any;
 
      // Play selected audio
      const handlePlayAudio = (id: string) => {
@@ -77,7 +87,7 @@ export const useSutra = () => {
                }
           }
      };
-     
+
      // Listen for audio end event
      useEffect(() => {
           const audio = audioRef.current;
@@ -99,6 +109,8 @@ export const useSutra = () => {
           // Search
           isLoading, searchTerm, setSearchTerm, refetch,
           // Audio
-          currentlyPlayingId, handlePlayAudio, handleNextAudio
+          currentlyPlayingId, handlePlayAudio, handleNextAudio,
+          // Category
+          selectedCategory, setSelectedCategory, uniqueCategories
      };
 };

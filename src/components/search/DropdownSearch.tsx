@@ -1,4 +1,5 @@
 import SutraCard from '@/containers/sutra/SutraCard';
+import { router } from '@/router';
 import React, { useEffect, useRef } from 'react';
 
 interface SearchResult {
@@ -95,7 +96,12 @@ const DropdownSearch: React.FC<DropdownProps> = ({
                 detail={result['ພຣະສູດ']}
                 audio={result['ສຽງ']}
                 searchTerm={searchTerm}
-                onClick={() => handleResultClick(result)}
+                onClick={() => {
+                  router.navigate({
+                    to: `/sutra/details/${result['ໝວດທັມ']}/${result['ຊື່ພຣະສູດ']}${window.location.search}`,
+                  });
+                  handleResultClick(result);
+                }}
                 route={`/sutra/details/${result['ໝວດທັມ']}/${result['ຊື່ພຣະສູດ']}${window.location.search}`}
                 isPlaying={currentlyPlayingId === result.ID}
                 onPlay={() => handlePlayAudio(result.ID)}

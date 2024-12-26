@@ -186,6 +186,31 @@ function RouteComponent() {
     setCurrentPage((prev) => prev - itemsPerPage);
   };
 
+  const isPreviousDisabled = useMemo(
+    () => filteredDetails.length <= 1 || isProcessing,
+    [filteredDetails, isProcessing]
+  );
+
+  // Keyboard Navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const canNavigatePrevious = !isProcessing && currentPage > 0 && !isDisabled;
+
+      if (e.key === 'ArrowLeft' && canNavigatePrevious) {
+        goToPreviousPage();
+      } else if (e.key === 'ArrowRight') {
+        goToNextPage();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+    // Dependency now relies on 'currentPage', 'filteredItemsCategory', 'isProcessing'
+  }, [currentPage, filteredItemsCategory.length, isProcessing]);
+
   // Handlers for font size adjustments
   const increaseFontSize = () =>
     setFontSize((prev) => (prev < 32 ? prev + 2 : prev)); // Max 32px
@@ -230,11 +255,6 @@ function RouteComponent() {
       alert('Sharing is not supported on this device.');
     }
   };
-
-  const isPreviousDisabled = useMemo(
-    () => filteredDetails.length <= 1 || isProcessing,
-    [filteredDetails, isProcessing]
-  );
 
   // Function to sanitize and parse HTML content
   const renderDetail = (htmlContent: string, searchTerm?: string) => {

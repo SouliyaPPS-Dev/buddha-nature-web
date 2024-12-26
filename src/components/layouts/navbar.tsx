@@ -3,13 +3,15 @@ import {
   BookIcon,
   CalendarIcon,
   DhammaIcon,
+  FavoritesIcon,
   Logo,
+  SearchIcon,
   SutraIcon,
   VideoIcon,
-  FavoritesIcon,
 } from '@/components/layouts/icons';
 import { ThemeSwitch } from '@/components/layouts/theme-switch';
 import { useNavigation } from '@/components/NavigationProvider';
+import { DeleteFavorites } from '@/containers/favorites/DeleteFavorites';
 import { ButtonUpdateData } from '@/containers/sutra/ButtonUpdateData';
 import { siteConfig } from '@/layouts/site';
 import {
@@ -28,7 +30,6 @@ import { useState } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import { SearchDropdown } from '../search/SearchDropdown';
 import { useMenuContext } from './MenuProvider';
-import { DeleteFavorites } from '@/containers/favorites/DeleteFavorites';
 
 export const Navbar = () => {
   const [activeItem, setActiveItem] = useState<string>('');
@@ -124,14 +125,21 @@ export const Navbar = () => {
           </NavbarItem>
         )}
 
+        {/* Search Button */}
+        <NavbarItem className='hidden sm:flex gap-2 '>
+          <SearchIcon />
+        </NavbarItem>
+
         {/* Update Data Button */}
         <NavbarItem className='hidden sm:flex gap-2 '>
           <ButtonUpdateData />
         </NavbarItem>
 
+        {/* Theme Switch */}
         <NavbarItem className='hidden sm:flex gap-2 '>
           <ThemeSwitch />
         </NavbarItem>
+
         {/* Conditionally hide search input when the current path is '/sutra' */}
         {currentPath !== '/sutra' && (
           <NavbarItem className='hidden lg:flex'>
@@ -145,8 +153,16 @@ export const Navbar = () => {
         {/* Delete Button */}
         {currentPath === '/favorites' && <DeleteFavorites />}
 
+        {/* Search Button */}
+        <SearchIcon />
+
+        {/* Update Data Button */}
         <ButtonUpdateData />
+
+        {/* Theme Switch */}
         <ThemeSwitch />
+
+        {/* Mobile Menu Toggle */}
         <NavbarMenuToggle />
       </NavbarContent>
       {/* Mobile Menu */}
