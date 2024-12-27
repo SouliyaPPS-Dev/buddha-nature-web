@@ -2,14 +2,13 @@ import AudioPlayerStyled from '@/components/AudioPlayer';
 import { useFontSizeContext } from '@/components/FontSizeProvider';
 import { useSearchContext } from '@/components/search/SearchContext';
 import FavoriteButton from '@/containers/sutra/FavoriteButton';
-import { useSutra } from '@/hooks/sutra/useSutra';
+import { useFavorites } from '@/hooks/favorites/useFavorites';
 import { useScrollingStore } from '@/hooks/useScrollingStore';
 import { SutraDataModel } from '@/model/sutra';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import 'react-h5-audio-player/lib/styles.css';
 import Highlighter from 'react-highlight-words';
 import ReactHtmlParser from 'react-html-parser';
 import {
@@ -22,15 +21,15 @@ import {
 import { GrCopy } from 'react-icons/gr';
 import { IoShareSocialSharp } from 'react-icons/io5';
 
-export const Route = createLazyFileRoute('/sutra/details/$category/$title')({
+export const Route = createLazyFileRoute('/favorites/details/$id')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const { scrollContainerRef } = useScrollingStore();
   const params = Route.useParams();
-  const { category, title } = params;
-  const { data } = useSutra();
+  const { id } = params;
+  const { data } = useFavorites();
   const { searchTerm } = useSearchContext();
   const { fontSize, setFontSize } = useFontSizeContext();
   const [isProcessing, setIsProcessing] = useState(false); // State to track if action is processing
@@ -45,13 +44,13 @@ function RouteComponent() {
 
   // Find current index in the original data array
   const currentGlobalIndex = data?.findIndex(
-    (item) => item.ID === filteredDetails?.[currentPage]?.ID
+    (item: { ID: any }) => item.ID === filteredDetails?.[currentPage]?.ID
   ); // Assuming `ID` is the unique identifier
 
   // Filter items based on category and search term
   const filteredItemsCategory = data?.filter((item: SutraDataModel) => {
     // Match category
-    const matchesCategory = category ? item['ໝວດທັມ'] === category : true;
+    const matchesID = id ? item['ID'] === id : true;
 
     // Match search term in any field (case-insensitive)
     const matchesSearchTerm = searchTerm
@@ -60,7 +59,7 @@ function RouteComponent() {
         )
       : true;
 
-    return matchesCategory && matchesSearchTerm;
+    return matchesID && matchesSearchTerm;
   });
 
   // **Filter Data Based on Search Term or Category/Title**
@@ -73,14 +72,13 @@ function RouteComponent() {
     if (!searchTerm) {
       // If there's no search term, filter based on category and title
       return data.filter(
-        (item) =>
-          item['ຊື່ພຣະສູດ']?.toLowerCase() === title?.toLowerCase() &&
-          item['ໝວດທັມ']?.toLowerCase() === category?.toLowerCase()
+        (item: { [x: string]: string }) =>
+          item['ID']?.toLowerCase() === id?.toLowerCase()
       );
     }
 
     if (normalizedSearchTerm !== '') {
-      return data.filter((item) =>
+      return data.filter((item: { [x: string]: any }) =>
         [item['ຊື່ພຣະສູດ'], item['ພຣະສູດ'], item['ໝວດທັມ']]
           .join('')
           .toLowerCase()
@@ -89,16 +87,34 @@ function RouteComponent() {
     } else {
       // If there's no search term, filter based on category and title
       return data.filter(
-        (item) =>
-          item['ຊື່ພຣະສູດ']?.toLowerCase() === title?.toLowerCase() &&
-          item['ໝວດທັມ']?.toLowerCase() === category?.toLowerCase()
+        (item: { [x: string]: string }) =>
+          item['ID']?.toLowerCase() === id?.toLowerCase()
       );
     }
-  }, [data, searchTerm, category, title]);
+  }, [data, searchTerm]);
 
-  const isDisabled = getFilteredData().length < 1;
-  const isDisabledEmptySearch =
-    getFilteredData().length <= filteredDetails.length;
+  // Find the current index in the `data` array
+  // Dynamically calculate the current index in the global `data` array
+  const currentIndex = useCallback(() => {
+    if (!data || data.length === 0 || !filteredDetails[currentPage]) {
+      return -1; // Return a fallback index (`-1`) if data is not ready
+    }
+
+    // Find current item's index in the global `data` array
+    return data.findIndex(
+      (item: any) => item.ID === filteredDetails[currentPage]?.ID
+    );
+  }, [data, filteredDetails, currentPage]);
+
+  const isNextDisabled = useMemo(
+    () => currentIndex() + 1 >= data.length,
+    [currentIndex, data]
+  );
+
+  const isPreviousDisabled = useMemo(
+    () => filteredDetails.length <= 1 || isProcessing,
+    [filteredDetails, isProcessing]
+  );
 
   // Initialize filteredDetails with the first chunk of data
   useEffect(() => {
@@ -118,16 +134,15 @@ function RouteComponent() {
   useEffect(() => {
     // Filter data based on category and title
     const updatedDetails = data?.filter(
-      (item) =>
-        item['ຊື່ພຣະສູດ']?.toLowerCase() === title?.toLowerCase() &&
-        item['ໝວດທັມ']?.toLowerCase() === category?.toLowerCase()
+      (item: { [x: string]: string }) =>
+        item['ID']?.toLowerCase() === id?.toLowerCase()
     );
     if (updatedDetails.length > 0) {
       setFilteredDetails(updatedDetails.slice(0, itemsPerPage));
     } else {
       setFilteredDetails([]);
     }
-  }, [data, category, title]);
+  }, [data, id]);
 
   // The reusable function to get the next chunk of data
   const getNextData = (
@@ -186,19 +201,15 @@ function RouteComponent() {
     setCurrentPage((prev) => prev - itemsPerPage);
   };
 
-  const isPreviousDisabled = useMemo(
-    () => filteredDetails.length <= 1 || isProcessing,
-    [filteredDetails, isProcessing]
-  );
-
   // Keyboard Navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const canNavigatePrevious = !isProcessing && currentPage > 0 && !isDisabled;
+      const canNavigatePrevious =
+        !isProcessing && currentPage > 0 && !isPreviousDisabled;
 
       if (e.key === 'ArrowLeft' && canNavigatePrevious) {
         goToPreviousPage();
-      } else if (e.key === 'ArrowRight') {
+      } else if (e.key === 'ArrowRight' && !isNextDisabled) {
         goToNextPage();
       }
     };
@@ -237,7 +248,7 @@ function RouteComponent() {
 
   const handleShare = async () => {
     const text = filteredDetails?.[currentPage]?.['ຊື່ພຣະສູດ'];
-    const url = `${window.location.origin}/sutra/details/${filteredDetails?.[currentPage]?.['ໝວດທັມ']}/${filteredDetails?.[currentPage]?.['ຊື່ພຣະສູດ']}${window.location.search}`;
+    const url = `${window.location.origin}/favorites/details/${filteredDetails?.[currentPage]?.['ID']}${window.location.search}`;
 
     // Sharing the content using the Web Share API
     if (navigator.share) {
@@ -306,7 +317,7 @@ function RouteComponent() {
       >
         <button
           onClick={goToPreviousPage}
-          disabled={isPreviousDisabled} // Disable based on filteredDetails length and processing state
+          disabled={isPreviousDisabled}
           style={{
             display: 'flex', // Use flexbox for alignment
             alignItems: 'center',
@@ -322,13 +333,13 @@ function RouteComponent() {
             transition: 'all 0.3s ease', // Smooth transitions for hover and other changes
           }}
           onMouseOver={(e) => {
-            if (filteredDetails.length > 1 && !isProcessing) {
+            if (!isPreviousDisabled) {
               e.currentTarget.style.background = '#704214'; // Darker brown hover effect
               e.currentTarget.style.transform = 'scale(1.1)'; // Slight zoom effect
             }
           }}
           onMouseOut={(e) => {
-            if (filteredDetails.length > 1 && !isProcessing) {
+            if (!isPreviousDisabled) {
               e.currentTarget.style.background = '#8B5E3C'; // Reset color
               e.currentTarget.style.transform = 'scale(1)'; // Reset zoom
             }
@@ -483,75 +494,38 @@ function RouteComponent() {
 
       {/* Next Page Button (Right Side) */}
       <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
-        {searchTerm === '' && (
-          <button
-            onClick={goToNextPage}
-            disabled={isDisabled}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              border: 'none',
-              background: isDisabled ? '#E0E0E0' : '#8B5E3C',
-              color: isDisabled ? '#999' : '#fff',
-              cursor: isDisabled ? 'not-allowed' : 'pointer',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.15)',
-              transition: 'all 0.3s ease',
-            }}
-            onMouseOver={(e) => {
-              if (!isDisabled) {
-                e.currentTarget.style.background = '#704214';
-                e.currentTarget.style.transform = 'scale(1.1)';
-              }
-            }}
-            onMouseOut={(e) => {
-              if (!isDisabled) {
-                e.currentTarget.style.background = '#8B5E3C';
-                e.currentTarget.style.transform = 'scale(1)';
-              }
-            }}
-          >
-            <FaChevronRight size={18} /> {/* Chevron Right Icon */}
-          </button>
-        )}
-
-        {searchTerm !== '' && (
-          <button
-            onClick={goToNextPage}
-            disabled={isDisabledEmptySearch}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              border: 'none',
-              background: isDisabledEmptySearch ? '#E0E0E0' : '#8B5E3C',
-              color: isDisabledEmptySearch ? '#999' : '#fff',
-              cursor: isDisabledEmptySearch ? 'not-allowed' : 'pointer',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.15)',
-              transition: 'all 0.3s ease',
-            }}
-            onMouseOver={(e) => {
-              if (!isDisabledEmptySearch) {
-                e.currentTarget.style.background = '#704214';
-                e.currentTarget.style.transform = 'scale(1.1)';
-              }
-            }}
-            onMouseOut={(e) => {
-              if (!isDisabledEmptySearch) {
-                e.currentTarget.style.background = '#8B5E3C';
-                e.currentTarget.style.transform = 'scale(1)';
-              }
-            }}
-          >
-            <FaChevronRight size={18} /> {/* Chevron Right Icon */}
-          </button>
-        )}
+        <button
+          onClick={goToNextPage}
+          disabled={isNextDisabled}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            border: 'none',
+            background: isNextDisabled ? '#E0E0E0' : '#8B5E3C',
+            color: isNextDisabled ? '#999' : '#fff',
+            cursor: isNextDisabled ? 'not-allowed' : 'pointer',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.15)',
+            transition: 'all 0.3s ease',
+          }}
+          onMouseOver={(e) => {
+            if (!isNextDisabled) {
+              e.currentTarget.style.background = '#704214';
+              e.currentTarget.style.transform = 'scale(1.1)';
+            }
+          }}
+          onMouseOut={(e) => {
+            if (!isNextDisabled) {
+              e.currentTarget.style.background = '#8B5E3C';
+              e.currentTarget.style.transform = 'scale(1)';
+            }
+          }}
+        >
+          <FaChevronRight size={18} /> {/* Chevron Right Icon */}
+        </button>
       </div>
     </div>
   );

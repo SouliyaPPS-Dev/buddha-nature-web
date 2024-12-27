@@ -98,11 +98,11 @@ const DropdownSearch: React.FC<DropdownProps> = ({
                 searchTerm={searchTerm}
                 onClick={() => {
                   router.navigate({
-                    to: `/sutra/details/${result['ໝວດທັມ']}/${result['ຊື່ພຣະສູດ']}${window.location.search}`,
+                    to: `/sutra/details/${result['ID']}${window.location.search}`,
                   });
                   handleResultClick(result);
                 }}
-                route={`/sutra/details/${result['ໝວດທັມ']}/${result['ຊື່ພຣະສູດ']}${window.location.search}`}
+                route={`/sutra/details/${result['ID']}${window.location.search}`}
                 isPlaying={currentlyPlayingId === result.ID}
                 onPlay={() => handlePlayAudio(result.ID)}
                 onAudioEnd={handleNextAudio} // Move to next audio

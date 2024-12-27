@@ -55,7 +55,7 @@ export const SearchDropdown = () => {
         labelPlacement='outside'
         type='search'
         placeholder='ຄົ້ນຫາພຣະສູດທັງໝົດ...'
-        className='text-black'
+        className='text-base themes'
         startContent={
           <SearchIcon className='text-base text-default-400 pointer-events-none flex-shrink-0' />
         }

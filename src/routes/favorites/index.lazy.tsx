@@ -105,10 +105,10 @@ function RouteComponent() {
             searchTerm={searchTerm}
             onClick={() => {
               router.navigate({
-                to: `/favorites/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}${window.location.search}`,
+                to: `/favorites/details/${item['ID']}${window.location.search}`,
               });
             }}
-            route={`/favorites/details/${item['ໝວດທັມ']}/${item['ຊື່ພຣະສູດ']}${window.location.search}`}
+            route={`/favorites/details/${item['ID']}${window.location.search}`}
             isPlaying={currentlyPlayingId === item.ID}
             onPlay={() => handlePlayAudio(item.ID)}
             onAudioEnd={handleNextAudio}
