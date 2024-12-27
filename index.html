@@ -124,231 +124,107 @@
             console.error("Service Worker registration failed:", error);
           });
       });
+
       let deferredPrompt; // To handle the "Add to Home Screen" prompt
-      const hasShownA2HS = localStorage.getItem("hasShownA2HS") === "true";
-      if (!hasShownA2HS) {
-        // Listen for the "beforeinstallprompt" event
-        window.addEventListener("beforeinstallprompt", (event) => {
-          console.log("Detected beforeinstallprompt event");
-          // Prevent default mini-info bar from appearing
-          event.preventDefault();
-          deferredPrompt = event; // Save the event for triggering the prompt later
-          // Show the custom banner
+
+      window.addEventListener("beforeinstallprompt", (event) => {
+        console.log("Detected beforeinstallprompt event");
+
+        // Prevent the default install prompt
+        event.preventDefault();
+        deferredPrompt = event;
+
+        const hasShownA2HS = localStorage.getItem("hasShownA2HS") === "true";
+        if (!hasShownA2HS) {
+          // Show the custom install banner
           const installAlert = document.createElement("div");
-          installAlert.style.position = "fixed";
-          installAlert.style.bottom = "20px";
-          installAlert.style.left = "50%";
-          installAlert.style.transform = "translateX(-50%)";
-          installAlert.style.backgroundColor = "#ffffff";
-          installAlert.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.15)";
-          installAlert.style.borderRadius = "12px";
-          installAlert.style.padding = "15px 20px";
-          installAlert.style.zIndex = "999";
-          installAlert.style.display = "flex";
-          installAlert.style.alignItems = "center";
-          installAlert.style.justifyContent = "space-between";
-          installAlert.style.width = "95%";
-          installAlert.style.maxWidth = "400px";
-          installAlert.style.fontFamily = "Arial, sans-serif";
-          // Add content: message, install button, and close button
+          installAlert.style.cssText = `
+          position: fixed;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background-color: #ffffff;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+          border-radius: 12px;
+          padding: 15px 20px;
+          z-index: 999;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 95%;
+          max-width: 400px;
+          font-family: Arial, sans-serif;
+        `;
+
           installAlert.innerHTML = `
-                    <div style="flex: 1; z-index: 999;">
-                      <p style="margin: 0; font-size: 16px; font-weight: bold; color: #333;">
-                        Add to Home Screen
-                      </p>
-                      <p style="margin: 0; font-size: 14px; color: #666;">
-                        Install this app for a better user experience!
-                      </p>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 10px; z-index: 999;">
-                      <button id="install-pwa-button" style="
-                        background-color: #ab5f14;
-                        color: #ffffff;
-                        font-size: 14px;
-                        font-weight: bold;
-                        border: none;
-                        padding: 8px 12px;
-                        border-radius: 8px;
-                        cursor: pointer;
-                        transition: background-color 0.3s;
-                      ">Install</button>
-                      <button id="close-alert-button" style="
-                        background-color: #bdbdbd;
-                        color: #fff;
-                        font-size: 14px;
-                        font-weight: bold;
-                        border: none;
-                        padding: 8px 12px;
-                        border-radius: 8px;
-                        cursor: pointer;
-                        transition: background-color 0.3s;
-                      ">Close</button>
-                    </div>
-                  `;
-          // Append the alert to the body
+          <div style="flex: 1;">
+            <p style="margin: 0; font-size: 16px; font-weight: bold; color: #333;">
+              Add to Home Screen
+            </p>
+            <p style="margin: 0; font-size: 14px; color: #666;">
+              Install this app for a better experience!
+            </p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button id="install-pwa-button" style="
+              background-color: #ab5f14;
+              color: #ffffff;
+              font-size: 14px;
+              font-weight: bold;
+              border: none;
+              padding: 8px 12px;
+              border-radius: 8px;
+              cursor: pointer;
+            ">Install</button>
+            <button id="close-alert-button" style="
+              background-color: #bdbdbd;
+              color: #fff;
+              font-size: 14px;
+              font-weight: bold;
+              border: none;
+              padding: 8px 12px;
+              border-radius: 8px;
+              cursor: pointer;
+            ">Close</button>
+          </div>
+        `;
+
           document.body.appendChild(installAlert);
-          // Automatically remove the alert after 15 seconds
+
           const timeout = setTimeout(() => {
             console.log("Install alert timed out after 15 seconds");
             installAlert.remove();
           }, 15000);
-          // Handle "Install" button click
-          const installButton = document.getElementById("install-pwa-button");
-          installButton?.addEventListener("click", async () => {
-            clearTimeout(timeout); // Cancel timeout when interacting
-            if (deferredPrompt) {
-              deferredPrompt.prompt(); // Trigger the install prompt
-              const { outcome } = await deferredPrompt.userChoice;
-              console.log("User choice:", outcome);
-              if (outcome === "accepted") {
-                localStorage.setItem("hasShownA2HS", "true"); // Mark as installed
-              }
-              deferredPrompt = null; // Clear saved prompt after user action
-            }
-            installAlert.remove(); // Once clicked, remove the alert
-          });
-          // Handle "Close" button click
-          const closeButton = document.getElementById("close-alert-button");
-          closeButton?.addEventListener("click", () => {
-            console.log("Install alert closed manually by user");
-            clearTimeout(timeout); // Cancel timeout
-            installAlert.remove(); // Remove alert
-            localStorage.setItem("hasShownA2HS", "false"); // Track dismissal
-          });
-        });
-      }
-    }
-  </script>
 
-  <!-- For Safari iOS -->
-  <script>
-    // Function to detect if the browser is Safari on iOS
-    const isSafariOnIos = () => {
-      const userAgent = window.navigator.userAgent.toLowerCase();
-      return (
-        !/safari/.test(userAgent) // Ensure it's Safari
-      );
-    };
-    // Function to check if the app is already running in standalone mode
-    const isInStandaloneMode = () => (
-      'standalone' in window.navigator && window.navigator.standalone
-    );
-    // Function to display the "Add to Home Screen" banner for Safari on iOS
-    const showInstallMessageForSafari = () => {
-      // Create a custom banner for adding to the home screen
-      const addToHomeScreenAlert = document.createElement("div");
-      addToHomeScreenAlert.style.cssText = `
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 16px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            z-index: 999;
-            `;
-      addToHomeScreenAlert.id = "addToHomeScreenAlertSafari";
-      // Add a button to the banner
-      const button = document.createElement("button");
-      button.innerHTML = "Add to Home Screen";
-      button.style.cssText = `
-            background-color: #ab5f14;
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            z-index: 999;
-            `;
-      button.onclick = showSafariInstructions; // Show full instructions when button is clicked
-      // Append the button to the banner
-      addToHomeScreenAlert.appendChild(button);
-      // Append the banner to the body
-      document.body.appendChild(addToHomeScreenAlert);
-      // Automatically hide the banner after 10 seconds if no interaction occurs
-      setTimeout(() => {
-        addToHomeScreenAlert.remove();
-      }, 10000); // 10 seconds
-    };
-    // Function to display detailed instructions for adding the app to the home screen
-    const showSafariInstructions = () => {
-      // Create a modal for the instructions
-      const modal = document.createElement("div");
-      modal.style.cssText = `
-            position: fixed;
-            top: 5%;
-            left: 50%;
-            transform: translate(-50%, 0);
-            background-color: white;
-            padding: 20px;
-            border: 2px solid #333;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 999;
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto; /* Enable vertical scrolling */
-            `;
-      // Add content to the modal, including a close button, text, image, and video
-      modal.innerHTML = `
-            <div style="position: relative; padding-bottom: 15px;"> <!-- Content wrapper -->
-          
-              <!-- Close button in the top-right corner -->
-              <button id="closeModal" style="
-                  background: transparent;
-                  border: none;
-                  position: absolute;
-                  top: -25px;
-                  right: -20px;
-                  font-size: 24px;
-                  font-weight: bold;
-                  color: #333;
-                  cursor: pointer;
-                ">&times;</button>
-          
-              <!-- Heading and Instructions -->
-              <h2 style="text-align: center; margin-top: 10px;">How to Add this App to Your Home Screen</h2>
-              <p>1. Tap the share icon (the square with the arrow pointing out of it).</p>
-              <p>2. Scroll down and select <strong>'Add to Home Screen'</strong>.</p>
-          
-              <!-- Responsive image above video -->
-              <img src="https://buddha-nature-download.vercel.app/assets/iosAddToHomeScreen-CPp5sBzY.jpg" alt="Instructions Image"
-                style="
-                  width: 100%; 
-                  height: auto;  /* Maintain aspect ratio */
-                  display: block;
-                  margin: 20px 0;
-                " />
-          
-              <!-- Responsive iframe embedding video -->
-              <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 20px;">
-                <iframe src="https://www.youtube.com/embed/zselTVtT70o" title="YouTube video player"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen>
-                </iframe>
-              </div>
-            </div>
-            `;
-      // Append the modal to the body
-      document.body.appendChild(modal);
-      // Close modal logic
-      document.querySelector("#closeModal").onclick = function () {
-        modal.remove();
-      };
-    };
-    // Add event listener to detect Safari on iOS and show the banner
-    window.addEventListener("load", () => {
-      if (isSafariOnIos() && !isInStandaloneMode()) {
-        showInstallMessageForSafari();
-      }
-    });
+          // Handle "Install" button click
+          document
+            .getElementById("install-pwa-button")
+            ?.addEventListener("click", async () => {
+              clearTimeout(timeout);
+              if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log("User choice:", outcome);
+                if (outcome === "accepted") {
+                  localStorage.setItem("hasShownA2HS", "true");
+                }
+                deferredPrompt = null;
+              }
+              installAlert.remove();
+            });
+
+          // Handle "Close" button click
+          document
+            .getElementById("close-alert-button")
+            ?.addEventListener("click", () => {
+              console.log("Install alert closed manually by user");
+              clearTimeout(timeout);
+              installAlert.remove();
+              localStorage.setItem("hasShownA2HS", "true");
+            });
+        }
+      });
+    }
   </script>
 </head>
 

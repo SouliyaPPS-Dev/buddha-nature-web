@@ -1,7 +1,7 @@
 import { SearchIcon } from '@/components/layouts/icons';
 import SutraCard from '@/containers/sutra/SutraCard';
 import { useFavorites } from '@/hooks/favorites/useFavorites';
-import { useScrollingStore } from '@/hooks/useScrollingStore';
+import { useScrollingStore } from '@/hooks/ScrollProvider';
 import { router } from '@/router';
 import { Input, Select, SelectItem } from '@nextui-org/react';
 import { createLazyFileRoute } from '@tanstack/react-router';

@@ -1,5 +1,5 @@
-import { CSSTransition } from 'react-transition-group';
 import React, { forwardRef } from 'react';
+import { CSSTransition } from 'react-transition-group';
 
 interface PageTransitionProps {
   children?: React.ReactNode;

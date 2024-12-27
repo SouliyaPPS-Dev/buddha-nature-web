@@ -1,3 +1,4 @@
+import { ThemeProvider } from '@/hooks/use-theme';
 import { persister, queryClient } from '@/services/react-query/client';
 import '@/styles/globals.css';
 import { NextUIProvider } from '@nextui-org/react';
@@ -7,7 +8,6 @@ import { RouterProvider } from '@tanstack/react-router';
 import { HelmetProvider } from 'react-helmet-async';
 import PageTransition from './components/PageTransition';
 import { router } from './router';
-import { ThemeProvider } from '@/hooks/use-theme';
 
 function App() {
   return (

@@ -3,7 +3,7 @@ import { useFontSizeContext } from '@/components/FontSizeProvider';
 import { useSearchContext } from '@/components/search/SearchContext';
 import FavoriteButton from '@/containers/sutra/FavoriteButton';
 import { useFavorites } from '@/hooks/favorites/useFavorites';
-import { useScrollingStore } from '@/hooks/useScrollingStore';
+import { useScrollingStore } from '@/hooks/ScrollProvider';
 import { SutraDataModel } from '@/model/sutra';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import DOMPurify from 'dompurify';

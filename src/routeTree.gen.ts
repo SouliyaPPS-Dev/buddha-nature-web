@@ -16,17 +16,17 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as VideoIndexImport } from './routes/video/index'
+import { Route as SutraIndexImport } from './routes/sutra/index'
 import { Route as DhammaIndexImport } from './routes/dhamma/index'
 import { Route as CalendarIndexImport } from './routes/calendar/index'
 import { Route as BookIndexImport } from './routes/book/index'
+import { Route as SutraCategoryImport } from './routes/sutra/$category'
+import { Route as SutraDetailsIdImport } from './routes/sutra/details.$id'
 
 // Create Virtual Routes
 
-const SutraIndexLazyImport = createFileRoute('/sutra/')()
 const FavoritesIndexLazyImport = createFileRoute('/favorites/')()
 const SutraSearchLazyImport = createFileRoute('/sutra/search')()
-const SutraCategoryLazyImport = createFileRoute('/sutra/$category')()
-const SutraDetailsIdLazyImport = createFileRoute('/sutra/details/$id')()
 const FavoritesDetailsIdLazyImport = createFileRoute('/favorites/details/$id')()
 
 // Create/Update Routes
@@ -43,12 +43,6 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const SutraIndexLazyRoute = SutraIndexLazyImport.update({
-  id: '/sutra/',
-  path: '/sutra/',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/sutra/index.lazy').then((d) => d.Route))
-
 const FavoritesIndexLazyRoute = FavoritesIndexLazyImport.update({
   id: '/favorites/',
   path: '/favorites/',
@@ -60,6 +54,12 @@ const FavoritesIndexLazyRoute = FavoritesIndexLazyImport.update({
 const VideoIndexRoute = VideoIndexImport.update({
   id: '/video/',
   path: '/video/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SutraIndexRoute = SutraIndexImport.update({
+  id: '/sutra/',
+  path: '/sutra/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -87,21 +87,11 @@ const SutraSearchLazyRoute = SutraSearchLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/sutra/search.lazy').then((d) => d.Route))
 
-const SutraCategoryLazyRoute = SutraCategoryLazyImport.update({
+const SutraCategoryRoute = SutraCategoryImport.update({
   id: '/sutra/$category',
   path: '/sutra/$category',
   getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/sutra/$category.lazy').then((d) => d.Route),
-)
-
-const SutraDetailsIdLazyRoute = SutraDetailsIdLazyImport.update({
-  id: '/sutra/details/$id',
-  path: '/sutra/details/$id',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/sutra/details.$id.lazy').then((d) => d.Route),
-)
+} as any)
 
 const FavoritesDetailsIdLazyRoute = FavoritesDetailsIdLazyImport.update({
   id: '/favorites/details/$id',
@@ -110,6 +100,12 @@ const FavoritesDetailsIdLazyRoute = FavoritesDetailsIdLazyImport.update({
 } as any).lazy(() =>
   import('./routes/favorites/details.$id.lazy').then((d) => d.Route),
 )
+
+const SutraDetailsIdRoute = SutraDetailsIdImport.update({
+  id: '/sutra/details/$id',
+  path: '/sutra/details/$id',
+  getParentRoute: () => rootRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -133,7 +129,7 @@ declare module '@tanstack/react-router' {
       id: '/sutra/$category'
       path: '/sutra/$category'
       fullPath: '/sutra/$category'
-      preLoaderRoute: typeof SutraCategoryLazyImport
+      preLoaderRoute: typeof SutraCategoryImport
       parentRoute: typeof rootRoute
     }
     '/sutra/search': {
@@ -164,6 +160,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DhammaIndexImport
       parentRoute: typeof rootRoute
     }
+    '/sutra/': {
+      id: '/sutra/'
+      path: '/sutra'
+      fullPath: '/sutra'
+      preLoaderRoute: typeof SutraIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/video/': {
       id: '/video/'
       path: '/video'
@@ -178,11 +181,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FavoritesIndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/sutra/': {
-      id: '/sutra/'
-      path: '/sutra'
-      fullPath: '/sutra'
-      preLoaderRoute: typeof SutraIndexLazyImport
+    '/sutra/details/$id': {
+      id: '/sutra/details/$id'
+      path: '/sutra/details/$id'
+      fullPath: '/sutra/details/$id'
+      preLoaderRoute: typeof SutraDetailsIdImport
       parentRoute: typeof rootRoute
     }
     '/favorites/details/$id': {
@@ -190,13 +193,6 @@ declare module '@tanstack/react-router' {
       path: '/favorites/details/$id'
       fullPath: '/favorites/details/$id'
       preLoaderRoute: typeof FavoritesDetailsIdLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/sutra/details/$id': {
-      id: '/sutra/details/$id'
-      path: '/sutra/details/$id'
-      fullPath: '/sutra/details/$id'
-      preLoaderRoute: typeof SutraDetailsIdLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -207,47 +203,47 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/sutra/$category': typeof SutraCategoryLazyRoute
+  '/sutra/$category': typeof SutraCategoryRoute
   '/sutra/search': typeof SutraSearchLazyRoute
   '/book': typeof BookIndexRoute
   '/calendar': typeof CalendarIndexRoute
   '/dhamma': typeof DhammaIndexRoute
+  '/sutra': typeof SutraIndexRoute
   '/video': typeof VideoIndexRoute
   '/favorites': typeof FavoritesIndexLazyRoute
-  '/sutra': typeof SutraIndexLazyRoute
+  '/sutra/details/$id': typeof SutraDetailsIdRoute
   '/favorites/details/$id': typeof FavoritesDetailsIdLazyRoute
-  '/sutra/details/$id': typeof SutraDetailsIdLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/sutra/$category': typeof SutraCategoryLazyRoute
+  '/sutra/$category': typeof SutraCategoryRoute
   '/sutra/search': typeof SutraSearchLazyRoute
   '/book': typeof BookIndexRoute
   '/calendar': typeof CalendarIndexRoute
   '/dhamma': typeof DhammaIndexRoute
+  '/sutra': typeof SutraIndexRoute
   '/video': typeof VideoIndexRoute
   '/favorites': typeof FavoritesIndexLazyRoute
-  '/sutra': typeof SutraIndexLazyRoute
+  '/sutra/details/$id': typeof SutraDetailsIdRoute
   '/favorites/details/$id': typeof FavoritesDetailsIdLazyRoute
-  '/sutra/details/$id': typeof SutraDetailsIdLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/sutra/$category': typeof SutraCategoryLazyRoute
+  '/sutra/$category': typeof SutraCategoryRoute
   '/sutra/search': typeof SutraSearchLazyRoute
   '/book/': typeof BookIndexRoute
   '/calendar/': typeof CalendarIndexRoute
   '/dhamma/': typeof DhammaIndexRoute
+  '/sutra/': typeof SutraIndexRoute
   '/video/': typeof VideoIndexRoute
   '/favorites/': typeof FavoritesIndexLazyRoute
-  '/sutra/': typeof SutraIndexLazyRoute
+  '/sutra/details/$id': typeof SutraDetailsIdRoute
   '/favorites/details/$id': typeof FavoritesDetailsIdLazyRoute
-  '/sutra/details/$id': typeof SutraDetailsIdLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -260,11 +256,11 @@ export interface FileRouteTypes {
     | '/book'
     | '/calendar'
     | '/dhamma'
+    | '/sutra'
     | '/video'
     | '/favorites'
-    | '/sutra'
-    | '/favorites/details/$id'
     | '/sutra/details/$id'
+    | '/favorites/details/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -274,11 +270,11 @@ export interface FileRouteTypes {
     | '/book'
     | '/calendar'
     | '/dhamma'
+    | '/sutra'
     | '/video'
     | '/favorites'
-    | '/sutra'
-    | '/favorites/details/$id'
     | '/sutra/details/$id'
+    | '/favorites/details/$id'
   id:
     | '__root__'
     | '/'
@@ -288,42 +284,42 @@ export interface FileRouteTypes {
     | '/book/'
     | '/calendar/'
     | '/dhamma/'
+    | '/sutra/'
     | '/video/'
     | '/favorites/'
-    | '/sutra/'
-    | '/favorites/details/$id'
     | '/sutra/details/$id'
+    | '/favorites/details/$id'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  SutraCategoryLazyRoute: typeof SutraCategoryLazyRoute
+  SutraCategoryRoute: typeof SutraCategoryRoute
   SutraSearchLazyRoute: typeof SutraSearchLazyRoute
   BookIndexRoute: typeof BookIndexRoute
   CalendarIndexRoute: typeof CalendarIndexRoute
   DhammaIndexRoute: typeof DhammaIndexRoute
+  SutraIndexRoute: typeof SutraIndexRoute
   VideoIndexRoute: typeof VideoIndexRoute
   FavoritesIndexLazyRoute: typeof FavoritesIndexLazyRoute
-  SutraIndexLazyRoute: typeof SutraIndexLazyRoute
+  SutraDetailsIdRoute: typeof SutraDetailsIdRoute
   FavoritesDetailsIdLazyRoute: typeof FavoritesDetailsIdLazyRoute
-  SutraDetailsIdLazyRoute: typeof SutraDetailsIdLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  SutraCategoryLazyRoute: SutraCategoryLazyRoute,
+  SutraCategoryRoute: SutraCategoryRoute,
   SutraSearchLazyRoute: SutraSearchLazyRoute,
   BookIndexRoute: BookIndexRoute,
   CalendarIndexRoute: CalendarIndexRoute,
   DhammaIndexRoute: DhammaIndexRoute,
+  SutraIndexRoute: SutraIndexRoute,
   VideoIndexRoute: VideoIndexRoute,
   FavoritesIndexLazyRoute: FavoritesIndexLazyRoute,
-  SutraIndexLazyRoute: SutraIndexLazyRoute,
+  SutraDetailsIdRoute: SutraDetailsIdRoute,
   FavoritesDetailsIdLazyRoute: FavoritesDetailsIdLazyRoute,
-  SutraDetailsIdLazyRoute: SutraDetailsIdLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -343,11 +339,11 @@ export const routeTree = rootRoute
         "/book/",
         "/calendar/",
         "/dhamma/",
+        "/sutra/",
         "/video/",
         "/favorites/",
-        "/sutra/",
-        "/favorites/details/$id",
-        "/sutra/details/$id"
+        "/sutra/details/$id",
+        "/favorites/details/$id"
       ]
     },
     "/": {
@@ -357,7 +353,7 @@ export const routeTree = rootRoute
       "filePath": "about.tsx"
     },
     "/sutra/$category": {
-      "filePath": "sutra/$category.lazy.tsx"
+      "filePath": "sutra/$category.tsx"
     },
     "/sutra/search": {
       "filePath": "sutra/search.lazy.tsx"
@@ -371,20 +367,20 @@ export const routeTree = rootRoute
     "/dhamma/": {
       "filePath": "dhamma/index.tsx"
     },
+    "/sutra/": {
+      "filePath": "sutra/index.tsx"
+    },
     "/video/": {
       "filePath": "video/index.tsx"
     },
     "/favorites/": {
       "filePath": "favorites/index.lazy.tsx"
     },
-    "/sutra/": {
-      "filePath": "sutra/index.lazy.tsx"
+    "/sutra/details/$id": {
+      "filePath": "sutra/details.$id.tsx"
     },
     "/favorites/details/$id": {
       "filePath": "favorites/details.$id.lazy.tsx"
-    },
-    "/sutra/details/$id": {
-      "filePath": "sutra/details.$id.lazy.tsx"
     }
   }
 }

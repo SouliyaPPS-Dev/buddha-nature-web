@@ -32,7 +32,7 @@ if (workbox) {
 
   // ⚙️ Cache HTML Pages (Every Route for SPA)
   workbox.routing.registerRoute(
-    ({ request }) => request.mode === 'navigate', // Caches all navigation requests
+    ({ request }) => request.mode === 'navigate',
     new workbox.strategies.NetworkFirst({
       cacheName: 'html-cache',
       plugins: [
@@ -49,7 +49,7 @@ if (workbox) {
 
   // ⚙️ Cache API Requests
   workbox.routing.registerRoute(
-    /^https:\/\/example-api\.com\/.*/, // Replace with your API domain
+    /^https:\/\/example-api\.com\/.*/,
     new workbox.strategies.NetworkFirst({
       cacheName: 'api-cache',
       plugins: [
@@ -64,7 +64,7 @@ if (workbox) {
     })
   );
 
-  // ⚙️ Fallback for Offline Navigation (SPA Fallback)
+  // Fallback for Offline Navigation
   self.addEventListener('fetch', (event) => {
     if (event.request.mode === 'navigate') {
       event.respondWith(

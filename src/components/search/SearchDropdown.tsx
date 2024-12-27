@@ -6,8 +6,10 @@ import { SearchIcon } from '../layouts/icons';
 import { useMenuContext } from '../layouts/MenuProvider';
 import DropdownSearch from './DropdownSearch';
 import { useSearchContext } from './SearchContext';
+import { useTheme } from '@/hooks/use-theme';
 
 export const SearchDropdown = () => {
+  const { theme } = useTheme();
   const { searchTerm, setSearchTerm } = useSearchContext();
   const {
     data: searchResults,
@@ -55,7 +57,9 @@ export const SearchDropdown = () => {
         labelPlacement='outside'
         type='search'
         placeholder='ຄົ້ນຫາພຣະສູດທັງໝົດ...'
-        className='text-base themes'
+        style={{
+          color: theme === 'dark' ? '#fff' : '#000',
+        }}
         startContent={
           <SearchIcon className='text-base text-default-400 pointer-events-none flex-shrink-0' />
         }
