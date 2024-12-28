@@ -47,7 +47,7 @@ function RouteComponent() {
                 aria-label='Search'
                 labelPlacement='outside'
                 type='search'
-                placeholder='ຄົ້ນຫາປື້ມ...'
+                placeholder='ຄົ້ນຫາ...'
                 className='bg-default-100 rounded-lg w-full font-phetsarath'
                 value={searchTerm}
                 startContent={
