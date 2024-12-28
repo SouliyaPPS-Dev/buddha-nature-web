@@ -31,6 +31,7 @@ import { IoIosArrowBack } from 'react-icons/io';
 import { SearchDropdown } from '../search/SearchDropdown';
 import { useMenuContext } from './MenuProvider';
 import { router } from '@/router';
+import { IoShareSocialSharp } from 'react-icons/io5';
 
 export const Navbar = () => {
   const [activeItem, setActiveItem] = useState<string>('');
@@ -47,6 +48,25 @@ export const Navbar = () => {
     router.navigate({ to: href });
     setActiveItem(href); // Set the active item when it's clicked
     setIsMenuOpen(false); // This closes the menu
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+
+    // Sharing the content using the Web Share API
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          url, // Share a link to the content (the page with the HTML)
+        });
+        console.log('Shared successfully');
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      // Fallback for browsers that don't support the Web Share API
+      alert('Sharing is not supported on this device.');
+    }
   };
 
   return (
@@ -127,6 +147,15 @@ export const Navbar = () => {
           </NavbarItem>
         )}
 
+        {/* Share Button */}
+        <NavbarItem className='hidden sm:flex gap-2 '>
+          <IoShareSocialSharp
+            className='mr-3'
+            size={20}
+            onClick={handleShare}
+          />
+        </NavbarItem>
+
         {/* Search Button */}
         <NavbarItem className='hidden sm:flex gap-2 '>
           <SearchIcon />
@@ -154,6 +183,9 @@ export const Navbar = () => {
       <NavbarContent className='sm:hidden basis-1 pl-4' justify='end'>
         {/* Delete Button */}
         {currentPath === '/favorites' && <DeleteFavorites />}
+
+        {/* Share Button */}
+        <IoShareSocialSharp className='mr-3' size={20} onClick={handleShare} />
 
         {/* Search Button */}
         <SearchIcon />
@@ -200,7 +232,9 @@ export const Navbar = () => {
             };
 
             return (
-              <div key={`${item}-${index}`} className='w-full'
+              <div
+                key={`${item}-${index}`}
+                className='w-full'
                 onClick={() => handleMobileNavigation(item.href)}
               >
                 <NavbarMenuItem className='w-full'>

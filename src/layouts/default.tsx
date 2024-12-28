@@ -15,7 +15,7 @@ export default function DefaultLayout({
   const { theme } = useTheme();
   const location = useRouterState({ select: (state) => state.location });
 
-  const isBookRoute = location.pathname.split('/').length === 4;
+  const isBookRoute = location.pathname.startsWith('/book/view/');
 
   return (
     <Fragment>
