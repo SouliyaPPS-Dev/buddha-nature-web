@@ -1,7 +1,7 @@
 import { useSearchContext } from '@/components/search/SearchContext';
 import { SutraDataModel } from '@/model/sutra';
 import { useSutra } from './useSutra';
-import { Route } from '@/routes/sutra/$category';
+import { Route } from '@/routes/sutra/$category.lazy';
 
 export const useCategory = () => {
      const { searchTerm, setSearchTerm } = useSearchContext();

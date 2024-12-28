@@ -15,6 +15,8 @@ export default function DefaultLayout({
   const { theme } = useTheme();
   const location = useRouterState({ select: (state) => state.location });
 
+  const isBookRoute = location.pathname.split('/').length === 4;
+
   return (
     <Fragment>
       {/* Inside ScrollProvider, now useScrollingStore is valid */}
@@ -24,7 +26,11 @@ export default function DefaultLayout({
             {/* Top navbar */}
             <Navbar />
             {/* Main content */}
-            <main className='container mx-auto max-w-7xl px-2 flex-grow'>
+            <main
+              className={`flex-grow ${
+                isBookRoute ? '' : 'container mx-auto max-w-7xl px-2'
+              }`}
+            >
               {children}
             </main>
             {/* Bottom navigation tabs */}

@@ -1,12 +1,11 @@
 import React, {
   createContext,
-  useContext,
-  useRef,
-  useEffect,
-  useLayoutEffect,
   ReactNode,
+  useContext,
+  useEffect,
+  useRef,
 } from 'react';
-import { useRouter } from '@tanstack/react-router';
+import { useRouterState } from '@tanstack/react-router';
 import smoothscroll from 'smoothscroll-polyfill';
 
 // 📝 Define Context Interface
@@ -21,88 +20,107 @@ const ScrollContext = createContext<ScrollContextProps | undefined>(undefined);
 export const ScrollProvider = ({ children }: { children: ReactNode }) => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const scrollPositions = useRef<Record<string, number>>({});
-  const router = useRouter();
+  const location = useRouterState({ select: (state) => state.location });
 
-  // ✅ Enable smooth scroll polyfill (for better cross-browser support)
+  // ✅ Enable smooth scrolling polyfill
   useEffect(() => {
     smoothscroll.polyfill();
   }, []);
 
   /**
-   * ✅ Get current route key
-   */
-  const getRouteKey = () => {
-    const currentRoute = router.state.location;
-    return `${currentRoute.pathname}?${currentRoute.search || ''}`;
-  };
-
-  /**
-   * ✅ Save Scroll Position
+   * ✅ Save Scroll Position Before Navigation
    */
   const saveScrollPosition = () => {
-    const routeKey = getRouteKey();
-    const scrollPosition =
-      scrollContainerRef.current?.scrollTop || window.scrollY;
-
-    scrollPositions.current[routeKey] = scrollPosition;
+    const path = location.pathname;
+    const position =
+      scrollContainerRef.current?.scrollTop || window.scrollY || 0;
+    scrollPositions.current[path] = position;
   };
 
   /**
-   * ✅ Restore Scroll Position
+   * ✅ Restore Scroll Position After Navigation
    */
-  const restoreScrollPosition = () => {
-    const routeKey = getRouteKey();
-    const savedPosition = scrollPositions.current[routeKey] || 0;
 
+  const restoreScrollPosition = () => {
+    const path = location.pathname;
+    const savedPosition = scrollPositions.current[path] || 0;
+
+    requestAnimationFrame(() => {
+      const scrollTarget =
+        scrollContainerRef.current ?? document.documentElement;
+      scrollTarget.scrollTo({
+        top: savedPosition,
+        behavior: 'smooth',
+      });
+    });
+  };
+
+  /**
+   * ✅ Scroll to Bottom for Specific Route (`/sutra`)
+   */
+  const scrollToBottom = () => {
     requestAnimationFrame(() => {
       if (scrollContainerRef.current) {
         scrollContainerRef.current.scrollTo({
-          top: savedPosition,
-          behavior: 'auto',
+          top: scrollContainerRef.current.scrollHeight,
+          behavior: 'smooth',
         });
       } else {
         window.scrollTo({
-          top: savedPosition,
-          behavior: 'auto',
+          top: document.body.scrollHeight,
+          behavior: 'smooth',
         });
       }
     });
   };
 
   /**
-   * ✅ Handle Scroll Position on Navigation
+   * ✅ Handle Route Changes
    */
   useEffect(() => {
-    const handleBeforeNavigate = () => {
-      saveScrollPosition();
-    };
+    // Save current scroll position before leaving
+    saveScrollPosition();
 
-    const unsubscribeBeforeNavigate = router.subscribe(
-      'onBeforeNavigate',
-      handleBeforeNavigate
-    );
+    if (location.pathname) {
+      // Auto-scroll down if route is `/sutra`
+      scrollToBottom();
+    } else {
+      // Restore scroll position for other routes
+      const isNavigatingBackOrForward = window.performance
+        .getEntriesByType('navigation')
+        .some(
+          (nav) => (nav as PerformanceNavigationTiming).type === 'back_forward'
+        );
 
-    // Route change listener via useEffect
-    const unlisten = router.subscribe('onBeforeLoad', restoreScrollPosition);
-
-    window.addEventListener('popstate', restoreScrollPosition);
-    window.addEventListener('beforeunload', saveScrollPosition);
-
-    return () => {
-      saveScrollPosition();
-      unsubscribeBeforeNavigate();
-      unlisten();
-      window.removeEventListener('popstate', restoreScrollPosition);
-      window.removeEventListener('beforeunload', saveScrollPosition);
-    };
-  }, [router]);
+      if (isNavigatingBackOrForward) {
+        restoreScrollPosition();
+      } else {
+        // Default behavior for new routes
+        requestAnimationFrame(() => {
+          if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTo({
+              top: 0,
+              behavior: 'smooth',
+            });
+          } else {
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth',
+            });
+          }
+        });
+      }
+    }
+  }, [location.pathname]);
 
   /**
-   * ✅ Restore Scroll Position after Route Change
+   * ✅ Save Scroll Position on Unmount
    */
-  useLayoutEffect(() => {
-    restoreScrollPosition();
-  }, [router.state.location.pathname, router.state.location.search]);
+  useEffect(() => {
+    if (!('scrollBehavior' in document.documentElement.style)) {
+      smoothscroll.polyfill();
+    }
+  }, []);
 
   return (
     <ScrollContext.Provider value={{ scrollContainerRef }}>

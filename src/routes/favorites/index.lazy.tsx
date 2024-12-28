@@ -39,7 +39,7 @@ function RouteComponent() {
           marginLeft: '-4px',
         }}
       >
-        <div className='grid grid-cols-2 md:grid-cols-2 gap-2 items-center'>
+        <div className='grid grid-cols-2 md:grid-cols-2 gap-1 items-center'>
           {/* Search Bar */}
           <div className='w-full'>
             <Input
@@ -47,9 +47,7 @@ function RouteComponent() {
               labelPlacement='outside'
               type='search'
               placeholder='ຄົ້ນຫາພຣະສູດຖືກໃຈ...'
-              classNames={{
-                inputWrapper: 'bg-default-100',
-              }}
+              className='bg-default-100 rounded-lg w-full font-phetsarath'
               value={searchTerm}
               startContent={
                 <SearchIcon className='text-base text-default-400 pointer-events-none flex-shrink-0' />

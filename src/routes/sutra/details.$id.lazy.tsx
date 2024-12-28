@@ -1,80 +1,80 @@
-import AudioPlayerStyled from '@/components/AudioPlayer'
-import { useFontSizeContext } from '@/components/FontSizeProvider'
-import { useSearchContext } from '@/components/search/SearchContext'
-import FavoriteButton from '@/containers/sutra/FavoriteButton'
-import { useSutra } from '@/hooks/sutra/useSutra'
-import { useScrollingStore } from '@/hooks/ScrollProvider'
-import { SutraDataModel } from '@/model/sutra'
-import { createFileRoute } from '@tanstack/react-router'
-import DOMPurify from 'dompurify'
-import { motion } from 'framer-motion'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import 'react-h5-audio-player/lib/styles.css'
-import Highlighter from 'react-highlight-words'
-import ReactHtmlParser from 'react-html-parser'
+import AudioPlayerStyled from '@/components/AudioPlayer';
+import { useFontSizeContext } from '@/components/FontSizeProvider';
+import { useSearchContext } from '@/components/search/SearchContext';
+import FavoriteButton from '@/containers/sutra/FavoriteButton';
+import { useScrollingStore } from '@/hooks/ScrollProvider';
+import { useSutra } from '@/hooks/sutra/useSutra';
+import { SutraDataModel } from '@/model/sutra';
+import { createLazyFileRoute } from '@tanstack/react-router';
+import DOMPurify from 'dompurify';
+import { motion } from 'framer-motion';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import 'react-h5-audio-player/lib/styles.css';
+import Highlighter from 'react-highlight-words';
+import ReactHtmlParser from 'react-html-parser';
 import {
   FaCheck,
   FaChevronLeft,
   FaChevronRight,
   FaMinus,
   FaPlus,
-} from 'react-icons/fa'
-import { GrCopy } from 'react-icons/gr'
-import { IoShareSocialSharp } from 'react-icons/io5'
+} from 'react-icons/fa';
+import { GrCopy } from 'react-icons/gr';
+import { IoShareSocialSharp } from 'react-icons/io5';
 
-export const Route = createFileRoute('/sutra/details/$id')({
+export const Route = createLazyFileRoute('/sutra/details/$id')({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  const { scrollContainerRef } = useScrollingStore()
-  const params = Route.useParams()
-  const { id } = params
-  const { data } = useSutra()
-  const { searchTerm } = useSearchContext()
-  const { fontSize, setFontSize } = useFontSizeContext()
-  const [isProcessing, setIsProcessing] = useState(false) // State to track if action is processing
+  const { scrollContainerRef } = useScrollingStore();
+  const params = Route.useParams();
+  const { id } = params;
+  const { data } = useSutra();
+  const { searchTerm } = useSearchContext();
+  const { fontSize, setFontSize } = useFontSizeContext();
+  const [isProcessing, setIsProcessing] = useState(false); // State to track if action is processing
 
   // Inside your component
-  const [isCopied, setIsCopied] = useState(false) // State to manage copy success
+  const [isCopied, setIsCopied] = useState(false); // State to manage copy success
 
   // State for font size
-  const itemsPerPage = 1 // Always show 1 item per "chunk"
-  const [filteredDetails, setFilteredDetails] = useState<any[]>([]) // Filtered data displayed in the flipbook
-  const [currentPage, setCurrentPage] = useState(0) // Current page index
+  const itemsPerPage = 1; // Always show 1 item per "chunk"
+  const [filteredDetails, setFilteredDetails] = useState<any[]>([]); // Filtered data displayed in the flipbook
+  const [currentPage, setCurrentPage] = useState(0); // Current page index
 
   // Find current index in the original data array
   const currentGlobalIndex = data?.findIndex(
-    (item) => item.ID === filteredDetails?.[currentPage]?.ID,
-  ) // Assuming `ID` is the unique identifier
+    (item) => item.ID === filteredDetails?.[currentPage]?.ID
+  ); // Assuming `ID` is the unique identifier
 
   // Filter items based on category and search term
   const filteredItemsCategory = data?.filter((item: SutraDataModel) => {
     // Match category
-    const matchesID = id ? item['ID'] === id : true
+    const matchesID = id ? item['ID'] === id : true;
 
     // Match search term in any field (case-insensitive)
     const matchesSearchTerm = searchTerm
       ? [item['ຊື່ພຣະສູດ'], item['ພຣະສູດ'], item['ໝວດທັມ']].some((field) =>
-          field?.toLowerCase().includes(searchTerm.toLowerCase()),
+          field?.toLowerCase().includes(searchTerm.toLowerCase())
         )
-      : true
+      : true;
 
-    return matchesID && matchesSearchTerm
-  })
+    return matchesID && matchesSearchTerm;
+  });
 
   // **Filter Data Based on Search Term or Category/Title**
   const getFilteredData = useCallback(() => {
-    if (!data) return []
+    if (!data) return [];
 
     const normalizedSearchTerm =
-      typeof searchTerm === 'string' ? searchTerm.toLowerCase() : ''
+      typeof searchTerm === 'string' ? searchTerm.toLowerCase() : '';
 
     if (!searchTerm) {
       // If there's no search term, filter based on category and title
       return data.filter(
-        (item) => item['ID']?.toLowerCase() === id?.toLowerCase(),
-      )
+        (item) => item['ID']?.toLowerCase() === id?.toLowerCase()
+      );
     }
 
     if (normalizedSearchTerm !== '') {
@@ -82,154 +82,157 @@ function RouteComponent() {
         [item['ຊື່ພຣະສູດ'], item['ພຣະສູດ'], item['ໝວດທັມ']]
           .join('')
           .toLowerCase()
-          .includes(normalizedSearchTerm),
-      )
+          .includes(normalizedSearchTerm)
+      );
     } else {
       // If there's no search term, filter based on category and title
       return data.filter(
-        (item) => item['ID']?.toLowerCase() === id?.toLowerCase(),
-      )
+        (item) => item['ID']?.toLowerCase() === id?.toLowerCase()
+      );
     }
-  }, [data, searchTerm, id])
+  }, [data, searchTerm, id]);
 
-  const isDisabled = getFilteredData().length < 1
+  const isDisabled = getFilteredData().length < 1;
   const isDisabledEmptySearch =
-    getFilteredData().length <= filteredDetails.length
+    getFilteredData().length <= filteredDetails.length;
 
   // Initialize filteredDetails with the first chunk of data
   useEffect(() => {
     if (getFilteredData().length) {
-      setFilteredDetails(getFilteredData().slice(0, itemsPerPage))
+      setFilteredDetails(getFilteredData().slice(0, itemsPerPage));
     }
-  }, [getFilteredData, itemsPerPage])
+  }, [getFilteredData, itemsPerPage]);
 
   useEffect(() => {
     if (searchTerm === '') {
-      setFilteredDetails(getFilteredData().slice(0, itemsPerPage))
+      setFilteredDetails(getFilteredData().slice(0, itemsPerPage));
     } else {
-      setFilteredDetails(getFilteredData())
+      setFilteredDetails(getFilteredData());
     }
-  }, [searchTerm])
+  }, [searchTerm]);
 
   useEffect(() => {
     // Filter data based on category and title
     const updatedDetails = data?.filter(
-      (item) => item['ID']?.toLowerCase() === id?.toLowerCase(),
-    )
+      (item) => item['ID']?.toLowerCase() === id?.toLowerCase()
+    );
     if (updatedDetails.length > 0) {
-      setFilteredDetails(updatedDetails.slice(0, itemsPerPage))
+      setFilteredDetails(updatedDetails.slice(0, itemsPerPage));
     } else {
-      setFilteredDetails([])
+      setFilteredDetails([]);
     }
-  }, [data, id])
+  }, [data, id]);
 
   // The reusable function to get the next chunk of data
   const getNextData = (
     latestIndex: number,
     itemsPerPage: number,
-    filteredData: any[],
+    filteredData: any[]
   ): any[] => {
     if (latestIndex + itemsPerPage < filteredItemsCategory.length) {
       return filteredItemsCategory.slice(
         latestIndex + 1,
-        latestIndex + 1 + itemsPerPage,
-      ) // Get next `itemsPerPage` items
+        latestIndex + 1 + itemsPerPage
+      ); // Get next `itemsPerPage` items
     }
 
     if (latestIndex + 1 < filteredData.length) {
-      return filteredData.slice(latestIndex + 1, latestIndex + 1 + itemsPerPage) // Get next `itemsPerPage` items
+      return filteredData.slice(
+        latestIndex + 1,
+        latestIndex + 1 + itemsPerPage
+      ); // Get next `itemsPerPage` items
     }
 
     if (searchTerm !== '') {
-      return filteredData.slice(0, itemsPerPage)
+      return filteredData.slice(0, itemsPerPage);
     }
-    return [] // Return empty array if no data is left
-  }
+    return []; // Return empty array if no data is left
+  };
 
   // Navigate to the next page
   const goToNextPage = () => {
     if (currentPage < filteredDetails.length - 1) {
       setTimeout(() => {
-        setCurrentPage(currentPage + 1)
-      }, 600) // Match duration of animation
+        setCurrentPage(currentPage + 1);
+      }, 600); // Match duration of animation
     }
 
     setFilteredDetails((prev) =>
-      prev.concat(getNextData(currentGlobalIndex, itemsPerPage, data)),
-    )
+      prev.concat(getNextData(currentGlobalIndex, itemsPerPage, data))
+    );
 
     // Increment the current page to load the next batch of data
-    setCurrentPage((prev) => prev + itemsPerPage)
-  }
+    setCurrentPage((prev) => prev + itemsPerPage);
+  };
 
   // Navigate to the previous page
   const goToPreviousPage = () => {
-    if (isProcessing) return // Prevent double clicks while processing
-    setIsProcessing(true) // Lock the button after the first click
+    if (isProcessing) return; // Prevent double clicks while processing
+    setIsProcessing(true); // Lock the button after the first click
     if (currentPage >= 1) {
       setTimeout(() => {
-        setCurrentPage(currentPage - 1)
-        setIsProcessing(false) // Unlock the button after processing
-      }, 100)
+        setCurrentPage(currentPage - 1);
+        setIsProcessing(false); // Unlock the button after processing
+      }, 100);
     }
 
-    setFilteredDetails((prev) => prev.slice(0, prev.length - itemsPerPage))
-    setCurrentPage((prev) => prev - itemsPerPage)
-  }
+    setFilteredDetails((prev) => prev.slice(0, prev.length - itemsPerPage));
+    setCurrentPage((prev) => prev - itemsPerPage);
+  };
 
   const isPreviousDisabled = useMemo(
     () => filteredDetails.length <= 1 || isProcessing,
-    [filteredDetails, isProcessing],
-  )
+    [filteredDetails, isProcessing]
+  );
 
   // Keyboard Navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const canNavigatePrevious =
-        !isProcessing && currentPage > 0 && !isDisabled
+        !isProcessing && currentPage > 0 && !isDisabled;
 
       if (e.key === 'ArrowLeft' && canNavigatePrevious) {
-        goToPreviousPage()
+        goToPreviousPage();
       } else if (e.key === 'ArrowRight') {
-        goToNextPage()
+        goToNextPage();
       }
-    }
+    };
 
-    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
+      window.removeEventListener('keydown', handleKeyDown);
+    };
     // Dependency now relies on 'currentPage', 'filteredItemsCategory', 'isProcessing'
-  }, [currentPage, filteredItemsCategory.length, isProcessing])
+  }, [currentPage, filteredItemsCategory.length, isProcessing]);
 
   // Handlers for font size adjustments
   const increaseFontSize = () =>
-    setFontSize((prev) => (prev < 32 ? prev + 2 : prev)) // Max 32px
+    setFontSize((prev) => (prev < 32 ? prev + 2 : prev)); // Max 32px
 
   const decreaseFontSize = () =>
-    setFontSize((prev) => (prev > 12 ? prev - 2 : prev)) // Min 12px
+    setFontSize((prev) => (prev > 12 ? prev - 2 : prev)); // Min 12px
 
   // **Copy to Clipboard Handler**
   const copyToClipboard = () => {
     if (filteredDetails.length) {
-      const currentItem = filteredDetails[currentPage]
+      const currentItem = filteredDetails[currentPage];
       const textToCopy = `
        ${currentItem['ຊື່ພຣະສູດ']}
        ${currentItem['ພຣະສູດ']}
        ${currentItem['ໝວດທັມ']}
-    `.trim() // Using trim() to remove extra leading/trailing whitespace or newlines
+    `.trim(); // Using trim() to remove extra leading/trailing whitespace or newlines
 
       navigator.clipboard.writeText(textToCopy).then(() => {
-        setIsCopied(true) // Set the state to true (show success icon)
-        setTimeout(() => setIsCopied(false), 2000) // Reset after 2 seconds
-      })
+        setIsCopied(true); // Set the state to true (show success icon)
+        setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+      });
     }
-  }
+  };
 
   const handleShare = async () => {
-    const text = filteredDetails?.[currentPage]?.['ຊື່ພຣະສູດ']
-    const url = `${window.location.origin}/sutra/details/${filteredDetails?.[currentPage]?.['ID']}${window.location.search}`
+    const text = filteredDetails?.[currentPage]?.['ຊື່ພຣະສູດ'];
+    const url = `${window.location.origin}/sutra/details/${filteredDetails?.[currentPage]?.['ID']}${window.location.search}`;
 
     // Sharing the content using the Web Share API
     if (navigator.share) {
@@ -237,55 +240,57 @@ function RouteComponent() {
         await navigator.share({
           text, // Shared text with category
           url, // Share a link to the content (the page with the HTML)
-        })
-        console.log('Shared successfully')
+        });
+        console.log('Shared successfully');
       } catch (error) {
-        console.error('Error sharing:', error)
+        console.error('Error sharing:', error);
       }
     } else {
       // Fallback for browsers that don't support the Web Share API
-      alert('Sharing is not supported on this device.')
+      alert('Sharing is not supported on this device.');
     }
-  }
+  };
 
   // Function to sanitize and parse HTML content
   const renderDetail = (htmlContent: string, searchTerm?: string) => {
-    const sanitizedHtmlContent = DOMPurify.sanitize(htmlContent)
-    const contentWithBreaks = sanitizedHtmlContent.replace(/\n/g, '<br/>')
+    const sanitizedHtmlContent = DOMPurify.sanitize(htmlContent);
+    const contentWithBreaks = sanitizedHtmlContent.replace(/\n/g, '<br/>');
 
     if (!searchTerm?.trim()) {
       return (
         <div
           contentEditable={true}
           style={{ fontSize: `${fontSize}px` }}
-          className="cursor-text"
+          className='cursor-text'
         >
           {ReactHtmlParser(contentWithBreaks)}
         </div>
-      )
+      );
     } else {
       // Highlighting functionality if searchTerm is provided
-      const parts = contentWithBreaks.split(new RegExp(`(${searchTerm})`, 'gi'))
+      const parts = contentWithBreaks.split(
+        new RegExp(`(${searchTerm})`, 'gi')
+      );
       return parts.map((part, index) => {
         if (part.toLowerCase() === searchTerm.toLowerCase()) {
           return (
             <span
               key={index}
-              className="bg-yellow-200 font-bold text-black cursor-text"
+              className='bg-yellow-200 font-bold text-black cursor-text'
               contentEditable={true}
               style={{ fontSize: `${fontSize}px` }}
             >
               {ReactHtmlParser(part)}
             </span>
-          )
+          );
         }
-        return <span key={index}>{ReactHtmlParser(part)}</span>
-      })
+        return <span key={index}>{ReactHtmlParser(part)}</span>;
+      });
     }
-  }
+  };
 
   const renderPositionBar = () => (
-    <div className="fixed bottom-0 left-0 right-0 z-10 px-4 py-4 flex justify-between items-center md:mb-[64px] mb-5 text-white">
+    <div className='fixed bottom-0 left-0 right-0 z-10 px-4 py-4 flex justify-between items-center md:mb-[64px] mb-5 text-white'>
       {/* Previous Page Button (Left Side) */}
       <div
         style={{
@@ -313,14 +318,14 @@ function RouteComponent() {
           }}
           onMouseOver={(e) => {
             if (filteredDetails.length > 1 && !isProcessing) {
-              e.currentTarget.style.background = '#704214' // Darker brown hover effect
-              e.currentTarget.style.transform = 'scale(1.1)' // Slight zoom effect
+              e.currentTarget.style.background = '#704214'; // Darker brown hover effect
+              e.currentTarget.style.transform = 'scale(1.1)'; // Slight zoom effect
             }
           }}
           onMouseOut={(e) => {
             if (filteredDetails.length > 1 && !isProcessing) {
-              e.currentTarget.style.background = '#8B5E3C' // Reset color
-              e.currentTarget.style.transform = 'scale(1)' // Reset zoom
+              e.currentTarget.style.background = '#8B5E3C'; // Reset color
+              e.currentTarget.style.transform = 'scale(1)'; // Reset zoom
             }
           }}
         >
@@ -433,7 +438,7 @@ function RouteComponent() {
           }
         >
           {isCopied ? (
-            <FaCheck size={18} color="green" />
+            <FaCheck size={18} color='green' />
           ) : (
             <GrCopy size={18} />
           )}
@@ -493,14 +498,14 @@ function RouteComponent() {
             }}
             onMouseOver={(e) => {
               if (!isDisabled) {
-                e.currentTarget.style.background = '#704214'
-                e.currentTarget.style.transform = 'scale(1.1)'
+                e.currentTarget.style.background = '#704214';
+                e.currentTarget.style.transform = 'scale(1.1)';
               }
             }}
             onMouseOut={(e) => {
               if (!isDisabled) {
-                e.currentTarget.style.background = '#8B5E3C'
-                e.currentTarget.style.transform = 'scale(1)'
+                e.currentTarget.style.background = '#8B5E3C';
+                e.currentTarget.style.transform = 'scale(1)';
               }
             }}
           >
@@ -528,14 +533,14 @@ function RouteComponent() {
             }}
             onMouseOver={(e) => {
               if (!isDisabledEmptySearch) {
-                e.currentTarget.style.background = '#704214'
-                e.currentTarget.style.transform = 'scale(1.1)'
+                e.currentTarget.style.background = '#704214';
+                e.currentTarget.style.transform = 'scale(1.1)';
               }
             }}
             onMouseOut={(e) => {
               if (!isDisabledEmptySearch) {
-                e.currentTarget.style.background = '#8B5E3C'
-                e.currentTarget.style.transform = 'scale(1)'
+                e.currentTarget.style.background = '#8B5E3C';
+                e.currentTarget.style.transform = 'scale(1)';
               }
             }}
           >
@@ -544,19 +549,19 @@ function RouteComponent() {
         )}
       </div>
     </div>
-  )
+  );
 
   return (
     <>
-      <div
+      <section
         ref={scrollContainerRef}
-        className="relative flex justify-center items-center mb-24 mt-4 px-3"
+        className='relative flex justify-center items-center mb-24 mt-4 px-3'
       >
         {/* Content of the Current Page Flipbook Animation */}
         {filteredDetails?.length > 0 ? (
           <>
             <motion.div
-              className="page cursor-text mb-8"
+              className='page cursor-text mb-8'
               style={{
                 fontSize: `${fontSize}px`,
                 perspective: '1000px', // Perspective for flip effect
@@ -566,17 +571,17 @@ function RouteComponent() {
                 duration: 0.6,
                 ease: 'easeInOut',
               }}
-              drag="x" // Enable dragging only on the x-axis
+              drag='x' // Enable dragging only on the x-axis
               dragConstraints={{ left: 0, right: 0 }} // Limit drag direction
               onDragStart={(event) => {
                 // Prevent scrolling during horizontal drag
-                event.stopPropagation()
+                event.stopPropagation();
               }}
               onDragEnd={(_event, info) => {
                 if (info.offset.x < -100) {
-                  goToNextPage() // Go to the next page on left swipe
+                  goToNextPage(); // Go to the next page on left swipe
                 } else if (info.offset.x > 100 && currentPage > 0) {
-                  goToPreviousPage() // Go to the previous page on right swipe
+                  goToPreviousPage(); // Go to the previous page on right swipe
                 }
               }}
             >
@@ -584,7 +589,7 @@ function RouteComponent() {
                 {/* ຊື່ພຣະສູດ */}
                 <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
                   <Highlighter
-                    highlightClassName="bg-yellow-200 font-bold"
+                    highlightClassName='bg-yellow-200 font-bold'
                     searchWords={[searchTerm || '']}
                     autoEscape={true}
                     textToHighlight={
@@ -613,14 +618,14 @@ function RouteComponent() {
                 {/* Render ພຣະສູດ */}
                 {renderDetail(
                   filteredDetails?.[currentPage]?.['ພຣະສູດ'],
-                  searchTerm,
+                  searchTerm
                 )}
                 <br />
 
                 {/* Render ໝວດທັມ */}
                 <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
                   <Highlighter
-                    highlightClassName="bg-yellow-200 font-bold" // Highlight class
+                    highlightClassName='bg-yellow-200 font-bold' // Highlight class
                     searchWords={[searchTerm || '']} // Highlight based on searchTerm
                     autoEscape={true} // Allow Auto Escape for search term
                     textToHighlight={filteredDetails?.[currentPage]?.['ໝວດທັມ']} // Text to highlight
@@ -637,12 +642,12 @@ function RouteComponent() {
             </motion.div>
           </>
         ) : (
-          <div className="text-center">No content available</div>
+          <div className='text-center'>No content available</div>
         )}
-      </div>
+      </section>
 
       {/* Navigation Controls */}
       {renderPositionBar()}
     </>
-  )
+  );
 }

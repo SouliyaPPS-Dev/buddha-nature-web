@@ -1,6 +1,7 @@
 import { useScrollingStore } from '@/hooks/ScrollProvider';
 import React from 'react';
 import ScrollToBottom from 'react-scroll-to-bottom';
+import WoodenBackground from '@/assets/images/wooden_background.jpg';
 
 /**
  * ✅ Separate `ScrollContent` Component to Avoid `useScrollingStore` Issue
@@ -16,19 +17,29 @@ function ScrollContent({
 }) {
   const { scrollContainerRef } = useScrollingStore();
 
+  const isBookRoute = location.pathname.startsWith('/book');
+  const isDetailsRoute =
+    location.pathname.startsWith('/sutra/details') ||
+    location.pathname.startsWith('/favorites/details');
+
   return (
-    <div
+    <section
       ref={scrollContainerRef}
       className='flex flex-col h-screen overflow-y-auto smooth-scroll scrollbar-none'
       style={{
-        backgroundColor:
-          theme === 'light' &&
-          (location.pathname.startsWith('/sutra/details') ||
-            location.pathname.startsWith('/favorites/details'))
-            ? '#F6EFD9' // Light theme specific background for these routes
+        backgroundImage: isBookRoute ? `url(${WoodenBackground})` : 'none',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        minHeight: '100vh',
+        width: '100%',
+        backgroundColor: isBookRoute
+          ? 'transparent' // Ensure background color doesn't override the image
+          : theme === 'light' && isDetailsRoute
+            ? '#F6EFD9'
             : theme === 'light'
-              ? '#F5F5F5' // Default light theme background
-              : '#000000', // Default dark theme background
+              ? '#F5F5F5'
+              : '#000000',
       }}
     >
       <ScrollToBottom
@@ -38,7 +49,7 @@ function ScrollContent({
       >
         {children}
       </ScrollToBottom>
-    </div>
+    </section>
   );
 }
 

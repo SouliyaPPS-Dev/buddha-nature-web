@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSutra } from './useSutra';
 import { toast } from 'react-toastify';
 import { clearCache } from '@/services/cache';
+import { useBook } from '@/hooks/book/useBook';
 
 const LAST_UPDATE_KEY = 'LAST_SUTRA_UPDATE';
 // const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
@@ -14,8 +15,13 @@ let isUpdating = false;
 
 export const useUpdateSutraData = () => {
      const [isLoading, setIsLoading] = useState(false);
-     const { isLoading: isLoadingSutra, refetch } = useSutra();
+     const { isLoading: isLoadingSutra, refetch: refetchSutra } = useSutra();
+     const { refetch: refetchBook } = useBook();
 
+     const refetch = useCallback(async () => {
+          await Promise.all([refetchSutra(), refetchBook()]);    
+     }, [refetchSutra, refetchBook]);
+     
      /**
       * Check if 24 hours have passed since the last update
       */
@@ -40,6 +46,7 @@ export const useUpdateSutraData = () => {
 
           try {
                // Clear cached data
+               localStorage.removeItem('LAST_SUTRA_UPDATE');
                localStorage.removeItem('REACT_QUERY_OFFLINE_CACHE');
                localStorage.removeItem('theme');
 

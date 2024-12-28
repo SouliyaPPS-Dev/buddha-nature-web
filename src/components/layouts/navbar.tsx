@@ -165,6 +165,7 @@ export const Navbar = () => {
         {/* Mobile Menu Toggle */}
         <NavbarMenuToggle />
       </NavbarContent>
+
       {/* Mobile Menu */}
       <NavbarMenu
         style={{
@@ -197,23 +198,31 @@ export const Navbar = () => {
             };
 
             return (
-              <NavbarMenuItem key={`${item}-${index}`} className='w-full'>
-                <Link
-                  className={clsx(
-                    linkStyles({ color: 'foreground' }),
-                    'data-[active=true]:text-primary data-[active=true]:font-medium',
-                    'flex items-center gap-2', // Add flex and gap for icon and label
-                    activeItem === item.href ? 'text-primary font-medium' : '',
-                    'text-4xl font-bold' // Added font-bold to make the text bold
+              <div key={`${item}-${index}`} className='w-full'>
+                <NavbarMenuItem className='w-full'>
+                  <Link
+                    className={clsx(
+                      linkStyles({ color: 'foreground' }),
+                      'data-[active=true]:text-primary data-[active=true]:font-medium',
+                      'flex items-center gap-2', // Add flex and gap for icon and label
+                      activeItem === item.href
+                        ? 'text-primary font-medium'
+                        : '',
+                      'text-4xl font-bold' // Added font-bold to make the text bold
+                    )}
+                    color='foreground'
+                    href={item.href}
+                    onClick={() => handleMobileNavigation(item.href)} // Set active item on click
+                  >
+                    {getIcon(item.label)} {/* Render icon */}
+                    <span>{item.label}</span> {/* Menu label */}
+                  </Link>
+                  {/* Divider */}
+                  {index !== siteConfig.navMenuItems.length - 1 && (
+                    <div className='border-b my-2'></div> // Divider added between menu items
                   )}
-                  color='foreground'
-                  href={item.href}
-                  onClick={() => handleMobileNavigation(item.href)} // Set active item on click
-                >
-                  {getIcon(item.label)} {/* Render icon */}
-                  <span>{item.label}</span> {/* Menu label */}
-                </Link>
-              </NavbarMenuItem>
+                </NavbarMenuItem>
+              </div>
             );
           })}
         </div>
