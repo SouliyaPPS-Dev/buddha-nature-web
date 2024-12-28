@@ -30,6 +30,7 @@ import { useState } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import { SearchDropdown } from '../search/SearchDropdown';
 import { useMenuContext } from './MenuProvider';
+import { router } from '@/router';
 
 export const Navbar = () => {
   const [activeItem, setActiveItem] = useState<string>('');
@@ -43,6 +44,7 @@ export const Navbar = () => {
 
   // Use useRouterState to get the current location
   const handleMobileNavigation = (href: string) => {
+    router.navigate({ to: href });
     setActiveItem(href); // Set the active item when it's clicked
     setIsMenuOpen(false); // This closes the menu
   };
@@ -198,7 +200,9 @@ export const Navbar = () => {
             };
 
             return (
-              <div key={`${item}-${index}`} className='w-full'>
+              <div key={`${item}-${index}`} className='w-full'
+                onClick={() => handleMobileNavigation(item.href)}
+              >
                 <NavbarMenuItem className='w-full'>
                   <Link
                     className={clsx(
