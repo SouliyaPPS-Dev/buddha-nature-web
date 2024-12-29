@@ -150,7 +150,7 @@ export const Navbar = () => {
         {/* Share Button */}
         <NavbarItem className='hidden sm:flex gap-2 '>
           <IoShareSocialSharp
-            className='mr-4'
+            className='mr-5 cursor-pointer'
             size={20}
             onClick={handleShare}
           />

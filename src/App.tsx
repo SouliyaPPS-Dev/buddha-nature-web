@@ -5,6 +5,7 @@ import { NextUIProvider } from '@nextui-org/react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { RouterProvider } from '@tanstack/react-router';
+import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import PageTransition from './components/PageTransition';
 import { router } from './router';
@@ -27,7 +28,9 @@ function App() {
           >
             {/* Wrapping only the page content inside the transition */}
             <PageTransition>
-              <RouterProvider router={router} />
+              <React.Suspense fallback={<div>Loading...</div>}>
+                <RouterProvider router={router} />
+              </React.Suspense>
             </PageTransition>
 
             {/* Add React Query Devtools */}

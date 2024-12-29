@@ -11,8 +11,8 @@ const isDevelopment = import.meta.env.MODE === 'development';
 
 export const Route = createRootRoute({
   component: () => (
-    <ScrollProvider>
-      <SearchProvider>
+    <SearchProvider>
+      <ScrollProvider>
         <NavigationProvider>
           <DefaultLayout>
             <Seo />
@@ -21,7 +21,7 @@ export const Route = createRootRoute({
             {isDevelopment && <TanStackRouterDevtools />}
           </DefaultLayout>
         </NavigationProvider>
-      </SearchProvider>
-    </ScrollProvider>
+      </ScrollProvider>
+    </SearchProvider> 
   ),
 });

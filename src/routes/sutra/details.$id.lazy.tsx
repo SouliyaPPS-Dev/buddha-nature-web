@@ -20,7 +20,7 @@ import {
   FaPlus,
 } from 'react-icons/fa';
 import { GrCopy } from 'react-icons/gr';
-import { IoShareSocialSharp } from 'react-icons/io5';
+// import { IoShareSocialSharp } from 'react-icons/io5';
 
 export const Route = createLazyFileRoute('/sutra/details/$id')({
   component: RouteComponent,
@@ -230,26 +230,26 @@ function RouteComponent() {
     }
   };
 
-  const handleShare = async () => {
-    const text = filteredDetails?.[currentPage]?.['ຊື່ພຣະສູດ'];
-    const url = `${window.location.origin}/sutra/details/${filteredDetails?.[currentPage]?.['ID']}${window.location.search}`;
+  // const handleShare = async () => {
+  //   const text = filteredDetails?.[currentPage]?.['ຊື່ພຣະສູດ'];
+  //   const url = `${window.location.origin}/sutra/details/${filteredDetails?.[currentPage]?.['ID']}${window.location.search}`;
 
-    // Sharing the content using the Web Share API
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          text, // Shared text with category
-          url, // Share a link to the content (the page with the HTML)
-        });
-        console.log('Shared successfully');
-      } catch (error) {
-        console.error('Error sharing:', error);
-      }
-    } else {
-      // Fallback for browsers that don't support the Web Share API
-      alert('Sharing is not supported on this device.');
-    }
-  };
+  //   // Sharing the content using the Web Share API
+  //   if (navigator.share) {
+  //     try {
+  //       await navigator.share({
+  //         text, // Shared text with category
+  //         url, // Share a link to the content (the page with the HTML)
+  //       });
+  //       console.log('Shared successfully');
+  //     } catch (error) {
+  //       console.error('Error sharing:', error);
+  //     }
+  //   } else {
+  //     // Fallback for browsers that don't support the Web Share API
+  //     alert('Sharing is not supported on this device.');
+  //   }
+  // };
 
   // Function to sanitize and parse HTML content
   const renderDetail = (htmlContent: string, searchTerm?: string) => {
@@ -445,7 +445,7 @@ function RouteComponent() {
         </button>
 
         {/* Share Button */}
-        <button
+        {/*<button
           onClick={handleShare}
           style={{
             width: '32px',
@@ -472,8 +472,8 @@ function RouteComponent() {
             })
           }
         >
-          <IoShareSocialSharp size={20} /> {/* Share Icon */}
-        </button>
+          <IoShareSocialSharp size={20} />
+      </button> */}
       </div>
 
       {/* Next Page Button (Right Side) */}

@@ -1,12 +1,12 @@
 import { useSutra } from '@/hooks/sutra/useSutra';
+import { useTheme } from '@/hooks/use-theme';
 import { Input } from '@nextui-org/react';
 import debounce from 'lodash.debounce';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { SearchIcon } from '../layouts/icons';
 import { useMenuContext } from '../layouts/MenuProvider';
 import DropdownSearch from './DropdownSearch';
 import { useSearchContext } from './SearchContext';
-import { useTheme } from '@/hooks/use-theme';
 
 export const SearchDropdown = () => {
   const { theme } = useTheme();
@@ -20,15 +20,6 @@ export const SearchDropdown = () => {
   } = useSutra();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { setIsMenuOpen } = useMenuContext();
-
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  // Focus input on mobile screens
-  useEffect(() => {
-    if (window.matchMedia('(max-width: 768px)').matches) {
-      inputRef.current?.focus();
-    }
-  }, []);
 
   // Debounced Search Input Handler
   const debouncedSearch = useCallback(
@@ -52,7 +43,6 @@ export const SearchDropdown = () => {
   return (
     <div className='relative w-full max-w-md'>
       <Input
-        ref={inputRef}
         aria-label='Search'
         labelPlacement='outside'
         type='search'
