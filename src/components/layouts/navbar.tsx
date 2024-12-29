@@ -83,7 +83,7 @@ export const Navbar = () => {
           onClick={back}
           style={{
             position: 'relative',
-            marginLeft: '-20px',
+            marginLeft: '-30px',
             zIndex: 999,
             cursor: 'pointer', // Show pointer cursor on hover
           }}
@@ -142,18 +142,14 @@ export const Navbar = () => {
 
         {/* Delete Button */}
         {currentPath === '/favorites' && (
-          <NavbarItem className='hidden sm:flex gap-2 '>
+          <NavbarItem className='hidden sm:flex gap-2 mr-4 cursor-pointer'>
             <DeleteFavorites />
           </NavbarItem>
         )}
 
         {/* Share Button */}
-        <NavbarItem className='hidden sm:flex gap-2 '>
-          <IoShareSocialSharp
-            className='mr-5 cursor-pointer'
-            size={20}
-            onClick={handleShare}
-          />
+        <NavbarItem className='hidden sm:flex gap-2 mr-5 cursor-pointer'>
+          <IoShareSocialSharp size={20} onClick={handleShare} />
         </NavbarItem>
 
         {/* Search Button */}
