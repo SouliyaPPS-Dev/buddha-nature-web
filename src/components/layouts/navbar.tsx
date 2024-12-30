@@ -148,9 +148,11 @@ export const Navbar = () => {
         )}
 
         {/* Share Button */}
-        <NavbarItem className='hidden sm:flex gap-2 mr-5 cursor-pointer'>
-          <IoShareSocialSharp size={20} onClick={handleShare} />
-        </NavbarItem>
+        {currentPath !== '/favorites' && (
+          <NavbarItem className='hidden sm:flex gap-2 mr-5 cursor-pointer'>
+            <IoShareSocialSharp size={20} onClick={handleShare} />
+          </NavbarItem>
+        )}
 
         {/* Search Button */}
         <NavbarItem className='hidden sm:flex gap-2 '>
@@ -181,7 +183,14 @@ export const Navbar = () => {
         {currentPath === '/favorites' && <DeleteFavorites />}
 
         {/* Share Button */}
-        <IoShareSocialSharp className='mr-3' size={20} onClick={handleShare} />
+        {!location.pathname.startsWith('/favorites') &&
+          (!location.pathname.startsWith('/sutra/details') && (
+            <IoShareSocialSharp
+              className='mr-3'
+              size={20}
+              onClick={handleShare}
+            />
+          ))}
 
         {/* Search Button */}
         <SearchIcon />

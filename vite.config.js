@@ -3,8 +3,9 @@ import { pluginReact } from '@rsbuild/plugin-react';
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path-browserify';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import loadEnv from './loadEnv';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
@@ -18,11 +19,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     define: {
-      'process.env.SUTRA_API_URL': JSON.stringify(env.SUTRA_API_URL || '/'),
-      'process.env.BOOK_API_URL': JSON.stringify(env.BOOK_API_URL || '/'),
-      'process.env.CALENDAR_API_URL': JSON.stringify(
-        env.CALENDAR_API_URL || '/'
-      ),
+      'process.env': env,
     },
     plugins: [
       pluginReact(),

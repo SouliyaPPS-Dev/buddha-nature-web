@@ -27,7 +27,7 @@ export const DeleteFavorites = () => {
             })
           }
         >
-          <MdDeleteForever className='h-6 w-6 text-red-500' />
+          <MdDeleteForever className='h-6 w-6 text-red-500 mr-2' />
         </button>
       </div>
 

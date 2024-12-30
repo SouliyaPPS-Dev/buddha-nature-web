@@ -3,7 +3,7 @@ import { SutraDataArray } from "@/model/sutra";
 import axios from "axios";
 
 export const sutraApi = async () => {
-     const response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/1mKtgmZ_Is4e6P3P5lvOwIplqx7VQ3amicgienGN9zwA/values/Sheet1!1:1000000?key=AIzaSyDFjIl-SEHUsgK0sjMm7x0awpf8tTEPQjs`);
+     const response = await axios.get(`${process.env.SUTRA_API_URL}`);
 
      // Transformation function
      const transformData = (data: any) => {

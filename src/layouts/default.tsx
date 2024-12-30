@@ -16,6 +16,7 @@ export default function DefaultLayout({
   const location = useRouterState({ select: (state) => state.location });
 
   const isBookRoute = location.pathname.startsWith('/book/view/');
+  const isVideoRoute = location.pathname.startsWith('/video/view/');
 
   return (
     <Fragment>
@@ -28,7 +29,9 @@ export default function DefaultLayout({
             {/* Main content */}
             <main
               className={`flex-grow ${
-                isBookRoute ? '' : 'container mx-auto max-w-7xl px-2'
+                isBookRoute || isVideoRoute
+                  ? ''
+                  : 'container mx-auto max-w-7xl px-2'
               }`}
             >
               {children}

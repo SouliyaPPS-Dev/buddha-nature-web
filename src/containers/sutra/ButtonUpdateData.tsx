@@ -1,9 +1,9 @@
-import { useUpdateSutraData } from '@/hooks/sutra/useUpdateSutraData';
+import { useUpdateData } from '@/hooks/useUpdateData';
 import { GrUpdate } from 'react-icons/gr';
 import { RxUpdate } from 'react-icons/rx';
 import { useConfirmationModal } from '@/components/ModalComponent';
 export const ButtonUpdateData = () => {
-  const { isLoading, handleUpdate } = useUpdateSutraData();
+  const { isLoading, handleUpdate } = useUpdateData();
   const { openModal, ModalComponent } = useConfirmationModal();
 
   return (

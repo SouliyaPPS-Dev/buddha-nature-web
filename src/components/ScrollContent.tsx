@@ -27,7 +27,7 @@ function ScrollContent({
       ref={scrollContainerRef}
       className='flex flex-col h-screen overflow-y-auto smooth-scroll scrollbar-none'
       style={{
-        backgroundImage: isBookRoute ? `url(${WoodenBackground})` : 'none',
+        backgroundImage: !isDetailsRoute ? `url(${WoodenBackground})` : 'none',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',

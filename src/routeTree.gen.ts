@@ -19,6 +19,7 @@ import { Route as VideoIndexImport } from './routes/video/index'
 import { Route as DhammaIndexImport } from './routes/dhamma/index'
 import { Route as CalendarIndexImport } from './routes/calendar/index'
 import { Route as BookIndexImport } from './routes/book/index'
+import { Route as VideoViewIdImport } from './routes/video/view.$id'
 import { Route as BookViewIdImport } from './routes/book/view.$id'
 
 // Create Virtual Routes
@@ -112,6 +113,12 @@ const FavoritesDetailsIdLazyRoute = FavoritesDetailsIdLazyImport.update({
   import('./routes/favorites/details.$id.lazy').then((d) => d.Route),
 )
 
+const VideoViewIdRoute = VideoViewIdImport.update({
+  id: '/video/view/$id',
+  path: '/video/view/$id',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const BookViewIdRoute = BookViewIdImport.update({
   id: '/book/view/$id',
   path: '/book/view/$id',
@@ -199,6 +206,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookViewIdImport
       parentRoute: typeof rootRoute
     }
+    '/video/view/$id': {
+      id: '/video/view/$id'
+      path: '/video/view/$id'
+      fullPath: '/video/view/$id'
+      preLoaderRoute: typeof VideoViewIdImport
+      parentRoute: typeof rootRoute
+    }
     '/favorites/details/$id': {
       id: '/favorites/details/$id'
       path: '/favorites/details/$id'
@@ -230,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/favorites': typeof FavoritesIndexLazyRoute
   '/sutra': typeof SutraIndexLazyRoute
   '/book/view/$id': typeof BookViewIdRoute
+  '/video/view/$id': typeof VideoViewIdRoute
   '/favorites/details/$id': typeof FavoritesDetailsIdLazyRoute
   '/sutra/details/$id': typeof SutraDetailsIdLazyRoute
 }
@@ -246,6 +261,7 @@ export interface FileRoutesByTo {
   '/favorites': typeof FavoritesIndexLazyRoute
   '/sutra': typeof SutraIndexLazyRoute
   '/book/view/$id': typeof BookViewIdRoute
+  '/video/view/$id': typeof VideoViewIdRoute
   '/favorites/details/$id': typeof FavoritesDetailsIdLazyRoute
   '/sutra/details/$id': typeof SutraDetailsIdLazyRoute
 }
@@ -263,6 +279,7 @@ export interface FileRoutesById {
   '/favorites/': typeof FavoritesIndexLazyRoute
   '/sutra/': typeof SutraIndexLazyRoute
   '/book/view/$id': typeof BookViewIdRoute
+  '/video/view/$id': typeof VideoViewIdRoute
   '/favorites/details/$id': typeof FavoritesDetailsIdLazyRoute
   '/sutra/details/$id': typeof SutraDetailsIdLazyRoute
 }
@@ -281,6 +298,7 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/sutra'
     | '/book/view/$id'
+    | '/video/view/$id'
     | '/favorites/details/$id'
     | '/sutra/details/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -296,6 +314,7 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/sutra'
     | '/book/view/$id'
+    | '/video/view/$id'
     | '/favorites/details/$id'
     | '/sutra/details/$id'
   id:
@@ -311,6 +330,7 @@ export interface FileRouteTypes {
     | '/favorites/'
     | '/sutra/'
     | '/book/view/$id'
+    | '/video/view/$id'
     | '/favorites/details/$id'
     | '/sutra/details/$id'
   fileRoutesById: FileRoutesById
@@ -328,6 +348,7 @@ export interface RootRouteChildren {
   FavoritesIndexLazyRoute: typeof FavoritesIndexLazyRoute
   SutraIndexLazyRoute: typeof SutraIndexLazyRoute
   BookViewIdRoute: typeof BookViewIdRoute
+  VideoViewIdRoute: typeof VideoViewIdRoute
   FavoritesDetailsIdLazyRoute: typeof FavoritesDetailsIdLazyRoute
   SutraDetailsIdLazyRoute: typeof SutraDetailsIdLazyRoute
 }
@@ -344,6 +365,7 @@ const rootRouteChildren: RootRouteChildren = {
   FavoritesIndexLazyRoute: FavoritesIndexLazyRoute,
   SutraIndexLazyRoute: SutraIndexLazyRoute,
   BookViewIdRoute: BookViewIdRoute,
+  VideoViewIdRoute: VideoViewIdRoute,
   FavoritesDetailsIdLazyRoute: FavoritesDetailsIdLazyRoute,
   SutraDetailsIdLazyRoute: SutraDetailsIdLazyRoute,
 }
@@ -369,6 +391,7 @@ export const routeTree = rootRoute
         "/favorites/",
         "/sutra/",
         "/book/view/$id",
+        "/video/view/$id",
         "/favorites/details/$id",
         "/sutra/details/$id"
       ]
@@ -405,6 +428,9 @@ export const routeTree = rootRoute
     },
     "/book/view/$id": {
       "filePath": "book/view.$id.tsx"
+    },
+    "/video/view/$id": {
+      "filePath": "video/view.$id.tsx"
     },
     "/favorites/details/$id": {
       "filePath": "favorites/details.$id.lazy.tsx"

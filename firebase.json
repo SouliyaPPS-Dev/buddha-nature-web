@@ -59,7 +59,10 @@
                          "source": "**",
                          "destination": "/index.html"
                     }
-               ]
+               ],
+               "environment": {
+                    "ENV_MODE": "production"
+               }
           }
      ]
 }

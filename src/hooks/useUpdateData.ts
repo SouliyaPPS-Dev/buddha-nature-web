@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useSutra } from './useSutra';
+import { useSutra } from './sutra/useSutra';
 import { toast } from 'react-toastify';
 import { clearCache } from '@/services/cache';
 import { useBook } from '@/hooks/book/useBook';
+import useVideo from './video/useVideo';
 
 const LAST_UPDATE_KEY = 'LAST_SUTRA_UPDATE';
 // const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
@@ -13,15 +14,16 @@ const ONE_MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 // Singleton to ensure `handleUpdate` runs once globally
 let isUpdating = false;
 
-export const useUpdateSutraData = () => {
+export const useUpdateData = () => {
      const [isLoading, setIsLoading] = useState(false);
      const { isLoading: isLoadingSutra, refetch: refetchSutra } = useSutra();
      const { refetch: refetchBook } = useBook();
+     const {refetch: refetchVideo} = useVideo();
 
      const refetch = useCallback(async () => {
-          await Promise.all([refetchSutra(), refetchBook()]);    
-     }, [refetchSutra, refetchBook]);
-     
+          await Promise.all([refetchSutra(), refetchBook(), refetchVideo()]);
+     }, [refetchSutra, refetchBook, refetchVideo]);
+
      /**
       * Check if 24 hours have passed since the last update
       */

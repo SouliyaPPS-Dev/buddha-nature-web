@@ -71,14 +71,14 @@ export const SearchDropdown = () => {
 
       {/* No Results */}
       {isDropdownOpen && searchResults?.length === 0 && !isLoading && (
-        <div className='absolute mt-2 w-full bg-white border rounded-md shadow-lg p-4 text-center text-gray-500'>
+        <div className='absolute mt-2 w-full bg-white border rounded-md shadow-lg p-4 text-center text-gray-500 z-20'>
           No results found
         </div>
       )}
 
       {/* Loading Spinner */}
       {isLoading && (
-        <div className='absolute mt-2 w-full bg-white border rounded-md shadow-lg p-4 text-center text-gray-500'>
+        <div className='absolute mt-2 w-full bg-white border rounded-md shadow-lg p-4 text-center text-gray-500 z-20'>
           Loading...
         </div>
       )}

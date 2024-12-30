@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { BookDataArray } from "@/model/book";
+import { VideoDataArray } from "@/model/video";
 import axios from "axios";
 
-export const bookApi = async () => {
-     const response = await axios.get(`${process.env.BOOK_API_URL}`);
+export const videoApi = async () => {
+     const response = await axios.get(`${process.env.VIDEO_API_URL}`);
 
      // Transformation function
      const transformData = (data: any) => {
@@ -21,5 +21,5 @@ export const bookApi = async () => {
      // Transform the data into a friendly format
      const transformedData = transformData(response.data);
 
-     return transformedData as BookDataArray;
+     return transformedData as VideoDataArray;
 };
