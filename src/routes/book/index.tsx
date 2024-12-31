@@ -114,7 +114,7 @@ function RouteComponent() {
                 <div
                   className='relative w-full mt-4 h-6 sm:h-5 md:h-6 lg:h-8 z-1'
                   style={{
-                    width: '102%',
+                    width: '115%',
                     transition: 'width 0.3s ease-in-out',
                   }}
                 >
