@@ -51,6 +51,7 @@ export const useUpdateData = () => {
                localStorage.removeItem('LAST_SUTRA_UPDATE');
                localStorage.removeItem('REACT_QUERY_OFFLINE_CACHE');
                localStorage.removeItem('theme');
+               localStorage.removeItem('navigation_history');
 
                await clearCache();
 

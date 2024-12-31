@@ -3,6 +3,7 @@ import { MenuProvider } from '@/components/layouts/MenuProvider';
 import { Navbar } from '@/components/layouts/navbar';
 import { NavigationTabs } from '@/components/layouts/NavigationTabs';
 import ScrollContent from '@/components/ScrollContent';
+import { useScrollingStore } from '@/hooks/ScrollProvider';
 import { useTheme } from '@/hooks/use-theme';
 import { useRouterState } from '@tanstack/react-router';
 import React, { Fragment } from 'react';
@@ -12,6 +13,7 @@ export default function DefaultLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { scrollContainerRef } = useScrollingStore();
   const { theme } = useTheme();
   const location = useRouterState({ select: (state) => state.location });
 
@@ -28,6 +30,7 @@ export default function DefaultLayout({
             <Navbar />
             {/* Main content */}
             <main
+              ref={scrollContainerRef}
               className={`flex-grow ${
                 isBookRoute || isVideoRoute
                   ? ''

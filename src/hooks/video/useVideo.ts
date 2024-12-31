@@ -10,6 +10,7 @@ export const useVideo = () => {
 
      const { data, isLoading, refetch } = useQuery({
           queryKey: ['video'],
+          staleTime: 1,
           queryFn: async () => videoApi(),
      });
 

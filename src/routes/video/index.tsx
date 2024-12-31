@@ -1,5 +1,6 @@
 import { SearchIcon } from '@/components/layouts/icons';
 import VideoCard from '@/containers/video/VideoCard';
+import { useScrollingStore } from '@/hooks/ScrollProvider';
 import useVideo from '@/hooks/video/useVideo';
 import { Input, Select, SelectItem, Spinner } from '@nextui-org/react';
 import { createFileRoute } from '@tanstack/react-router';
@@ -9,6 +10,8 @@ export const Route = createFileRoute('/video/')({
 });
 
 function RouteComponent() {
+  const { scrollContainerRef } = useScrollingStore();
+
   const {
     // Data
     data,
@@ -23,9 +26,13 @@ function RouteComponent() {
     searchTerm,
     setSearchTerm,
   } = useVideo();
+
   return (
     <>
-      <section className='flex flex-col items-center justify-center mb-5'>
+      <section
+        ref={scrollContainerRef}
+        className='flex flex-col items-center justify-center mb-10'
+      >
         {/* Fixed Filter Controls */}
         <div
           className='top-0 z-20 px-4 py-2 mt-12 w-full max-w-lg mx-auto absolute'
@@ -113,12 +120,12 @@ function RouteComponent() {
                   <div
                     className='relative w-full mt-4 h-6 sm:h-5 md:h-6 lg:h-8 z-1'
                     style={{
-                      width: '130%',
-                      zIndex: 1,
+                      width: '105%',
+                      transition: 'width 0.3s ease-in-out',
                     }}
                   >
                     {/* Top Shelf */}
-                    <div className='absolute top-0 left-0 w-full h-1 sm:h-3 md:h-4 bg-[#B96A44] rounded-t-md shadow-lg'></div>
+                    <div className='absolute top-0 left-0 w-full h-1 sm:h-3 md:h-4 bg-[#B96A44] shadow-lg'></div>
 
                     {/* Middle Edge */}
                     <div
@@ -134,7 +141,7 @@ function RouteComponent() {
                     <div className='absolute top-0 left-0 w-full h-4 bg-[#E0895C] opacity-50'></div>
 
                     {/* Book Shadow Effect */}
-                    <div className='absolute -top-2 left-2 w-[96%] h-4 bg-black opacity-10 blur-md rounded-md'></div>
+                    <div className='absolute -top-2 left-2 w-[96%] h-4 bg-black opacity-10 blur-md'></div>
                   </div>
                 </div>
               ))}

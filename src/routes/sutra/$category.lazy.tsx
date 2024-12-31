@@ -70,7 +70,7 @@ function RouteComponent() {
 
         {/* Fallback for Empty Data */}
         {!data?.length && (
-          <div className='text-center text-gray-600 text-lg'>ບໍ່ພົບຂໍ້ມູນ</div>
+          <div className='text-center text-white text-lg'>ບໍ່ພົບຂໍ້ມູນ</div>
         )}
       </div>
     </section>

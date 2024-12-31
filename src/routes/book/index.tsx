@@ -114,12 +114,12 @@ function RouteComponent() {
                 <div
                   className='relative w-full mt-4 h-6 sm:h-5 md:h-6 lg:h-8 z-1'
                   style={{
-                    width: '130%',
-                    zIndex: 1,
+                    width: '102%',
+                    transition: 'width 0.3s ease-in-out',
                   }}
                 >
                   {/* Top Shelf */}
-                  <div className='absolute top-0 left-0 w-full h-1 sm:h-3 md:h-4 bg-[#B96A44] rounded-t-md shadow-lg'></div>
+                  <div className='absolute top-0 left-0 w-full h-1 sm:h-3 md:h-4 bg-[#B96A44] shadow-lg'></div>
 
                   {/* Middle Edge */}
                   <div
@@ -135,7 +135,7 @@ function RouteComponent() {
                   <div className='absolute top-0 left-0 w-full h-4 bg-[#E0895C] opacity-50'></div>
 
                   {/* Book Shadow Effect */}
-                  <div className='absolute -top-2 left-2 w-[96%] h-4 bg-black opacity-10 blur-md rounded-md'></div>
+                  <div className='absolute -top-2 left-2 w-[96%] h-4 bg-black opacity-10 blur-md'></div>
                 </div>
               </div>
             ))}

@@ -1,4 +1,3 @@
-/* VideoCardProps Component */
 import { VideoDataArray } from '@/model/video';
 import { Card, CardBody, Image, Spinner } from '@nextui-org/react';
 import { Link } from '@tanstack/react-router';
@@ -12,10 +11,45 @@ type VideoCardProps = {
 };
 
 function VideoCard({ id, item, isLoading }: VideoCardProps) {
-  // Extract the video ID
-  const videoId = item['link']?.split('/')?.pop()?.split('?')[0] || '';
+  // Extract the video link from the item
+  const originalLink = item['link'] || '';
 
-  const thumbnailUrl: string = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  // Determine the thumbnail URL based on the video source (YouTube or Google Drive)
+  const thumbnailUrl: string = getThumbnailUrl(originalLink);
+
+  // Function to extract thumbnail URL based on the video link
+  function getThumbnailUrl(link: string): string {
+    if (link.includes('youtube.com') || link.includes('youtu.be')) {
+      const videoId = extractYouTubeId(link);
+      return videoId
+        ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+        : '';
+    } else if (link.includes('drive.google.com')) {
+      // Google Drive video thumbnail extraction logic
+      const fileId = extractGoogleDriveFileId(link);
+
+      return fileId !== ''
+        ? `https://lh3.googleusercontent.com/d/${fileId}=s320?authuser=0`
+        : `https://lh3.googleusercontent.com/d/${fileId}=s320?authuser=0`;
+    }
+    return '';
+  }
+
+  // Helper function to extract YouTube video ID
+  function extractYouTubeId(url: string): string | null {
+    const regex =
+      /(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/|.*embed\/|.*shorts\/))([\w-]+)/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  }
+
+  // Helper function to extract Google Drive file ID
+  function extractGoogleDriveFileId(url: string): string | null {
+    const regex =
+      /(?:drive\.google\.com\/(?:.*\/d\/|file\/d\/))([a-zA-Z0-9_-]+)/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  }
 
   useEffect(() => {
     const img = document.createElement('img');
@@ -43,9 +77,6 @@ function VideoCard({ id, item, isLoading }: VideoCardProps) {
             inset 0 -3px 6px rgba(0, 0, 0, 0.2)`,
           backgroundColor: 'transparent', // Ensure no background color on hover
           borderRadius: '0', // Remove all border radius
-        }}
-        onClick={() => {
-          useAtTop();
         }}
       >
         <CardBody
