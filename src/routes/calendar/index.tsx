@@ -261,7 +261,7 @@ function RouteComponent() {
 
         {/* Search Results */}
         {!isLoading && searchTerm !== '' && (
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-2'>
             {filteredData.map((event, index) => (
               <Link
                 key={index}
@@ -308,7 +308,7 @@ function RouteComponent() {
         )}
 
         {!isLoading && (
-          <div className='relative w-full p-0 z-1 mb-1'>
+          <div className='relative w-full p-0 z-1 mb-2'>
             {/* Swiper Slider */}
             <Swiper
               modules={[Autoplay, Pagination]}
