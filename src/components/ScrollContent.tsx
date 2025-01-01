@@ -20,7 +20,8 @@ function ScrollContent({
   const isBookRoute = location.pathname.startsWith('/book');
   const isDetailsRoute =
     location.pathname.startsWith('/sutra/details') ||
-    location.pathname.startsWith('/favorites/details');
+    location.pathname.startsWith('/favorites/details') ||
+    location.pathname.startsWith('/calendar');
 
   return (
     <section

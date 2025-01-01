@@ -1,4 +1,3 @@
-// Load Workbox scripts using importScripts
 importScripts(
   'https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js'
 );
@@ -13,7 +12,7 @@ if (workbox) {
   // Clean up outdated caches
   workbox.precaching.cleanupOutdatedCaches();
 
-  // ⚙️ Cache Static Assets (JS, CSS, Fonts, Images)
+  // Cache Static Assets (JS, CSS, Fonts, Images)
   workbox.routing.registerRoute(
     /\.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|avif)$/i,
     new workbox.strategies.StaleWhileRevalidate({
@@ -30,7 +29,7 @@ if (workbox) {
     })
   );
 
-  // ⚙️ Cache HTML Pages (Every Route for SPA)
+  // Cache HTML Pages (Every Route for SPA)
   workbox.routing.registerRoute(
     ({ request }) => request.mode === 'navigate',
     new workbox.strategies.NetworkFirst({
@@ -47,7 +46,7 @@ if (workbox) {
     })
   );
 
-  // ⚙️ Cache API Requests
+  // Cache API Requests
   workbox.routing.registerRoute(
     /^https:\/\/example-api\.com\/.*/,
     new workbox.strategies.NetworkFirst({
@@ -73,6 +72,20 @@ if (workbox) {
         })
       );
     }
+  });
+
+  // Listen for 'beforeinstallprompt' event
+  self.addEventListener('beforeinstallprompt', (event) => {
+    // Prevent the default prompt
+    event.preventDefault();
+    // Store the event so it can be triggered later
+    self.deferredPrompt = event;
+  });
+
+  // Handle user interaction with the prompt
+  self.addEventListener('appinstalled', (event) => {
+    // Clear the deferred prompt
+    self.deferredPrompt = null;
   });
 
   // Activate Service Worker Immediately

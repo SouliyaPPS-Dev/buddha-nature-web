@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { pluginReact } from '@rsbuild/plugin-react';
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';

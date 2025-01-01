@@ -14,12 +14,12 @@
   <!-- Meta -->
   <meta name='description' content='The Word of Buddha' />
   <meta name='keywords'
-    content='Buddhaword, ຄຳສອນພຣະພຸດທະເຈົ້າ, ທັມມະ, ທັມມະຊາດ, lao, laos, the word of buddha, buddha, nature' />
+    content='Buddhaword, ຄຳສອນພຣະພຸດທະເຈົ้າ, ທັມມະ, ທັມມະຊາດ, lao, laos, the word of buddha, buddha, nature' />
   <link rel="manifest" href="/manifest.json" />
 
-  <!--  Open Graph Metadata (for social cards) -->
+  <!-- Open Graph Metadata (for social cards) -->
   <meta property='og:title' content='Buddhaword | The Word of Buddha' />
-  <meta property='og:description' content='ຄຳສອນພຣະພຸດທະເຈົ້າ' />
+  <meta property='og:description' content='ຄຳສອນພຣະພຸດທະເຈົ้າ' />
   <meta property='og:image' content='https://sutra.web.app/images/logo.png' />
   <meta property='og:type' content='website' />
   <meta property='og:url' content='https://sutra.web.app' />
@@ -29,7 +29,6 @@
   <meta name='twitter:title' content='Buddhaword' />
   <meta name='twitter:description' content='The Word of Buddha' />
   <meta name='twitter:image' content='https://sutra.web.app/images/logo.png' />
-
 
   <!-- Add the favicon -->
   <link rel="icon" type="image/png" href="/images/logo.png" />
@@ -48,7 +47,7 @@
     "@type": "WebPage",
     "name": "Buddhaword",
     "url": "https://sutra.web.app",
-    "description": "ຄຳສອນພຣະພຸດທະເຈົ້າ",
+    "description": "ຄຳສອນພຣະພຸດທະເຈົ้າ",
     "publisher": {
       "@type": "Organization",
       "name": "Buddhaword",
@@ -115,35 +114,33 @@
 
   <!-- Register Service Worker and Add to Home Screen scripts -->
   <script>
-    if ("serviceWorker" in navigator) {
+    if ('serviceWorker' in navigator) {
       // Register the service worker
-      window.addEventListener("load", () => {
+      window.addEventListener('load', () => {
         navigator.serviceWorker
-          .register("/sw.js")
+          .register('/sw.js')
           .then((registration) => {
-            console.log(
-              "Service Worker registered successfully with scope:",
-              registration.scope
-            );
+            console.log('Service Worker registered successfully with scope:', registration.scope);
           })
           .catch((error) => {
-            console.error("Service Worker registration failed:", error);
+            console.error('Service Worker registration failed:', error);
           });
       });
 
       let deferredPrompt; // To handle the "Add to Home Screen" prompt
 
-      window.addEventListener("beforeinstallprompt", (event) => {
-        console.log("Detected beforeinstallprompt event");
+      // Listen for beforeinstallprompt to show custom prompt
+      window.addEventListener('beforeinstallprompt', (event) => {
+        console.log('Detected beforeinstallprompt event');
 
         // Prevent the default install prompt
         event.preventDefault();
         deferredPrompt = event;
 
-        const hasShownA2HS = localStorage.getItem("hasShownA2HS") === "true";
+        // Show the custom install banner if not shown already
+        const hasShownA2HS = localStorage.getItem('hasShownA2HS') === 'true';
         if (!hasShownA2HS) {
-          // Show the custom install banner
-          const installAlert = document.createElement("div");
+          const installAlert = document.createElement('div');
           installAlert.style.cssText = `
           position: fixed;
           bottom: 20px;
@@ -198,21 +195,21 @@
           document.body.appendChild(installAlert);
 
           const timeout = setTimeout(() => {
-            console.log("Install alert timed out after 15 seconds");
+            console.log('Install alert timed out after 15 seconds');
             installAlert.remove();
           }, 15000);
 
           // Handle "Install" button click
           document
-            .getElementById("install-pwa-button")
-            ?.addEventListener("click", async () => {
+            .getElementById('install-pwa-button')
+            ?.addEventListener('click', async () => {
               clearTimeout(timeout);
               if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                console.log("User choice:", outcome);
-                if (outcome === "accepted") {
-                  localStorage.setItem("hasShownA2HS", "true");
+                console.log('User choice:', outcome);
+                if (outcome === 'accepted') {
+                  localStorage.setItem('hasShownA2HS', 'true');
                 }
                 deferredPrompt = null;
               }
@@ -221,14 +218,20 @@
 
           // Handle "Close" button click
           document
-            .getElementById("close-alert-button")
-            ?.addEventListener("click", () => {
-              console.log("Install alert closed manually by user");
+            .getElementById('close-alert-button')
+            ?.addEventListener('click', () => {
+              console.log('Install alert closed manually by user');
               clearTimeout(timeout);
               installAlert.remove();
-              localStorage.setItem("hasShownA2HS", "true");
+              localStorage.setItem('hasShownA2HS', 'true');
             });
         }
+      });
+
+      // Event listener for the shortcut removal
+      window.addEventListener('appinstalled', (event) => {
+        console.log('App installed', event);
+        localStorage.setItem('hasShownA2HS', 'true');
       });
     }
   </script>

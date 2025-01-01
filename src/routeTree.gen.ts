@@ -19,6 +19,7 @@ import { Route as VideoIndexImport } from './routes/video/index'
 import { Route as DhammaIndexImport } from './routes/dhamma/index'
 import { Route as CalendarIndexImport } from './routes/calendar/index'
 import { Route as BookIndexImport } from './routes/book/index'
+import { Route as CalendarTitleImport } from './routes/calendar/$title'
 import { Route as VideoViewIdImport } from './routes/video/view.$id'
 import { Route as BookViewIdImport } from './routes/book/view.$id'
 
@@ -97,6 +98,12 @@ const SutraCategoryLazyRoute = SutraCategoryLazyImport.update({
   import('./routes/sutra/$category.lazy').then((d) => d.Route),
 )
 
+const CalendarTitleRoute = CalendarTitleImport.update({
+  id: '/calendar/$title',
+  path: '/calendar/$title',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const SutraDetailsIdLazyRoute = SutraDetailsIdLazyImport.update({
   id: '/sutra/details/$id',
   path: '/sutra/details/$id',
@@ -141,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutImport
+      parentRoute: typeof rootRoute
+    }
+    '/calendar/$title': {
+      id: '/calendar/$title'
+      path: '/calendar/$title'
+      fullPath: '/calendar/$title'
+      preLoaderRoute: typeof CalendarTitleImport
       parentRoute: typeof rootRoute
     }
     '/sutra/$category': {
@@ -235,6 +249,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/calendar/$title': typeof CalendarTitleRoute
   '/sutra/$category': typeof SutraCategoryLazyRoute
   '/sutra/search': typeof SutraSearchLazyRoute
   '/book': typeof BookIndexRoute
@@ -252,6 +267,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/calendar/$title': typeof CalendarTitleRoute
   '/sutra/$category': typeof SutraCategoryLazyRoute
   '/sutra/search': typeof SutraSearchLazyRoute
   '/book': typeof BookIndexRoute
@@ -270,6 +286,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/calendar/$title': typeof CalendarTitleRoute
   '/sutra/$category': typeof SutraCategoryLazyRoute
   '/sutra/search': typeof SutraSearchLazyRoute
   '/book/': typeof BookIndexRoute
@@ -289,6 +306,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/calendar/$title'
     | '/sutra/$category'
     | '/sutra/search'
     | '/book'
@@ -305,6 +323,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/calendar/$title'
     | '/sutra/$category'
     | '/sutra/search'
     | '/book'
@@ -321,6 +340,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/calendar/$title'
     | '/sutra/$category'
     | '/sutra/search'
     | '/book/'
@@ -339,6 +359,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  CalendarTitleRoute: typeof CalendarTitleRoute
   SutraCategoryLazyRoute: typeof SutraCategoryLazyRoute
   SutraSearchLazyRoute: typeof SutraSearchLazyRoute
   BookIndexRoute: typeof BookIndexRoute
@@ -356,6 +377,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  CalendarTitleRoute: CalendarTitleRoute,
   SutraCategoryLazyRoute: SutraCategoryLazyRoute,
   SutraSearchLazyRoute: SutraSearchLazyRoute,
   BookIndexRoute: BookIndexRoute,
@@ -382,6 +404,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/calendar/$title",
         "/sutra/$category",
         "/sutra/search",
         "/book/",
@@ -401,6 +424,9 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
+    },
+    "/calendar/$title": {
+      "filePath": "calendar/$title.tsx"
     },
     "/sutra/$category": {
       "filePath": "sutra/$category.lazy.tsx"
