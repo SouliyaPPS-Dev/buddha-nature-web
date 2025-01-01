@@ -155,7 +155,6 @@ function RouteComponent() {
     if (!searchTerm?.trim()) {
       return (
         <div
-          contentEditable={true}
           style={{ fontSize: `18px` }}
           className='cursor-text'
         >
