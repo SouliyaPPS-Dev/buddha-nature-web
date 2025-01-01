@@ -16,6 +16,7 @@ body {
 
 /* Global Smooth Scroll */
 html {
+  transition: transform 0.2s ease-in-out;
   scroll-behavior: smooth;
 }
 

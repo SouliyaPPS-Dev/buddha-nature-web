@@ -87,9 +87,7 @@ function RouteComponent() {
 
           {/* Fallback for No Results */}
           {data?.length === 0 && (
-            <div className='text-center text-white text-lg'>
-              ບໍ່ພົບຂໍ້ມູນ
-            </div>
+            <div className='text-center text-white text-lg'>ບໍ່ພົບຂໍ້ມູນ</div>
           )}
         </div>
       )}
