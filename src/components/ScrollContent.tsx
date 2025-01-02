@@ -21,7 +21,8 @@ function ScrollContent({
   const isDetailsRoute =
     location.pathname.startsWith('/sutra/details') ||
     location.pathname.startsWith('/favorites/details') ||
-    location.pathname.startsWith('/calendar');
+    location.pathname.startsWith('/calendar') ||
+    location.pathname.startsWith('/about');
 
   return (
     <section
