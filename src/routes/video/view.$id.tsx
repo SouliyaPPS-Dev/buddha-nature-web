@@ -90,7 +90,7 @@ function RouteComponent() {
       {/* Video Details Section */}
       <div
         className='w-full max-w-6xl mx-auto p-4'
-        style={{ marginTop: '-1rem', marginBottom: '-2.5rem' }}
+        style={{ marginTop: '0rem', marginBottom: '-2.5rem' }}
       >
         {/* Title */}
         <h1

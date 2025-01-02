@@ -1,7 +1,7 @@
 import { SearchIcon } from '@/components/layouts/icons';
 import { useCalendar } from '@/hooks/calendar/useCalendar';
 import { useScrollingStore } from '@/hooks/ScrollProvider';
-import { lao } from '@/hooks/utils';
+import { extractPhoneNumber, lao } from '@/hooks/utils';
 import { CalendarDataModel } from '@/model/calendar';
 import { DateValue } from '@internationalized/date';
 import {
@@ -154,10 +154,7 @@ function RouteComponent() {
 
     if (!searchTerm?.trim()) {
       return (
-        <div
-          style={{ fontSize: `18px` }}
-          className='cursor-text'
-        >
+        <div style={{ fontSize: `18px` }} className='cursor-text'>
           {ReactHtmlParser(contentWithBreaks)}
         </div>
       );
@@ -302,7 +299,7 @@ function RouteComponent() {
         {/* ⏳ Loading State */}
         {isLoading && (
           <div className='flex justify-center my-8'>
-            <Spinner label='Loading events...' />
+            <Spinner />
           </div>
         )}
 
@@ -467,6 +464,7 @@ function RouteComponent() {
                         <Spinner />
                       </div>
                     )}
+
                     <Image
                       src={selectedEvent.poster}
                       alt='Event Poster'
@@ -477,19 +475,41 @@ function RouteComponent() {
                         height: 'auto',
                       }} // Hide image while loading
                     />
-                    <p>
-                      <strong>{selectedEvent.title}</strong>
-                    </p>
-                    <p>
-                      <strong>Start Date:</strong> {selectedEvent.startDateTime}
-                    </p>
-                    <p>
-                      <strong>End Date:</strong> {selectedEvent.endDateTime}
-                    </p>
-                    {/* Render Details */}
-                    {renderDetail(
-                      selectedEvent.details || 'No description available.'
-                    )}
+                    <div className='flex flex-col items-center justify-center gap-2'>
+                      {/* Event Title */}
+                      <p>
+                        <strong className='text-lg md:text-xl lg:text-2xl font-bold'>
+                          {selectedEvent.title}
+                        </strong>
+                      </p>
+
+                      {/* Event Dates */}
+                      <div className='flex items-center justify-center gap-2'>
+                        <p>
+                          <strong className='font-semibold'>Start Date:&nbsp;</strong>
+                          {selectedEvent.startDateTime}
+                        </p>
+                        <span>|</span>
+                        <p>
+                          <strong className='font-semibold'>End Date:&nbsp;</strong>
+                          {selectedEvent.endDateTime}
+                        </p>
+                      </div>
+
+                      {/* Event Details */}
+                      <div className='flex flex-wrap justify-center'>
+                        {renderDetail(
+                          selectedEvent.details || 'No description available.'
+                        )}
+                      </div>
+
+                      {/* Phone Numbers */}
+                      {selectedEvent?.details && (
+                        <div className='flex flex-wrap justify-center'>
+                          {extractPhoneNumber(selectedEvent.details)}
+                        </div>
+                      )}
+                    </div>
                   </>
                 )}
               </ModalBody>

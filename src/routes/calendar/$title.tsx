@@ -5,7 +5,7 @@ import DOMPurify from 'dompurify';
 import ReactHtmlParser from 'react-html-parser';
 import { Image } from 'antd';
 import { Spinner } from '@nextui-org/spinner';
-import { FaPhoneAlt, FaWhatsapp } from 'react-icons/fa';
+import { extractPhoneNumber } from '@/hooks/utils';
 
 export const Route = createFileRoute('/calendar/$title')({
   component: RouteComponent,
@@ -32,10 +32,7 @@ function RouteComponent() {
 
     if (!searchTerm?.trim()) {
       return (
-        <div
-          style={{ fontSize: `18px` }}
-          className='cursor-text'
-        >
+        <div style={{ fontSize: `18px` }} className='cursor-text'>
           {ReactHtmlParser(contentWithBreaks)}
         </div>
       );
@@ -62,41 +59,6 @@ function RouteComponent() {
     }
   };
 
-  // Function to extract phone number and create links
-  const extractPhoneNumber = (text: string) => {
-    // Regular expression for Laos phone numbers starting with 020
-    const phoneRegex = /(0\d{8,9})/g;
-    const match = text.match(phoneRegex);
-
-    if (match) {
-      const phoneNumber = match[0].replace(/\D/g, ''); // Removing non-numeric characters
-      return (
-        <>
-          <a href={`tel:+856${phoneNumber.slice(1)}`} className='text-blue-500'>
-            <span className='flex items-center'>
-              <span>Call {phoneNumber}</span>
-              <FaPhoneAlt className='ml-1 w-4 h-4' />
-            </span>
-          </a>
-          {' | '}
-          <a
-            href={`https://wa.me/+856${phoneNumber.slice(1)}`}
-            target='_blank'
-            rel='noopener noreferrer'
-            className='text-green-500' // WhatsApp green color
-          >
-            <span className='flex items-center'>
-              <span>WhatsApp</span>
-              <FaWhatsapp className='ml-1 w-4 h-4 text-green-500' />{' '}
-              {/* Green color for the WhatsApp icon */}
-            </span>
-          </a>
-        </>
-      );
-    }
-    return null;
-  };
-
   return (
     <>
       <section
@@ -108,16 +70,24 @@ function RouteComponent() {
             <Spinner />
           </div>
         )}
-        <Image
-          src={selectedEvent?.poster}
-          alt='Event Poster'
-          loading={isLoading ? 'lazy' : 'eager'}
-          style={{
-            display: isLoading ? 'none' : 'block',
-            width: '100%',
-            height: 'auto',
-          }} // Hide image while loading
-        />
+
+        <div className='w-full max-h-[50vh] h-[200px] lg:h-[50vh] overflow-hidden'>
+          {/* Image with limited height */}
+          <div className='w-full h-full relative'>
+            <Image
+              src={selectedEvent?.poster}
+              alt={selectedEvent?.title || ''}
+              loading={isLoading ? 'lazy' : 'eager'}
+              width='100%'
+              height='100%'
+              style={{
+                display: isLoading ? 'none' : 'block',
+                objectFit: 'contain', // Scale image to fit without distortion
+                maxHeight: '100%',
+              }} // Hide image while loading
+            />
+          </div>
+        </div>
 
         <br />
 
