@@ -557,7 +557,7 @@ function RouteComponent() {
                 event.stopPropagation();
               }}
               onDragEnd={(_event, info) => {
-                if (info.offset.x < -100) {
+                if (info.offset.x < -100 && !isNextDisabled) {
                   goToNextPage(); // Go to the next page on left swipe
                 } else if (info.offset.x > 100 && currentPage > 0) {
                   goToPreviousPage(); // Go to the previous page on right swipe
