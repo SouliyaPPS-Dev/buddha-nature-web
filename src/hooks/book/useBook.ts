@@ -1,45 +1,84 @@
 import { useSearchContext } from "@/components/search/SearchContext";
 import { BookDataModel } from "@/model/book";
 import { bookApi } from "@/services/https/book";
+import { queryClient } from "@/services/react-query/client";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-export const useBook = () => {
+export const useBook = (id?: string) => {
      const { searchTerm, setSearchTerm } = useSearchContext();
-     const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // State for filtering by category
+     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+     const [filteredItems, setFilteredItems] = useState<BookDataModel[]>([]); // State for filtered items
 
      const { data, isLoading, refetch } = useQuery({
-          queryKey: ['book'],
+          queryKey: ["book"],
           queryFn: async () => bookApi(),
      });
 
+     // Filter data if available
      const filteredData = useMemo(() => {
-          if (!data) return []; // Handle null or undefined `data`
+          if (!data) return [];
 
-          const normalizedSearchTerm =
-               typeof searchTerm === 'string' ? searchTerm.toLowerCase() : '';
+          const normalizedSearchTerm = searchTerm?.toLowerCase() || "";
 
           return data.filter((item: BookDataModel) => {
-               const matchesCategory =
-                    !selectedCategory || item['ໝວດຟາຍ'] === selectedCategory; // Filter based on category
+               const matchesCategory = !selectedCategory || item["ໝວດຟາຍ"] === selectedCategory;
                const matchesSearch =
-                    !normalizedSearchTerm || // If no search term, all items match
-                    [item['ຊື່'], item['ໝວດຟາຍ'], item['ໝວດທັມ']]
-                         .join(' ')
+                    !normalizedSearchTerm ||
+                    [item["ຊື່"], item["ໝວດຟາຍ"], item["ໝວດທັມ"]]
+                         .join(" ")
                          .toLowerCase()
                          .includes(normalizedSearchTerm);
+
                return matchesCategory && matchesSearch;
           });
-     }, [data, searchTerm, selectedCategory]); // Dependencies are data, searchTerm, and selectedCategory
+     }, [data, searchTerm, selectedCategory]);
 
      // Derive unique categories for the dropdown from `data`
      const uniqueCategories = Array.from(
           new Set(data?.map((item: BookDataModel) => item['ໝວດຟາຍ']).filter(Boolean))
      ) as any;
 
+     // Timeout for filtering by ID
+     useEffect(() => {
+          if (!filteredData) return;
+
+          const timeout = setTimeout(() => {
+               const result = filteredData.filter((item: BookDataModel) =>
+                    id ? item["ID"] === id : true
+               );
+
+               setFilteredItems(result.length > 1 ? [] : result); // Empty if more than one result
+          }, 500); // 500ms delay
+
+          return () => clearTimeout(timeout); // Cleanup timeout
+     }, [filteredData, id]);
+
+     const lastItem = filteredItems?.[0] || null;
+
+     const linkBook = lastItem?.["link"] || "";
+     const titleBook = lastItem?.["ຊື່"] || "";
+
+     // PDF preview link
+     const pdfEmbedLink = linkBook
+          ? linkBook.replace(
+               /https:\/\/drive\.google\.com\/file\/d\/(.*?)\/view\?usp=sharing/,
+               "https://drive.google.com/file/d/$1/preview"
+          )
+          : "";
+
+     const downloadLink = linkBook.replace(
+          /https:\/\/drive\.google\.com\/file\/d\/(.*?)\/view\?usp=sharing/,
+          "https://drive.google.com/uc?export=download&id=$1"
+     );
+
+     useEffect(() => {
+          if (downloadLink) {
+               queryClient.setQueryData(["downloadBookLink"], downloadLink);
+          }
+     }, [downloadLink]);
 
      return {
-          // Data
           data: filteredData,
           isLoading,
           refetch,
@@ -51,6 +90,11 @@ export const useBook = () => {
           // Filter
           selectedCategory,
           setSelectedCategory,
-          uniqueCategories
-     }
-}
+          uniqueCategories,
+
+          // PDF Link
+          pdfEmbedLink,
+          titleBook,
+          linkBook,
+     };
+};

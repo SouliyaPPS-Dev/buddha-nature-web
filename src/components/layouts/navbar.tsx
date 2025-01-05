@@ -11,9 +11,11 @@ import {
 } from '@/components/layouts/icons';
 import { ThemeSwitch } from '@/components/layouts/theme-switch';
 import { useNavigation } from '@/components/NavigationProvider';
+import DownloadBook from '@/containers/book/DownloadBook';
 import { DeleteFavorites } from '@/containers/favorites/DeleteFavorites';
 import { ButtonUpdateData } from '@/containers/sutra/ButtonUpdateData';
 import { siteConfig } from '@/layouts/site';
+import { router } from '@/router';
 import {
   NavbarBrand,
   NavbarContent,
@@ -28,10 +30,9 @@ import { Link, useRouterState } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { useState } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
+import { IoShareSocialSharp } from 'react-icons/io5';
 import { SearchDropdown } from '../search/SearchDropdown';
 import { useMenuContext } from './MenuProvider';
-import { router } from '@/router';
-import { IoShareSocialSharp } from 'react-icons/io5';
 
 export const Navbar = () => {
   const [activeItem, setActiveItem] = useState<string>('');
@@ -42,6 +43,8 @@ export const Navbar = () => {
   const { back } = useNavigation();
 
   const currentPath = location.pathname;
+  const pathSegments = currentPath.split('/');
+  const bookViewPath = pathSegments.slice(0, -1).join('/');
 
   // Use useRouterState to get the current location
   const handleMobileNavigation = (href: string) => {
@@ -140,9 +143,16 @@ export const Navbar = () => {
           ))} */}
         </div>
 
+        {/* Download Book Button */}
+        {bookViewPath === '/book/view' && (
+          <NavbarItem className='hidden sm:flex gap-2 mr-4 cursor-pointer'>
+            <DownloadBook />
+          </NavbarItem>
+        )}
+
         {/* Delete Button */}
         {currentPath === '/favorites' && (
-          <NavbarItem className='hidden sm:flex gap-2 mr-4 cursor-pointer'>
+          <NavbarItem className='hidden sm:flex gap-2 mr-3 cursor-pointer'>
             <DeleteFavorites />
           </NavbarItem>
         )}
@@ -179,24 +189,31 @@ export const Navbar = () => {
 
       {/* Mobile Menu Toggle */}
       <NavbarContent className='sm:hidden basis-1 pl-4' justify='end'>
+        {/* Download Book Button */}
+        {bookViewPath === '/book/view' && (
+          <div className='mr-3'>
+            <DownloadBook />
+          </div>
+        )}
+
         {/* Delete Button */}
         {currentPath === '/favorites' && <DeleteFavorites />}
 
         {/* Share Button */}
         {!location.pathname.startsWith('/favorites') &&
-          (!location.pathname.startsWith('/sutra/details') && (
+          !location.pathname.startsWith('/sutra/details') && (
             <IoShareSocialSharp
               className='mr-3'
               size={20}
               onClick={handleShare}
             />
-          ))}
+          )}
 
         {/* Search Button */}
         <SearchIcon />
 
         {/* Update Data Button */}
-        <ButtonUpdateData />
+        {bookViewPath !== '/book/view' && <ButtonUpdateData />}
 
         {/* Theme Switch */}
         <ThemeSwitch />

@@ -1,6 +1,5 @@
 import { useBook } from '@/hooks/book/useBook';
 import { useScrollingStore } from '@/hooks/ScrollProvider';
-import { BookDataModel } from '@/model/book';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/book/view/$id')({
@@ -8,27 +7,15 @@ export const Route = createFileRoute('/book/view/$id')({
 });
 
 function RouteComponent() {
-  const { scrollContainerRef } = useScrollingStore();
-
   const params = Route.useParams();
-  const { data } = useBook();
-
   const { id } = params;
 
-  // Filter the selected book based on ID
-  const filteredItems = data?.filter((item: BookDataModel) => {
-    return id ? item['ID'] === id : true;
-  });
+  const { scrollContainerRef } = useScrollingStore();
 
-  const linkBook = filteredItems?.[0]?.['link'] || '';
-  
-  // Check if there's an online PDF link
-  const pdfEmbedLink = linkBook
-    ? linkBook.replace(
-        /https:\/\/drive\.google\.com\/file\/d\/(.*?)\/view\?usp=sharing/,
-        'https://drive.google.com/file/d/$1/preview'
-      )
-    : '';
+  const {
+    // PDF Link
+    pdfEmbedLink,
+  } = useBook(id);
 
   return (
     <div
