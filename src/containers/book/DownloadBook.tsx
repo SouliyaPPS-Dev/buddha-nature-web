@@ -7,6 +7,7 @@ function DownloadBook() {
     queryKey: ['downloadBookLink'],
     queryFn: async () =>
       queryClient.getQueryState(['downloadBookLink'])?.data as string,
+    staleTime: 1,
   });
 
   return (
