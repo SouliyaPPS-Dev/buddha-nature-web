@@ -94,7 +94,7 @@ function RouteComponent() {
 
       {/* Render Filtered Items */}
       <div className='flex flex-col gap-2 mt-4 mb-20 p-2'>
-        {data?.map((item: any) => (
+        {[...data].reverse().map((item: any) => (
           <SutraCard
             key={item.ID}
             title={item['ຊື່ພຣະສູດ']}
