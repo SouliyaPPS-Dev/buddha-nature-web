@@ -6,10 +6,12 @@ import { useSutra } from '@/hooks/sutra/useSutra';
 import { router } from '@/router';
 import { Input } from '@nextui-org/react';
 import { createLazyFileRoute } from '@tanstack/react-router';
+import { SetStateAction, useCallback, useMemo } from 'react';
 
 export const Route = createLazyFileRoute('/sutra/')({
   component: RouteComponent,
 });
+
 function RouteComponent() {
   const { scrollContainerRef } = useScrollingStore();
 
@@ -19,12 +21,27 @@ function RouteComponent() {
     groupedData,
     searchTerm,
     setSearchTerm,
-
-    // Audio
     currentlyPlayingId,
     handlePlayAudio,
     handleNextAudio,
   } = useSutra();
+
+  const handleSearchChange = useCallback(
+    (e: { target: { value: SetStateAction<string> } }) => {
+      setSearchTerm(e.target.value);
+    },
+    [setSearchTerm]
+  );
+  
+  // Memoize filtered data to avoid redundant computations
+  const filteredData = useMemo(() => {
+    if (searchTerm.trim() === '') {
+      return [];
+    }
+    return data.filter((item) =>
+      item['ຊື່ພຣະສູດ'].toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm, data]);
 
   return (
     <section
@@ -41,12 +58,12 @@ function RouteComponent() {
           inputWrapper: 'bg-default-100',
           input: 'text-lg',
         }}
-        className='mb-4 sticky top-14 z-10 w-full sm:max-w-md md:max-w-lg lg:max-w-xl'
+        className='mb-4 sticky top-14 z-20 w-full sm:max-w-md md:max-w-lg lg:max-w-xl'
         value={searchTerm}
         startContent={
           <SearchIcon className='text-base text-default-400 pointer-events-none flex-shrink-0' />
         }
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={handleSearchChange}
       />
 
       {/* Category Render */}
@@ -65,8 +82,8 @@ function RouteComponent() {
 
       {/* Filtered Results Render */}
       {searchTerm.trim() !== '' && (
-        <div className='flex flex-col gap-2 mb-20'>
-          {data?.map((item) => (
+        <div className='flex flex-col gap-2 mb-20 p-2'>
+          {filteredData.map((item) => (
             <SutraCard
               key={item.ID}
               title={item['ຊື່ພຣະສູດ']}
@@ -86,7 +103,7 @@ function RouteComponent() {
           ))}
 
           {/* Fallback for No Results */}
-          {data?.length === 0 && (
+          {filteredData.length === 0 && (
             <div className='text-center text-white text-lg'>ບໍ່ພົບຂໍ້ມູນ</div>
           )}
         </div>

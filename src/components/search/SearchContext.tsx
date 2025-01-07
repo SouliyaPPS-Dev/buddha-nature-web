@@ -4,6 +4,7 @@ import React, {
   useState,
   useEffect,
   useMemo,
+  useCallback,
 } from 'react';
 import { useSearch } from '@tanstack/react-router'; // Ensure correct router import
 import { router } from '@/router';
@@ -29,23 +30,29 @@ export const SearchProvider: React.FC<{ children: React.ReactNode }> = ({
     searchParams.search || ''
   );
 
-  // Sync the `searchTerm` with the URL query parameter
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
+  // Debounced function to sync `searchTerm` with the URL query parameter
+  const syncSearchTerm = useCallback(
+    debounce((newSearchTerm) => {
       const currentSearch = searchParams.search || '';
-      const trimmedSearchTerm = searchTerm.trim();
+      const trimmedSearchTerm = newSearchTerm.trim();
 
       // Avoid unnecessary `router.navigate` calls
       if (currentSearch !== trimmedSearchTerm) {
         router.navigate({
-          search: searchTerm ? { search: searchTerm } : {},
+          search: newSearchTerm ? { search: newSearchTerm } : {},
           replace: true,
         } as any);
       }
-    }, 300); // Debounce update by 300ms
+    }, 300), // Debounce update by 300ms
+    [searchParams.search]
+  );
 
-    return () => clearTimeout(timeoutId); // Cleanup on unmount
-  }, [searchTerm, searchParams.search]);
+  // Sync the `searchTerm` with the URL query parameter
+  useEffect(() => {
+    syncSearchTerm(searchTerm);
+
+    return () => syncSearchTerm.cancel(); // Cleanup on unmount
+  }, [searchTerm, syncSearchTerm]);
 
   // Update the `searchTerm` when `searchParams.search` changes (to avoid desync)
   useEffect(() => {
@@ -77,3 +84,14 @@ export const useSearchContext = (): SearchContextType => {
   }
   return context;
 };
+
+// Utility function for debouncing
+function debounce<T extends (...args: any[]) => void>(func: T, wait: number) {
+  let timeout: ReturnType<typeof setTimeout>;
+  const debouncedFunction = (...args: Parameters<T>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+  debouncedFunction.cancel = () => clearTimeout(timeout);
+  return debouncedFunction;
+}
