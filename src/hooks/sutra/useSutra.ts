@@ -1,5 +1,5 @@
 import { useSearchContext } from '@/components/search/SearchContext';
-import { sutraApi } from '@/services/https/sutra';
+import { fetchSutraMergeData } from '@/services/https/sutra';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -17,7 +17,7 @@ export const useSutra = () => {
      // Fetch Data
      const { data, isLoading, refetch } = useQuery({
           queryKey: ['sutra'],
-          queryFn: async () => sutraApi(),
+          queryFn: async () => fetchSutraMergeData(),
      });
 
      /**

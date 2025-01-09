@@ -5,6 +5,7 @@ import path from 'path-browserify';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import loadEnv from './loadEnv';
+import compress from 'vite-plugin-compression';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
@@ -21,6 +22,10 @@ export default defineConfig(({ mode }) => {
       'process.env': env,
     },
     plugins: [
+      compress({
+        algorithm: 'brotliCompress', // Use Brotli compression
+        ext: '.br', // Output compressed files with .br extension
+      }),
       pluginReact(),
       TanStackRouterVite({
         autoCodeSplitting: true,
@@ -51,6 +56,7 @@ export default defineConfig(({ mode }) => {
         },
         injectRegister: 'auto',
         workbox: {
+          maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // Set 4 MiB (or any desired value)
           globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
           cleanupOutdatedCaches: true,
           skipWaiting: true,
@@ -99,12 +105,13 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     build: {
+      chunkSizeWarningLimit: 4000, // Increase chunk warning size to 1 MB
       rollupOptions: {
         output: {
-          manualChunks(id) {
-            if (id.includes('node_modules')) {
-              return id.toString().split('node_modules/')[1].split('/')[0];
-            }
+          manualChunks: {
+            // Split specific libraries into separate chunks
+            react: ['react', 'react-dom'],
+            lodash: ['lodash'], // Example for splitting lodash
           },
         },
       },

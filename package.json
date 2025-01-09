@@ -64,6 +64,7 @@
     "dompurify": "^3.2.3",
     "dotenv": "^16.4.7",
     "emotion": "^11.0.0",
+    "firebase": "^11.1.0",
     "firebase-tools": "^13.27.0",
     "framer-motion": "^11.15.0",
     "html-react-parser": "^5.2.0",
@@ -90,7 +91,9 @@
     "react-window": "^1.8.11",
     "smoothscroll-polyfill": "^0.4.4",
     "swiper": "^11.1.15",
-    "use-debounce": "^10.0.4"
+    "use-debounce": "^10.0.4",
+    "vite-bundle-visualizer": "^1.2.1",
+    "vite-plugin-compression": "^0.5.1"
   },
   "devDependencies": {
     "@tanstack/router-devtools": "^1.85.0",
