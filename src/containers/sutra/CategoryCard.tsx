@@ -24,7 +24,11 @@ const CategoryCard = memo(
           <CardBody className='overflow-hidden p-0 relative'>
             {isLoading && (
               <div className='absolute inset-0 flex items-center justify-center text-black'>
-                <Spinner title={item['ຊື່ພຣະສູດ']} size='lg' />
+                <Spinner
+                  title={item['ຊື່ພຣະສູດ']}
+                  size='lg'
+                  className='text-black z-20'
+                />
               </div>
             )}
             {/* Fallback to text if image fails */}

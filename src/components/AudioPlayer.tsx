@@ -21,15 +21,18 @@ const AudioPlayerStyled: React.FC<AudioPlayerProps> = ({ audio }) => {
   return (
     <>
       {audio && audio !== '/' && (
-        <div className='w-full max-w-lg p-1 bg-[#FFFFFF] rounded-xl relative'>
+        <div className='w-full max-w-lg p-1 rounded-xl relative'>
           <AudioPlayer src={audio} className='w-full' />
           {/* Custom Download Button */}
           <button
             onClick={handleDownload}
-            className='absolute top-12 left-16 bg-[#795548] hover:bg-[#5D4037] text-white rounded-full p-2'
+            className='absolute top-11 text-[#868686] rounded-full p-2'
             title='Download Audio'
+            style={{
+              marginLeft: '50px',
+            }}
           >
-            <FaDownload size={16} />
+            <FaDownload size={18} />
           </button>
         </div>
       )}
