@@ -27,7 +27,7 @@ const CategoryCard = memo(
                 <Spinner
                   title={item['ຊື່ພຣະສູດ']}
                   size='lg'
-                  className='text-black z-20'
+                  className='text-black'
                 />
               </div>
             )}

@@ -31,7 +31,7 @@ function RouteComponent() {
   return (
     <section
       ref={scrollContainerRef}
-      className='w-full min-h-screen dark:bg-[#181818] items-center justify-center'
+      className='w-full min-h-screen items-center justify-center'
     >
       {/* Video Player Section */}
       <div className='flex justify-center'>
