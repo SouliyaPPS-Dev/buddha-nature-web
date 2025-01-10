@@ -101,7 +101,7 @@ export const HeartFilledIcon = ({
 export const SearchIcon = (props: IconSvgProps) => (
   <div
     className='w-6 h-6 text-white dark:text-gray-300 mt-2 cursor-pointer'
-    onClick={() => router.navigate({ to: '/sutra/search' })}
+    onClick={() => router.navigate({ to: `/sutra/search${window.location.search}` })}
   >
     <svg
       aria-hidden='true'
