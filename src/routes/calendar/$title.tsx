@@ -71,7 +71,7 @@ function RouteComponent() {
           </div>
         )}
 
-        <div className='w-full max-h-[50vh] h-[200px] lg:h-[50vh] overflow-hidden'>
+        <div className='w-full max-h-[50vh] h-[220px] lg:h-[50vh] overflow-hidden'>
           {/* Image with limited height */}
           <div className='w-full h-full relative'>
             <Image

@@ -438,7 +438,7 @@ function RouteComponent() {
           >
             <ModalContent
               onClick={(e) => e.stopPropagation()}
-              className='relative w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto'
+              className='relative w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-3xl mx-auto'
             >
               {/* 🚀 Close Button on Top-Left */}
               <button
@@ -465,16 +465,23 @@ function RouteComponent() {
                       </div>
                     )}
 
-                    <Image
-                      src={selectedEvent.poster}
-                      alt='Event Poster'
-                      loading={isLoading ? 'lazy' : 'eager'}
-                      style={{
-                        display: isLoading ? 'none' : 'block',
-                        width: '100%',
-                        height: 'auto',
-                      }} // Hide image while loading
-                    />
+                    <div className='w-full max-h-[50vh] h-[250px] lg:h-[50vh] overflow-hidden'>
+                      {/* Image with limited height */}
+                      <div className='w-full h-full relative'>
+                        <Image
+                          src={selectedEvent?.poster}
+                          alt={selectedEvent?.title || ''}
+                          loading={isLoading ? 'lazy' : 'eager'}
+                          width='100%'
+                          height='100%'
+                          style={{
+                            display: isLoading ? 'none' : 'block',
+                            objectFit: 'contain', // Scale image to fit without distortion
+                            maxHeight: '100%',
+                          }} // Hide image while loading
+                        />
+                      </div>
+                    </div>
                     <div className='flex flex-col items-center justify-center gap-2'>
                       {/* Event Title */}
                       <p>
@@ -486,12 +493,16 @@ function RouteComponent() {
                       {/* Event Dates */}
                       <div className='flex items-center justify-center gap-2'>
                         <p>
-                          <strong className='font-semibold'>Start Date:&nbsp;</strong>
+                          <strong className='font-semibold'>
+                            Start Date:&nbsp;
+                          </strong>
                           {selectedEvent.startDateTime}
                         </p>
                         <span>|</span>
                         <p>
-                          <strong className='font-semibold'>End Date:&nbsp;</strong>
+                          <strong className='font-semibold'>
+                            End Date:&nbsp;
+                          </strong>
                           {selectedEvent.endDateTime}
                         </p>
                       </div>
