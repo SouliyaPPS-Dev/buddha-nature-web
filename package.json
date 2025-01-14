@@ -89,6 +89,7 @@
     "react-use": "^17.6.0",
     "react-use-scroll-direction": "^0.1.0",
     "react-window": "^1.8.11",
+    "sitemap-generator-cli": "^7.5.0",
     "smoothscroll-polyfill": "^0.4.4",
     "swiper": "^11.1.15",
     "use-debounce": "^10.0.4",

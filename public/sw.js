@@ -97,3 +97,15 @@ if (workbox) {
     'Workbox could not be loaded. Make sure to import the Workbox CDN.'
   );
 }
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.url.endsWith('/robots.txt')) {
+    return; // Skip caching or custom handling for robots.txt
+  }
+  // Default fetch handler
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
+    })
+  );
+});

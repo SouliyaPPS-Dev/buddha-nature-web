@@ -535,7 +535,7 @@ function RouteComponent() {
       <article>
         <meta charSet='UTF-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-        <title>Buddhaword</title>
+        <title>{filteredDetails?.[currentPage]?.['ຊື່ພຣະສູດ']}</title>
         <meta name='description' content='The Word of Buddha' />
         <meta
           name='keywords'

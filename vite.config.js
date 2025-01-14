@@ -32,6 +32,11 @@ export default defineConfig(({ mode }) => {
       }),
       react(),
       VitePWA({
+        includeAssets: [
+          'logo.png',
+          'logo_shared.png',
+          'robots.txt', // Include robots.txt
+        ],
         registerType: 'autoUpdate',
         manifest: {
           name: 'Buddhaword',
