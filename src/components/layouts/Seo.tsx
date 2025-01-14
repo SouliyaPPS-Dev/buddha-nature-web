@@ -15,7 +15,7 @@ function Seo() {
       <meta property='og:description' content='ຄຳສອນພຣະພຸດທະເຈົ້າ' />
       <meta
         property='og:image'
-        content='https://buddha-nature.web.app/images/logo_shared.jpg'
+        content='https://buddha-nature.web.app/images/logo_shared.png'
       />
       <meta property='og:type' content='website' />
       <meta property='og:url' content='https://buddha-nature.web.app' />
@@ -25,16 +25,16 @@ function Seo() {
       <meta name='twitter:description' content='The Word of Buddha' />
       <meta
         name='twitter:image'
-        content='https://buddha-nature.web.app/images/logo_shared.jpg'
+        content='https://buddha-nature.web.app/images/logo_shared.png'
       />
 
-      <link rel='icon' type='image/png' href='/images/logo_shared.jpg' />
+      <link rel='icon' type='image/png' href='/images/logo_shared.png' />
 
       <meta name='mobile-web-app-capable' content='yes' />
       <meta name='apple-mobile-web-app-status-bar-style' content='#FFAF5D' />
       <meta name='apple-mobile-web-app-title' content='Buddha-Nature' />
       <meta name='theme-color' content='#FFAF5D' />
-      <link rel='apple-touch-icon' href='/images/logo_shared.jpg' />
+      <link rel='apple-touch-icon' href='/images/logo_shared.png' />
     </article>
   );
 }
