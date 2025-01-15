@@ -435,7 +435,7 @@ function RouteComponent() {
             isOpen={isModalOpen}
             hideCloseButton={true}
             placement='center'
-            className='max-w-full h-full overflow-auto px-4 sm:px-4 md:px-4'
+            className='max-w-full h-full overflow-auto px-2 sm:px-2 md:px-2 lg:px-2 xl:px-2'
           >
             <ModalContent
               onClick={(e) => e.stopPropagation()}
