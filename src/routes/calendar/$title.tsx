@@ -32,7 +32,7 @@ function RouteComponent() {
 
     if (!searchTerm?.trim()) {
       return (
-        <div style={{ fontSize: `18px` }} className='cursor-text'>
+        <div style={{ fontSize: `20px` }} className='cursor-text'>
           {ReactHtmlParser(contentWithBreaks)}
         </div>
       );
@@ -48,7 +48,7 @@ function RouteComponent() {
               key={index}
               className='bg-yellow-200 font-bold text-black cursor-text'
               contentEditable={true}
-              style={{ fontSize: `18px` }}
+              style={{ fontSize: `20px` }}
             >
               {ReactHtmlParser(part)}
             </span>
@@ -63,7 +63,7 @@ function RouteComponent() {
     <>
       <section
         ref={scrollContainerRef}
-        className='flex flex-col items-center justify-center mb-20 mt-2'
+        className='flex flex-col items-center justify-center mb-20 mt-2 p-4'
       >
         {isLoading && (
           <div className='flex justify-center items-center'>

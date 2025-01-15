@@ -154,7 +154,7 @@ function RouteComponent() {
 
     if (!searchTerm?.trim()) {
       return (
-        <div style={{ fontSize: `18px` }} className='cursor-text'>
+        <div style={{ fontSize: `20px` }} className='cursor-text'>
           {ReactHtmlParser(contentWithBreaks)}
         </div>
       );
@@ -170,7 +170,7 @@ function RouteComponent() {
               key={index}
               className='bg-yellow-200 font-bold text-black cursor-text'
               contentEditable={true}
-              style={{ fontSize: `18px` }}
+              style={{ fontSize: `20px` }}
             >
               {ReactHtmlParser(part)}
             </span>
@@ -433,8 +433,9 @@ function RouteComponent() {
         <div onClick={handleCloseModal}>
           <Modal
             isOpen={isModalOpen}
+            hideCloseButton={true}
             placement='center'
-            className='max-w-full h-full overflow-auto px-4 sm:px-6 md:px-8'
+            className='max-w-full h-full overflow-auto px-4 sm:px-4 md:px-4'
           >
             <ModalContent
               onClick={(e) => e.stopPropagation()}
@@ -445,10 +446,10 @@ function RouteComponent() {
                 onClick={handleCloseModal}
                 style={{
                   position: 'absolute',
-                  top: '0.03rem',
-                  right: '-1.77rem',
+                  top: '0.8rem',
+                  right: '1.5rem',
                 }}
-                className='w-24 absolute top-4 right-4 text-gray-700 rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-gray-400 z-10'
+                className='text-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 z-20'
               >
                 ✖️
               </button>
