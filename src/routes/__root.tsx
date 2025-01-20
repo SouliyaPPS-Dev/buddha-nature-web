@@ -6,22 +6,30 @@ import { ScrollProvider } from '@/hooks/ScrollProvider';
 import DefaultLayout from '@/layouts/default';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
+import React from 'react';
 
 const isDevelopment = import.meta.env.MODE === 'development';
 
 export const Route = createRootRoute({
-  component: () => (
-    <SearchProvider>
-      <ScrollProvider>
-        <NavigationProvider>
-          <DefaultLayout>
-            <Seo />
-            <PushNotificationA2HS />
-            <Outlet />
-            {isDevelopment && <TanStackRouterDevtools />}
-          </DefaultLayout>
-        </NavigationProvider>
-      </ScrollProvider>
-    </SearchProvider> 
-  ),
+  component: RootComponent,
 });
+
+function RootComponent() {
+  return (
+    <React.Fragment>
+      <Seo />
+
+      <SearchProvider>
+        <ScrollProvider>
+          <NavigationProvider>
+            <DefaultLayout>
+              <PushNotificationA2HS />
+              <Outlet />
+              {isDevelopment && <TanStackRouterDevtools />}
+            </DefaultLayout>
+          </NavigationProvider>
+        </ScrollProvider>
+      </SearchProvider>
+    </React.Fragment>
+  );
+}

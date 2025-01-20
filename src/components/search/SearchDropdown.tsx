@@ -1,6 +1,6 @@
 import { useSutra } from '@/hooks/sutra/useSutra';
 import { useTheme } from '@/hooks/use-theme';
-import { Input } from '@nextui-org/react';
+import { Input } from "@heroui/react";
 import debounce from 'lodash.debounce';
 import React, { useCallback, useState } from 'react';
 import { SearchIcon } from '../layouts/icons';

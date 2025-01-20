@@ -4,7 +4,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import DOMPurify from 'dompurify';
 import ReactHtmlParser from 'react-html-parser';
 import { Image } from 'antd';
-import { Spinner } from '@nextui-org/spinner';
+import { Spinner } from "@heroui/spinner";
 import { extractPhoneNumber } from '@/hooks/utils';
 
 export const Route = createFileRoute('/calendar/$title')({

@@ -4,7 +4,7 @@ import SutraCard from '@/containers/sutra/SutraCard';
 import { useScrollingStore } from '@/hooks/ScrollProvider';
 import { useSutra } from '@/hooks/sutra/useSutra';
 import { router } from '@/router';
-import { Input } from '@nextui-org/react';
+import { Input } from "@heroui/react";
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { SetStateAction, useCallback, useMemo } from 'react';
 

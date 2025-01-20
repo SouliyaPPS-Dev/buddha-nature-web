@@ -8,7 +8,7 @@ import {
   AboutIcon,
 } from '@/components/layouts/icons'; // Import icons for each tab
 import { siteConfig } from '@/layouts/site';
-import { Tab, Tabs } from '@nextui-org/react'; // Import NextUI Tabs
+import { Tab, Tabs } from "@heroui/react"; // Import NextUI Tabs
 import { useRouter, useRouterState } from '@tanstack/react-router'; // Import useRouter hook
 import clsx from 'clsx';
 import React from 'react';

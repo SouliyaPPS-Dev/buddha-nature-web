@@ -3,7 +3,7 @@ import SutraCard from '@/containers/sutra/SutraCard';
 import { useScrollingStore } from '@/hooks/ScrollProvider';
 import { useCategory } from '@/hooks/sutra/useCategory';
 import { router } from '@/router';
-import { Input } from '@nextui-org/react';
+import { Input } from "@heroui/react";
 import { createLazyFileRoute } from '@tanstack/react-router';
 
 export const Route = createLazyFileRoute('/sutra/$category')({

@@ -14,7 +14,7 @@ import {
   ModalFooter,
   ModalHeader,
   Spinner,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Image } from 'antd';
 import { format, getDay, parse, startOfWeek } from 'date-fns';

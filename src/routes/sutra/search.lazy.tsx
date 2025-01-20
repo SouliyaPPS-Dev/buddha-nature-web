@@ -3,7 +3,7 @@ import SutraCard from '@/containers/sutra/SutraCard';
 import { useSutra } from '@/hooks/sutra/useSutra';
 import { useScrollingStore } from '@/hooks/ScrollProvider';
 import { router } from '@/router';
-import { Input, Select, SelectItem } from '@nextui-org/react';
+import { Input, Select, SelectItem } from "@heroui/react";
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { useRef } from 'react';
 import { useEffect } from 'react';

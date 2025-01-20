@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-require-imports */
-const { nextui } = require('@nextui-org/react');
+const { heroui } = require("@heroui/react");
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -9,7 +9,7 @@ export default {
     './src/**/*.{js,ts,jsx,tsx}',
     './src/layouts/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
+    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -32,7 +32,7 @@ export default {
   },
   darkMode: 'class',
   plugins: [
-    nextui({
+    heroui({
       prefix: 'Buddhaword',
       layout: {
         dividerWeight: '1px', // h-divider the default height applied to the divider component

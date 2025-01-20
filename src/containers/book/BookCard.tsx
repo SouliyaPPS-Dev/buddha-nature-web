@@ -1,6 +1,6 @@
 /* BookCard Component */
 import { BookDataArray } from '@/model/book';
-import { Card, CardBody, Image, Spinner } from '@nextui-org/react';
+import { Card, CardBody, Image, Spinner } from "@heroui/react";
 import { Link } from '@tanstack/react-router';
 import { useEffect } from 'react';
 

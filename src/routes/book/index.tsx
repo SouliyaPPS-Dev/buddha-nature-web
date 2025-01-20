@@ -1,6 +1,6 @@
 import { useBook } from '@/hooks/book/useBook';
 import { useScrollingStore } from '@/hooks/ScrollProvider';
-import { Input, Select, SelectItem, Spinner } from '@nextui-org/react';
+import { Input, Select, SelectItem, Spinner } from "@heroui/react";
 import { createFileRoute } from '@tanstack/react-router';
 import { SearchIcon } from '@/components/layouts/icons';
 import BookCard from '@/containers/book/BookCard';

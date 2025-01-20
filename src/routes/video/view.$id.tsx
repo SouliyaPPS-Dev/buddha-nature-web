@@ -2,7 +2,7 @@ import VideoCard from '@/containers/video/VideoCard';
 import { useScrollingStore } from '@/hooks/ScrollProvider';
 import useVideo from '@/hooks/video/useVideo';
 import { VideoDataModel } from '@/model/video';
-import { Spinner } from '@nextui-org/spinner';
+import { Spinner } from "@heroui/spinner";
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/video/view/$id')({

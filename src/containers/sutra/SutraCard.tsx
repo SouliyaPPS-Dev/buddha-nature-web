@@ -1,7 +1,7 @@
 import PauseIcon from '@/assets/images/pause.png';
 import PlayIcon from '@/assets/images/play.png';
 import { useFontSizeContext } from '@/components/FontSizeProvider';
-import { Card, CardBody } from '@nextui-org/react';
+import { Card, CardBody } from "@heroui/react";
 import { Link } from '@tanstack/react-router';
 import DOMPurify from 'dompurify';
 import { useEffect, useRef, useState } from 'react';

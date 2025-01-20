@@ -2,7 +2,7 @@ import { SearchIcon } from '@/components/layouts/icons';
 import VideoCard from '@/containers/video/VideoCard';
 import { useScrollingStore } from '@/hooks/ScrollProvider';
 import useVideo from '@/hooks/video/useVideo';
-import { Input, Select, SelectItem, Spinner } from '@nextui-org/react';
+import { Input, Select, SelectItem, Spinner } from "@heroui/react";
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/video/')({
