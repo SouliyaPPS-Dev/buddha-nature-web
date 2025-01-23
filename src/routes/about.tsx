@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { FaEnvelope, FaFacebook, FaPhoneAlt } from 'react-icons/fa'; // Social & Contact Icons
+import { FaEnvelope, FaFacebook, FaUserCircle, FaWhatsapp } from 'react-icons/fa'; // Social & Contact Icons
 
 export const Route = createFileRoute('/about')({
   component: RouteComponent,
@@ -8,49 +8,68 @@ export const Route = createFileRoute('/about')({
 function RouteComponent() {
   return (
     <>
-      <section className='text-lg py-10 px-4 md:px-10 mx-auto rounded-lg mb-20'>
+      <section className='text-lg py-10 px-4 md:px-10 mx-auto rounded-lg mb-10'>
         {/* About Section */}
-        <div className='max-w-5xl mx-auto text-center mb-10'>
-          <h1 className={`font-bold mb-6 text-2xl md:text-3xl`}>
-            ກ່ຽວກັບແອັບຂອງເຮົາ
-          </h1>
+        <div className='max-w-5xl mx-auto text-center mb-8'>
+          <h1 className={`font-bold mb-5 text-2xl md:text-3xl`}>ກ່ຽວກັບ</h1>
           <p className='leading-relaxed md:leading-loose max-w-5xl mx-auto px-0 3xl-extra md:text-2xl'>
-            ແອັບນີ້ແມ່ນແອັບຄຳສອນພຣະພຸດທະເຈົ້າ,
-            ສ້າງຂື້ນເພື່ອເຜີຍແຜ່ໃຫ້ພວກເຮົາທັງຫຼາຍໄດ້ສຶກສາ ແລະ ປະຕິບັດຕາມ,
-            ດັ່ງທີ່ພຣະຕະຖາຄົດກ່າວວ່າ "ທຳມະຍິ່ງເປີດເຜີຍຍິ່ງຮຸ່ງເຮືອງ".
-            ເມື່ອໄດ້ສຶກສາ ແລະ ປະຕິບັດຕາມ ຈົນເຫັນທຳມະຊາດຕາມຄວາມເປັນຈິງ
-            ກໍຈະຫຼຸດພົ້ນຈາກຄວາມທຸກທັງປວງ.
+            ຄຳສອນພຣະພຸດທະເຈົ້າ, ສ້າງຂື້ນເພື່ອເຜີຍແຜ່ໃຫ້ພວກເຮົາທັງຫຼາຍໄດ້ສຶກສາ
+            ແລະ ປະຕິບັດຕາມ, ດັ່ງທີ່ພຣະຕະຖາຄົດກ່າວວ່າ
+            "ທຳມະຍິ່ງເປີດເຜີຍຍິ່ງຮຸ່ງເຮືອງ". ເມື່ອໄດ້ສຶກສາ ແລະ ປະຕິບັດຕາມ
+            ຈົນເຫັນທຳມະຊາດຕາມຄວາມເປັນຈິງ ກໍຈະຫຼຸດພົ້ນຈາກຄວາມທຸກທັງປວງ.
           </p>
         </div>
 
         {/* Contact Section */}
         <div>
-          <h2 className='text-2xl font-semibold text-center mb-8'>
-            ຕິດຕໍ່ພວກເຮົາ
-          </h2>
+          <h2 className='text-2xl font-semibold text-center mb-5'>ຕິດຕໍ່</h2>
           <div className='flex flex-col items-center space-y-6'>
             {/* Phone Numbers */}
             <div className='flex flex-col space-y-4'>
               <div className='flex items-center space-x-4'>
-                <FaPhoneAlt className='text-brown-600 text-lg' />
+                <FaWhatsapp className='text-green-500 text-lg' />
                 <a
                   href='https://wa.me/8562078287509'
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='font-medium text-blue-600 hover:underline'
+                  className='font-medium text-green-900 hover:underline'
                 >
                   +8562078287509
                 </a>
               </div>
               <div className='flex items-center space-x-4'>
-                <FaPhoneAlt className='text-brown-600 text-lg' />
+                <FaWhatsapp className='text-green-500 text-lg' />
                 <a
                   href='https://wa.me/8562077801610'
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='font-medium text-blue-600 hover:underline'
+                  className='font-medium text-green-900 hover:underline'
                 >
                   +8562077801610
+                </a>
+              </div>
+              {/* ຕິດຕໍ່ Admin */}
+              <div className='flex items-center space-x-4'>
+                <FaUserCircle className='text-green-500 text-lg' />
+                <a
+                  href='https://tawk.to/chat/61763b9bf7c0440a591fc969/1fiqthn3u'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='font-medium text-green-900 hover:underline'
+                >
+                  ຕິດຕໍ່ Admin
+                </a>
+              </div>
+              {/* WhatsApp Group */}
+              <div className='flex items-center space-x-4'>
+                <FaWhatsapp className='text-green-500 text-lg' />
+                <a
+                  href='https://chat.whatsapp.com/CZ7j5fhSatK37v76zmmVCK'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='font-medium text-green-900 hover:underline'
+                >
+                  Join WhatsApp Group
                 </a>
               </div>
             </div>
