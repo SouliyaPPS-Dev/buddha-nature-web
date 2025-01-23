@@ -11,8 +11,11 @@ function Seo() {
       />
       <link rel='manifest' href='/manifest.json' />
 
-      <meta property='og:title' content='Buddhaword | The Word of Buddha' />
-      <meta property='og:description' content='ຄຳສອນພຣະພຸດທະເຈົ້າ' />
+      <meta property='og:title' content='ຄຳສອນພຣະພຸດທະເຈົ້າ' />
+      <meta
+        property='og:description'
+        content='Buddhaword | The Word of Buddha'
+      />
       <meta
         property='og:image'
         content='https://buddha-nature.web.app/images/logo_shared.png'
