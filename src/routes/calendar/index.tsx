@@ -187,8 +187,8 @@ function RouteComponent() {
     if (navigator.share && selectedEvent) {
       try {
         await navigator.share({
-          title: selectedEvent?.title || 'Click to open',
           url: `${url}/${selectedEvent.title}`,
+          text: selectedEvent?.title || 'Click to open',
         });
         console.log('Shared successfully');
       } catch (error) {

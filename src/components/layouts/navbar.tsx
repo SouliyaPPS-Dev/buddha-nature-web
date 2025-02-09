@@ -60,8 +60,8 @@ export const Navbar = () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: name || 'Click to open',
           url, // Share a link to the content (the page with the HTML)
+          text: name || 'Click to open',
         });
         console.log('Shared successfully');
       } catch (error) {
