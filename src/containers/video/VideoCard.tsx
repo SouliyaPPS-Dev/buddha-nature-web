@@ -58,7 +58,7 @@ function VideoCard({ id, item, isLoading }: VideoCardProps) {
 
   return (
     <Link
-      to={`/video/view/${id}`}
+      to={`/video/view/${id}/${item['ຊື່ພຣະສູດ']}`}
       className='z-10 flex flex-col justify-between items-center cursor-pointer'
       onClick={() => {
         useAtTop();

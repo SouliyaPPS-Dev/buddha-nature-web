@@ -24,8 +24,8 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
   Navbar as NextUINavbar,
-} from "@heroui/navbar";
-import { link as linkStyles } from "@heroui/theme";
+} from '@heroui/navbar';
+import { link as linkStyles } from '@heroui/theme';
 import { Link, useRouterState } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { useState } from 'react';
@@ -45,7 +45,7 @@ export const Navbar = () => {
   const currentPath = location.pathname;
   const pathSegments = currentPath.split('/');
   const bookViewPath = pathSegments.slice(0, -1).join('/');
-
+  const name = pathSegments[pathSegments.length - 1];
   // Use useRouterState to get the current location
   const handleMobileNavigation = (href: string) => {
     router.navigate({ to: href });
@@ -60,6 +60,7 @@ export const Navbar = () => {
     if (navigator.share) {
       try {
         await navigator.share({
+          title: name || 'Click to open',
           url, // Share a link to the content (the page with the HTML)
         });
         console.log('Shared successfully');
@@ -73,7 +74,7 @@ export const Navbar = () => {
   };
 
   return (
-    (<NextUINavbar
+    <NextUINavbar
       maxWidth='xl'
       position='sticky'
       isMenuOpen={isMenuOpen}
@@ -251,7 +252,7 @@ export const Navbar = () => {
             };
 
             return (
-              (<div
+              <div
                 key={`${item}-${index}`}
                 className='w-full'
                 onClick={() => handleMobileNavigation(item.href)}
@@ -276,14 +277,14 @@ export const Navbar = () => {
                   </Link>
                   {/* Divider */}
                   {index !== siteConfig.navMenuItems.length - 1 && (
-                    (<div className='border-b my-2'></div>) // Divider added between menu items
+                    <div className='border-b my-2'></div> // Divider added between menu items
                   )}
                 </NavbarMenuItem>
-              </div>)
+              </div>
             );
           })}
         </div>
       </NavbarMenu>
-    </NextUINavbar>)
+    </NextUINavbar>
   );
 };

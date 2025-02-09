@@ -183,10 +183,11 @@ function RouteComponent() {
 
   const handleShareEvent = async (selectedEvent: CalendarDataModel | null) => {
     const url = window.location.href;
-
+    
     if (navigator.share && selectedEvent) {
       try {
         await navigator.share({
+          title: selectedEvent?.title || 'Click to open',
           url: `${url}/${selectedEvent.title}`,
         });
         console.log('Shared successfully');

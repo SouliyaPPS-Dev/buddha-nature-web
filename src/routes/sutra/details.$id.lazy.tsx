@@ -231,14 +231,14 @@ function RouteComponent() {
   };
 
   const handleShare = async () => {
-    const text = filteredDetails?.[currentPage]?.['ຊື່ພຣະສູດ'];
+    const title = filteredDetails?.[currentPage]?.['ຊື່ພຣະສູດ'];
     const url = `${window.location.origin}/sutra/details/${filteredDetails?.[currentPage]?.['ID']}${window.location.search}`;
 
     // Sharing the content using the Web Share API
     if (navigator.share) {
       try {
         await navigator.share({
-          text, // Shared text with category
+          title,
           url, // Share a link to the content (the page with the HTML)
         });
         console.log('Shared successfully');

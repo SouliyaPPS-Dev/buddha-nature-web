@@ -1,16 +1,17 @@
 /* BookCard Component */
 import { BookDataArray } from '@/model/book';
-import { Card, CardBody, Image, Spinner } from "@heroui/react";
+import { Card, CardBody, Image, Spinner } from '@heroui/react';
 import { Link } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
 type BookCardProps = {
   id: string;
+  name: string;
   item: BookDataArray[number];
   isLoading: boolean;
 };
 
-function BookCard({ id, item, isLoading }: BookCardProps) {
+function BookCard({ id, name, item, isLoading }: BookCardProps) {
   useEffect(() => {
     const img = document.createElement('img');
     img.src = `${item['imageURL']}`;
@@ -18,7 +19,7 @@ function BookCard({ id, item, isLoading }: BookCardProps) {
 
   return (
     <Link
-      to={`/book/view/${id}`}
+      to={`/book/view/${id}/${name}`}
       className='z-10 flex flex-col justify-between items-center cursor-pointer'
     >
       {/* Responsive Card */}
