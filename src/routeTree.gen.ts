@@ -22,8 +22,6 @@ import { Route as BookIndexImport } from './routes/book/index'
 import { Route as CalendarTitleImport } from './routes/calendar/$title'
 import { Route as VideoViewIdImport } from './routes/video/view.$id'
 import { Route as BookViewIdImport } from './routes/book/view.$id'
-import { Route as VideoViewIdNameImport } from './routes/video/view.$id.$name'
-import { Route as BookViewIdNameImport } from './routes/book/view.$id.$name'
 
 // Create Virtual Routes
 
@@ -132,18 +130,6 @@ const BookViewIdRoute = BookViewIdImport.update({
   id: '/book/view/$id',
   path: '/book/view/$id',
   getParentRoute: () => rootRoute,
-} as any)
-
-const VideoViewIdNameRoute = VideoViewIdNameImport.update({
-  id: '/$name',
-  path: '/$name',
-  getParentRoute: () => VideoViewIdRoute,
-} as any)
-
-const BookViewIdNameRoute = BookViewIdNameImport.update({
-  id: '/$name',
-  path: '/$name',
-  getParentRoute: () => BookViewIdRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -255,48 +241,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SutraDetailsIdLazyImport
       parentRoute: typeof rootRoute
     }
-    '/book/view/$id/$name': {
-      id: '/book/view/$id/$name'
-      path: '/$name'
-      fullPath: '/book/view/$id/$name'
-      preLoaderRoute: typeof BookViewIdNameImport
-      parentRoute: typeof BookViewIdImport
-    }
-    '/video/view/$id/$name': {
-      id: '/video/view/$id/$name'
-      path: '/$name'
-      fullPath: '/video/view/$id/$name'
-      preLoaderRoute: typeof VideoViewIdNameImport
-      parentRoute: typeof VideoViewIdImport
-    }
   }
 }
 
 // Create and export the route tree
-
-interface BookViewIdRouteChildren {
-  BookViewIdNameRoute: typeof BookViewIdNameRoute
-}
-
-const BookViewIdRouteChildren: BookViewIdRouteChildren = {
-  BookViewIdNameRoute: BookViewIdNameRoute,
-}
-
-const BookViewIdRouteWithChildren = BookViewIdRoute._addFileChildren(
-  BookViewIdRouteChildren,
-)
-
-interface VideoViewIdRouteChildren {
-  VideoViewIdNameRoute: typeof VideoViewIdNameRoute
-}
-
-const VideoViewIdRouteChildren: VideoViewIdRouteChildren = {
-  VideoViewIdNameRoute: VideoViewIdNameRoute,
-}
-
-const VideoViewIdRouteWithChildren = VideoViewIdRoute._addFileChildren(
-  VideoViewIdRouteChildren,
-)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -310,12 +258,10 @@ export interface FileRoutesByFullPath {
   '/video': typeof VideoIndexRoute
   '/favorites': typeof FavoritesIndexLazyRoute
   '/sutra': typeof SutraIndexLazyRoute
-  '/book/view/$id': typeof BookViewIdRouteWithChildren
-  '/video/view/$id': typeof VideoViewIdRouteWithChildren
+  '/book/view/$id': typeof BookViewIdRoute
+  '/video/view/$id': typeof VideoViewIdRoute
   '/favorites/details/$id': typeof FavoritesDetailsIdLazyRoute
   '/sutra/details/$id': typeof SutraDetailsIdLazyRoute
-  '/book/view/$id/$name': typeof BookViewIdNameRoute
-  '/video/view/$id/$name': typeof VideoViewIdNameRoute
 }
 
 export interface FileRoutesByTo {
@@ -330,12 +276,10 @@ export interface FileRoutesByTo {
   '/video': typeof VideoIndexRoute
   '/favorites': typeof FavoritesIndexLazyRoute
   '/sutra': typeof SutraIndexLazyRoute
-  '/book/view/$id': typeof BookViewIdRouteWithChildren
-  '/video/view/$id': typeof VideoViewIdRouteWithChildren
+  '/book/view/$id': typeof BookViewIdRoute
+  '/video/view/$id': typeof VideoViewIdRoute
   '/favorites/details/$id': typeof FavoritesDetailsIdLazyRoute
   '/sutra/details/$id': typeof SutraDetailsIdLazyRoute
-  '/book/view/$id/$name': typeof BookViewIdNameRoute
-  '/video/view/$id/$name': typeof VideoViewIdNameRoute
 }
 
 export interface FileRoutesById {
@@ -351,12 +295,10 @@ export interface FileRoutesById {
   '/video/': typeof VideoIndexRoute
   '/favorites/': typeof FavoritesIndexLazyRoute
   '/sutra/': typeof SutraIndexLazyRoute
-  '/book/view/$id': typeof BookViewIdRouteWithChildren
-  '/video/view/$id': typeof VideoViewIdRouteWithChildren
+  '/book/view/$id': typeof BookViewIdRoute
+  '/video/view/$id': typeof VideoViewIdRoute
   '/favorites/details/$id': typeof FavoritesDetailsIdLazyRoute
   '/sutra/details/$id': typeof SutraDetailsIdLazyRoute
-  '/book/view/$id/$name': typeof BookViewIdNameRoute
-  '/video/view/$id/$name': typeof VideoViewIdNameRoute
 }
 
 export interface FileRouteTypes {
@@ -377,8 +319,6 @@ export interface FileRouteTypes {
     | '/video/view/$id'
     | '/favorites/details/$id'
     | '/sutra/details/$id'
-    | '/book/view/$id/$name'
-    | '/video/view/$id/$name'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -396,8 +336,6 @@ export interface FileRouteTypes {
     | '/video/view/$id'
     | '/favorites/details/$id'
     | '/sutra/details/$id'
-    | '/book/view/$id/$name'
-    | '/video/view/$id/$name'
   id:
     | '__root__'
     | '/'
@@ -415,8 +353,6 @@ export interface FileRouteTypes {
     | '/video/view/$id'
     | '/favorites/details/$id'
     | '/sutra/details/$id'
-    | '/book/view/$id/$name'
-    | '/video/view/$id/$name'
   fileRoutesById: FileRoutesById
 }
 
@@ -432,8 +368,8 @@ export interface RootRouteChildren {
   VideoIndexRoute: typeof VideoIndexRoute
   FavoritesIndexLazyRoute: typeof FavoritesIndexLazyRoute
   SutraIndexLazyRoute: typeof SutraIndexLazyRoute
-  BookViewIdRoute: typeof BookViewIdRouteWithChildren
-  VideoViewIdRoute: typeof VideoViewIdRouteWithChildren
+  BookViewIdRoute: typeof BookViewIdRoute
+  VideoViewIdRoute: typeof VideoViewIdRoute
   FavoritesDetailsIdLazyRoute: typeof FavoritesDetailsIdLazyRoute
   SutraDetailsIdLazyRoute: typeof SutraDetailsIdLazyRoute
 }
@@ -450,8 +386,8 @@ const rootRouteChildren: RootRouteChildren = {
   VideoIndexRoute: VideoIndexRoute,
   FavoritesIndexLazyRoute: FavoritesIndexLazyRoute,
   SutraIndexLazyRoute: SutraIndexLazyRoute,
-  BookViewIdRoute: BookViewIdRouteWithChildren,
-  VideoViewIdRoute: VideoViewIdRouteWithChildren,
+  BookViewIdRoute: BookViewIdRoute,
+  VideoViewIdRoute: VideoViewIdRoute,
   FavoritesDetailsIdLazyRoute: FavoritesDetailsIdLazyRoute,
   SutraDetailsIdLazyRoute: SutraDetailsIdLazyRoute,
 }
@@ -517,30 +453,16 @@ export const routeTree = rootRoute
       "filePath": "sutra/index.lazy.tsx"
     },
     "/book/view/$id": {
-      "filePath": "book/view.$id.tsx",
-      "children": [
-        "/book/view/$id/$name"
-      ]
+      "filePath": "book/view.$id.tsx"
     },
     "/video/view/$id": {
-      "filePath": "video/view.$id.tsx",
-      "children": [
-        "/video/view/$id/$name"
-      ]
+      "filePath": "video/view.$id.tsx"
     },
     "/favorites/details/$id": {
       "filePath": "favorites/details.$id.lazy.tsx"
     },
     "/sutra/details/$id": {
       "filePath": "sutra/details.$id.lazy.tsx"
-    },
-    "/book/view/$id/$name": {
-      "filePath": "book/view.$id.$name.tsx",
-      "parent": "/book/view/$id"
-    },
-    "/video/view/$id/$name": {
-      "filePath": "video/view.$id.$name.tsx",
-      "parent": "/video/view/$id"
     }
   }
 }
