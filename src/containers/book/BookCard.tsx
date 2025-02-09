@@ -6,12 +6,11 @@ import { useEffect } from 'react';
 
 type BookCardProps = {
   id: string;
-  name: string;
   item: BookDataArray[number];
   isLoading: boolean;
 };
 
-function BookCard({ id, name, item, isLoading }: BookCardProps) {
+function BookCard({ id, item, isLoading }: BookCardProps) {
   useEffect(() => {
     const img = document.createElement('img');
     img.src = `${item['imageURL']}`;
@@ -19,7 +18,7 @@ function BookCard({ id, name, item, isLoading }: BookCardProps) {
 
   return (
     <Link
-      to={`/book/view/${id}/${name}`}
+      to={`/book/view/${id}`}
       className='z-10 flex flex-col justify-between items-center cursor-pointer'
     >
       {/* Responsive Card */}

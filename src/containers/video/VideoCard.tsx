@@ -1,5 +1,6 @@
 import { VideoDataArray } from '@/model/video';
-import { Card, CardBody, Image, Spinner } from "@heroui/react";
+import { localStorageData } from '@/services/cache';
+import { Card, CardBody, Image, Spinner } from '@heroui/react';
 import { Link } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { useAtTop } from 'react-scroll-to-bottom';
@@ -56,9 +57,13 @@ function VideoCard({ id, item, isLoading }: VideoCardProps) {
     img.src = `${thumbnailUrl}`;
   }, [id]);
 
+  useEffect(() => {
+    localStorageData.setTitle(item['ຊື່ພຣະສູດ']);
+  }, [item['ຊື່ພຣະສູດ']]);
+
   return (
     <Link
-      to={`/video/view/${id}/${item['ຊື່ພຣະສູດ']}`}
+      to={`/video/view/${id}`}
       className='z-10 flex flex-col justify-between items-center cursor-pointer'
       onClick={() => {
         useAtTop();

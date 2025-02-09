@@ -16,6 +16,7 @@ import { DeleteFavorites } from '@/containers/favorites/DeleteFavorites';
 import { ButtonUpdateData } from '@/containers/sutra/ButtonUpdateData';
 import { siteConfig } from '@/layouts/site';
 import { router } from '@/router';
+import { localStorageData } from '@/services/cache';
 import {
   NavbarBrand,
   NavbarContent,
@@ -45,7 +46,7 @@ export const Navbar = () => {
   const currentPath = location.pathname;
   const pathSegments = currentPath.split('/');
   const bookViewPath = pathSegments.slice(0, -1).join('/');
-  const name = pathSegments[pathSegments.length - 1];
+
   // Use useRouterState to get the current location
   const handleMobileNavigation = (href: string) => {
     router.navigate({ to: href });
@@ -61,7 +62,7 @@ export const Navbar = () => {
       try {
         await navigator.share({
           url, // Share a link to the content (the page with the HTML)
-          text: name || 'Click to open',
+          text: localStorageData.getTitle() || 'Click to open',
         });
         console.log('Shared successfully');
       } catch (error) {

@@ -1,5 +1,6 @@
 import { useSearchContext } from "@/components/search/SearchContext";
 import { BookDataModel } from "@/model/book";
+import { localStorageData } from "@/services/cache";
 import { bookApi } from "@/services/https/book";
 import { queryClient } from "@/services/react-query/client";
 import { useQuery } from "@tanstack/react-query";
@@ -14,7 +15,7 @@ export const useBook = (id?: string) => {
           queryKey: ["book"],
           queryFn: async () => bookApi(),
      });
-     
+
      // Filter data if available
      const filteredData = useMemo(() => {
           if (!data) return [];
@@ -58,6 +59,10 @@ export const useBook = (id?: string) => {
 
      const linkBook = lastItem?.["link"] || "";
      const titleBook = lastItem?.["ຊື່"] || "";
+
+     useEffect(() => {
+          localStorageData.setTitle(titleBook);
+     }, [titleBook]);
 
      // PDF preview link
      const pdfEmbedLink = linkBook

@@ -108,7 +108,7 @@ function RouteComponent() {
                 style={{ marginBottom: '-1.3rem' }}
               >
                 {/* Book Card */}
-                <BookCard id={item['ID']} name={item['ຊື່']} item={item} isLoading={isLoading} />
+                <BookCard id={item['ID']} item={item} isLoading={isLoading} />
 
                 {/* Divider (3D Tray with Shadow Effect) */}
                 <div

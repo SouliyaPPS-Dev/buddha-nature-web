@@ -18,6 +18,14 @@ export const localStorageData = (() => {
           localStorage.setItem('favorites', favorite);
      };
 
+     const getTitle = () => {
+          return localStorage.getItem('title');
+     };
+
+     const setTitle = (title: string) => {
+          localStorage.setItem('title', title);
+     };
+
      return {
           // Theme
           getTheme,
@@ -26,6 +34,10 @@ export const localStorageData = (() => {
           // Favorite
           getFavorite,
           setFavorite,
+
+          // Title
+          getTitle,
+          setTitle
      };
 })();
 
