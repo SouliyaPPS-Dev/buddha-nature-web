@@ -25,16 +25,16 @@ const createQueryClient = () => {
           if (error instanceof Error) {
             console.log(error);
           }
-        }
+        },
       },
     },
   });
 };
 
-
 // Initialize query client with global error handler
 export const queryClient = createQueryClient();
 
-
 // Use appropriate persister based on platform
-export const persister = createSyncStoragePersister({ storage: window.localStorage })
+export const persister = createSyncStoragePersister({
+  storage: window.localStorage,
+});
