@@ -43,6 +43,9 @@ export default defineConfig(({ mode }) => {
         devOptions: {
           enabled: true,
         },
+        strategies: 'injectManifest',
+        srcDir: 'src',
+        filename: 'sw.js',
         manifest: {
           name: 'Buddhaword',
           short_name: 'Buddhaword',
@@ -64,9 +67,15 @@ export default defineConfig(({ mode }) => {
             },
           ],
         },
+        // Include all assets you want to cache
+        injectManifest: {
+          globPatterns: ['**/*.{js,css,html,png,jpg,svg,ico}'], // Cache all common file types
+        },
         workbox: {
           maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB for larger apps
-          globPatterns: ['**/*.{js,css,html,svg,png,jpg,jpeg,gif,woff,woff2,ico,json}'],
+          globPatterns: [
+            '**/*.{js,css,html,svg,png,jpg,jpeg,gif,woff,woff2,ico,json}',
+          ],
           globIgnores: ['**/node_modules/**/*'],
           cleanupOutdatedCaches: true,
           skipWaiting: true,
@@ -74,7 +83,8 @@ export default defineConfig(({ mode }) => {
           navigateFallback: '/index.html',
           runtimeCaching: [
             {
-              urlPattern: /\.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|avif|json)$/i,
+              urlPattern:
+                /\.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|avif|json)$/i,
               handler: 'CacheFirst',
               options: {
                 cacheName: 'static-assets',

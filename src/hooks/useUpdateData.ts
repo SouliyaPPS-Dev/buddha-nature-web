@@ -6,10 +6,7 @@ import { useBook } from '@/hooks/book/useBook';
 import useVideo from './video/useVideo';
 
 const LAST_UPDATE_KEY = 'LAST_SUTRA_UPDATE';
-// const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 const ONE_MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
-// const ONE_YEAR_IN_MS = 365 * 24 * 60 * 60 * 1000; // 365 days in milliseconds
-
 
 // Singleton to ensure `handleUpdate` runs once globally
 let isUpdating = false;
@@ -18,14 +15,14 @@ export const useUpdateData = () => {
      const [isLoading, setIsLoading] = useState(false);
      const { isLoading: isLoadingSutra, refetch: refetchSutra } = useSutra();
      const { refetch: refetchBook } = useBook();
-     const {refetch: refetchVideo} = useVideo();
+     const { refetch: refetchVideo } = useVideo();
 
      const refetch = useCallback(async () => {
           await Promise.all([refetchSutra(), refetchBook(), refetchVideo()]);
      }, [refetchSutra, refetchBook, refetchVideo]);
 
      /**
-      * Check if 24 hours have passed since the last update
+      * Check if a month has passed since the last update
       */
      const shouldUpdate = useCallback((): boolean => {
           const lastUpdate = localStorage.getItem(LAST_UPDATE_KEY);
@@ -48,7 +45,7 @@ export const useUpdateData = () => {
 
           try {
                // Clear cached data
-               localStorage.removeItem('LAST_SUTRA_UPDATE');
+               localStorage.removeItem(LAST_UPDATE_KEY);
                localStorage.removeItem('REACT_QUERY_OFFLINE_CACHE');
                localStorage.removeItem('theme');
                localStorage.removeItem('navigation_history');
@@ -81,12 +78,14 @@ export const useUpdateData = () => {
      }, [refetch]);
 
      /**
-      * Run update only if 24 hours have passed since the last update
+      * Run update automatically only if online and a month has passed
       */
      useEffect(() => {
-          if (shouldUpdate()) {
+          const isOnline = navigator.onLine; // Check online status
+          if (isOnline && shouldUpdate()) {
                handleUpdate();
           }
+          // No cleanup or listener needed since this runs once on mount
      }, [shouldUpdate, handleUpdate]);
 
      return {
