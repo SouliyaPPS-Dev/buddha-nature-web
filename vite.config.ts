@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
 
   return {
-    base: '/',
+    base: '/', // Important for Netlify SPA
     resolve: {
       alias: {
         path: 'path-browserify',
@@ -23,8 +23,8 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       compress({
-        algorithm: 'brotliCompress', // Use Brotli compression
-        ext: '.br', // Output compressed files with .br extension
+        algorithm: 'brotliCompress',
+        ext: '.br',
       }),
       pluginReact(),
       TanStackRouterVite({
@@ -35,9 +35,13 @@ export default defineConfig(({ mode }) => {
         includeAssets: [
           'logo.png',
           'logo_shared.png',
-          'robots.txt', // Include robots.txt
+          'robots.txt',
+          '**/*.{woff,woff2}', // Add font assets
         ],
         registerType: 'autoUpdate',
+        devOptions: {
+          enabled: true, // Enable PWA in development
+        },
         manifest: {
           name: 'Buddhaword',
           short_name: 'Buddhaword',
@@ -59,24 +63,27 @@ export default defineConfig(({ mode }) => {
             },
           ],
         },
-        injectRegister: 'auto',
         workbox: {
-          maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // Set 4 MiB (or any desired value)
-          globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // Increased to 5MB
+          globPatterns: [
+            '**/*.{js,css,html,svg,png,jpg,jpeg,gif,woff,woff2,ico}',
+          ],
+          globIgnores: ['**/node_modules/**/*'],
           cleanupOutdatedCaches: true,
           skipWaiting: true,
           clientsClaim: true,
           navigateFallback: '/index.html',
           runtimeCaching: [
             {
+              // Cache all static assets
               urlPattern:
                 /\.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|avif)$/i,
-              handler: 'StaleWhileRevalidate',
+              handler: 'CacheFirst', // Changed to CacheFirst for better offline support
               options: {
                 cacheName: 'static-assets',
                 expiration: {
                   maxEntries: 200,
-                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+                  maxAgeSeconds: 60 * 60 * 24 * 60, // 60 days
                 },
                 cacheableResponse: {
                   statuses: [0, 200],
@@ -84,6 +91,7 @@ export default defineConfig(({ mode }) => {
               },
             },
             {
+              // Cache HTML navigation
               urlPattern: ({ request }) => request.mode === 'navigate',
               handler: 'NetworkFirst',
               options: {
@@ -92,16 +100,18 @@ export default defineConfig(({ mode }) => {
                   maxEntries: 50,
                   maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
                 },
+                networkTimeoutSeconds: 10, // Fallback to cache if network takes too long
               },
             },
             {
+              // Cache API calls
               urlPattern: /^https:\/\/example-api\.com\/.*/,
               handler: 'NetworkFirst',
               options: {
                 cacheName: 'api-cache',
                 expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 24, // 1 day for API freshness
                 },
               },
             },
@@ -110,13 +120,12 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     build: {
-      chunkSizeWarningLimit: 4000, // Increase chunk warning size to 1 MB
+      chunkSizeWarningLimit: 4000,
       rollupOptions: {
         output: {
           manualChunks: {
-            // Split specific libraries into separate chunks
             react: ['react', 'react-dom'],
-            lodash: ['lodash'], // Example for splitting lodash
+            router: ['@tanstack/react-router'],
           },
         },
       },
