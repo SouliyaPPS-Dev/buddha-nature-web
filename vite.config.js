@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
 
   return {
-    base: '/', // Important for Netlify SPA
+    base: '/',
     resolve: {
       alias: {
         path: 'path-browserify',
@@ -33,20 +33,21 @@ export default defineConfig(({ mode }) => {
       react(),
       VitePWA({
         includeAssets: [
-          'logo.png',
-          'logo_shared.png',
+          'images/*.png',
+          'images/*.jpg',
+          'icons/*.png',
           'robots.txt',
-          '**/*.{woff,woff2}', // Add font assets
+          '**/*.{woff,woff2,svg,json}',
         ],
         registerType: 'autoUpdate',
         devOptions: {
-          enabled: true, // Enable PWA in development
+          enabled: true,
         },
         manifest: {
           name: 'Buddhaword',
           short_name: 'Buddhaword',
           description: 'The Word of Buddha',
-          theme_color: '#ffffff',
+          theme_color: '#FFAF5D', // Match your theme
           background_color: '#ffffff',
           display: 'standalone',
           start_url: '/',
@@ -64,9 +65,9 @@ export default defineConfig(({ mode }) => {
           ],
         },
         workbox: {
-          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // Increased to 5MB
+          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB for larger apps
           globPatterns: [
-            '**/*.{js,css,html,svg,png,jpg,jpeg,gif,woff,woff2,ico}',
+            '**/*.{js,css,html,svg,png,jpg,jpeg,gif,woff,woff2,ico,json}',
           ],
           globIgnores: ['**/node_modules/**/*'],
           cleanupOutdatedCaches: true,
@@ -75,15 +76,14 @@ export default defineConfig(({ mode }) => {
           navigateFallback: '/index.html',
           runtimeCaching: [
             {
-              // Cache all static assets
               urlPattern:
-                /\.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|avif)$/i,
-              handler: 'CacheFirst', // Changed to CacheFirst for better offline support
+                /\.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|avif|json)$/i,
+              handler: 'CacheFirst',
               options: {
                 cacheName: 'static-assets',
                 expiration: {
-                  maxEntries: 200,
-                  maxAgeSeconds: 60 * 60 * 24 * 60, // 60 days
+                  maxEntries: 300,
+                  maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
                 },
                 cacheableResponse: {
                   statuses: [0, 200],
@@ -91,27 +91,13 @@ export default defineConfig(({ mode }) => {
               },
             },
             {
-              // Cache HTML navigation
               urlPattern: ({ request }) => request.mode === 'navigate',
-              handler: 'NetworkFirst',
+              handler: 'StaleWhileRevalidate',
               options: {
                 cacheName: 'html-cache',
                 expiration: {
                   maxEntries: 50,
                   maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
-                },
-                networkTimeoutSeconds: 10, // Fallback to cache if network takes too long
-              },
-            },
-            {
-              // Cache API calls
-              urlPattern: /^https:\/\/example-api\.com\/.*/,
-              handler: 'NetworkFirst',
-              options: {
-                cacheName: 'api-cache',
-                expiration: {
-                  maxEntries: 100,
-                  maxAgeSeconds: 60 * 60 * 24, // 1 day for API freshness
                 },
               },
             },

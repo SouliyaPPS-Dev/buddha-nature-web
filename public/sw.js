@@ -1,11 +1,11 @@
 importScripts(
-  'https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js' // Updated to newer version
+  'https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js'
 );
 
 if (workbox) {
   console.log('Workbox loaded successfully');
 
-  // Precache manifest entries
+  // Precache all assets from the manifest
   workbox.precaching.precacheAndRoute(self.__WB_MANIFEST || [], {
     ignoreURLParametersMatching: [/.*/], // Cache regardless of query params
   });
@@ -18,19 +18,18 @@ if (workbox) {
   // Clean up old caches
   workbox.precaching.cleanupOutdatedCaches();
 
-  // Immediate activation
-  self.addEventListener('activate', (event) => {
-    event.waitUntil(self.clients.claim());
-  });
-
-  // Handle installation
+  // Activate immediately
   self.addEventListener('install', (event) => {
     event.waitUntil(self.skipWaiting());
   });
 
-  // Comprehensive asset caching
+  self.addEventListener('activate', (event) => {
+    event.waitUntil(self.clients.claim());
+  });
+
+  // Cache all static assets with CacheFirst
   workbox.routing.registerRoute(
-    /\.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|avif)$/i,
+    /\.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|avif|json)$/i,
     new workbox.strategies.CacheFirst({
       cacheName: 'static-assets',
       plugins: [
@@ -38,18 +37,18 @@ if (workbox) {
           statuses: [0, 200],
         }),
         new workbox.expiration.ExpirationPlugin({
-          maxEntries: 200,
-          maxAgeSeconds: 60 * 60 * 24 * 60, // 60 days
+          maxEntries: 300, // Increased to handle more assets
+          maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
           purgeOnQuotaError: true,
         }),
       ],
     })
   );
 
-  // HTML navigation caching
+  // Cache HTML navigation with StaleWhileRevalidate for better UX
   workbox.routing.registerRoute(
     ({ request }) => request.mode === 'navigate',
-    new workbox.strategies.NetworkFirst({
+    new workbox.strategies.StaleWhileRevalidate({
       cacheName: 'html-cache',
       plugins: [
         new workbox.cacheableResponse.CacheableResponsePlugin({
@@ -60,30 +59,24 @@ if (workbox) {
           maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
         }),
       ],
-      networkTimeoutSeconds: 10,
     })
   );
 
-  // Offline fallback
+  // Offline fallback for navigation
   self.addEventListener('fetch', (event) => {
     if (event.request.mode === 'navigate') {
       event.respondWith(
-        fetch(event.request).catch(() =>
-          caches.match('/index.html', {
-            cacheName: 'html-cache',
-          })
-        )
+        caches.match(event.request).then((response) => {
+          return (
+            response ||
+            fetch(event.request).catch(() =>
+              caches.match('/index.html', { cacheName: 'html-cache' })
+            )
+          );
+        })
       );
     }
   });
 } else {
   console.error('Workbox failed to load');
 }
-
-// Skip caching for specific routes if needed
-self.addEventListener('fetch', (event) => {
-  if (event.request.url.endsWith('/robots.txt')) {
-    event.respondWith(fetch(event.request));
-    return;
-  }
-});

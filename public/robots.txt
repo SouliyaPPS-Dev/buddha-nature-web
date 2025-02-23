@@ -10,4 +10,4 @@ Disallow: /admin/
 Allow: https://sheets.googleapis.com/v4/spreadsheets/1mKtgmZ_Is4e6P3P5lvOwIplqx7VQ3amicgienGN9zwA/values/Sheet1!1:1000000?key=AIzaSyDFjIl-SEHUsgK0sjMm7x0awpf8tTEPQjs
 
 # Sitemap location (replace with your actual domain and path to the sitemap)
-Sitemap: https://buddha-nature.web.app/sitemap.xml
+Sitemap: https://buddhaword.netlify.app/sitemap.xml

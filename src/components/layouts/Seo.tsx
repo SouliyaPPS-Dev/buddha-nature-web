@@ -18,17 +18,17 @@ function Seo() {
       />
       <meta
         property='og:image'
-        content='https://buddha-nature.web.app/images/logo_shared.png'
+        content='https://buddhaword.netlify.app/images/logo_shared.png'
       />
       <meta property='og:type' content='website' />
-      <meta property='og:url' content='https://buddha-nature.web.app' />
+      <meta property='og:url' content='https://buddhaword.netlify.app' />
 
       <meta name='twitter:card' content='summary_large_image' />
       <meta name='twitter:title' content='Buddhaword' />
       <meta name='twitter:description' content='The Word of Buddha' />
       <meta
         name='twitter:image'
-        content='https://buddha-nature.web.app/images/logo_shared.png'
+        content='https://buddhaword.netlify.app/images/logo_shared.png'
       />
 
       <link rel='icon' type='image/png' href='/images/logo_shared.png' />
