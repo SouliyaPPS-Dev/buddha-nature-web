@@ -1,10 +1,12 @@
-const CACHE_NAME = 'pwa-cache-v1';
+// src/sw.js
+const CACHE_NAME = 'my-pwa-cache-v1';
+
+// Precache manifest will be injected here by vite-plugin-pwa
 const urlsToCache = [
   '/', // Cache the root
   '/index.html',
-  '/assets/index.js', // Adjust based on your build output
-  '/assets/index.css', // Adjust based on your build output
-  // Add more static assets as needed
+  // Add more static assets if needed
+  ...self.__WB_MANIFEST, // This is where the plugin injects the manifest
 ];
 
 // Install event: Cache resources when the service worker is installed
@@ -15,7 +17,6 @@ self.addEventListener('install', (event) => {
       return cache.addAll(urlsToCache);
     })
   );
-  // Force the waiting service worker to activate immediately
   self.skipWaiting();
 });
 
@@ -30,7 +31,6 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  // Take control of the page immediately
   self.clients.claim();
 });
 
@@ -38,11 +38,9 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
-      // Return cached response if found, otherwise fetch from network
       return (
         response ||
         fetch(event.request).then((networkResponse) => {
-          // Optionally cache new responses dynamically
           if (event.request.method === 'GET') {
             return caches.open(CACHE_NAME).then((cache) => {
               cache.put(event.request, networkResponse.clone());

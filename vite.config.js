@@ -40,12 +40,13 @@ export default defineConfig(({ mode }) => {
           '**/*.{woff,woff2,svg,json}',
         ],
         registerType: 'autoUpdate',
-        devOptions: {
-          enabled: true,
-        },
         strategies: 'injectManifest',
-        srcDir: 'src',
-        filename: 'sw.js',
+        srcDir: 'src', // Source directory for sw.js
+        filename: 'sw.js', // Source service worker file
+        injectManifest: {
+          globPatterns: ['**/*.{js,css,html,png,jpg,svg,ico}'], // Files to precache
+          maximumFileSizeToCacheInBytes: 100 * 1024 * 1024, // Set to 100 MiB (adjust as needed)
+        },
         manifest: {
           name: 'Buddhaword',
           short_name: 'Buddhaword',
@@ -67,10 +68,7 @@ export default defineConfig(({ mode }) => {
             },
           ],
         },
-        // Include all assets you want to cache
-        injectManifest: {
-          globPatterns: ['**/*.{js,css,html,png,jpg,svg,ico}'], // Cache all common file types
-        },
+
         workbox: {
           maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB for larger apps
           globPatterns: [
