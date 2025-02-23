@@ -19,16 +19,25 @@ export default function DefaultLayout({
 
   const isBookRoute = location.pathname.startsWith('/book/view/');
   const isVideoRoute = location.pathname.startsWith('/video/view/');
+  const isSutraMenuRoute = '/sutra';
+  const isFavoritesMenuRoute = '/favorites';
+  const isBooksMenuRoute = '/book';
+  const isVideoMenuRoute = '/video';
+  const isCalendarMenuRoute = '/calendar';
+
+  const shouldShowNavTabs =
+    isSutraMenuRoute ||
+    isFavoritesMenuRoute ||
+    isBooksMenuRoute ||
+    isVideoMenuRoute ||
+    isCalendarMenuRoute;
 
   return (
     <Fragment>
-      {/* Inside ScrollProvider, now useScrollingStore is valid */}
       <ScrollContent theme={theme} location={location}>
         <FontSizeProvider>
           <MenuProvider>
-            {/* Top navbar */}
             <Navbar />
-            {/* Main content */}
             <main
               ref={scrollContainerRef}
               className={`flex-grow ${
@@ -39,11 +48,7 @@ export default function DefaultLayout({
             >
               {children}
             </main>
-            {/* Bottom navigation tabs */}
-            <div className='hidden md:block'>
-              {/* Mobile screens only */}
-              <NavigationTabs />
-            </div>
+            {location.pathname === shouldShowNavTabs && <NavigationTabs />}
           </MenuProvider>
         </FontSizeProvider>
       </ScrollContent>

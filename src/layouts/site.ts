@@ -1,69 +1,65 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Buddhaword",
-  description: "The Word of Buddha",
+  name: 'Buddhaword',
+  description: 'The Word of Buddha',
   navItems: [
     {
-      label: "ຂໍ້ມູນຕິດຕໍ່",
-      href: "/about",
+      label: 'ຂໍ້ມູນຕິດຕໍ່',
+      href: '/about',
     },
   ],
   navMenuItems: [
     {
-      label: "ພຣະສູດ",
-      href: "/sutra",
+      label: 'ພຣະສູດ',
+      href: '/sutra',
     },
     {
-      label: "ຖືກໃຈ",
-      href: "/favorites",
+      label: 'ຖືກໃຈ',
+      href: '/favorites',
     },
-    { label: "ປື້ມ", href: "/book" },
+    { label: 'ປື້ມ', href: '/book' },
     {
-      label: "Video",
-      href: "/video",
-    },
-    {
-      label: "ປະຕິທິນ",
-      href: "/calendar",
+      label: 'Video',
+      href: '/video',
     },
     {
-      label: "ພຣະທັມ",
-      href: "/dhamma",
+      label: 'ປະຕິທິນ',
+      href: '/calendar',
     },
     {
-      label: "ຂໍ້ມູນຕິດຕໍ່",
-      href: "/about",
+      label: 'ພຣະທັມ',
+      href: '/dhamma',
+    },
+    {
+      label: 'ຂໍ້ມູນຕິດຕໍ່',
+      href: '/about',
     },
   ],
   tabMenuItems: [
     {
-      label: "ພຣະສູດ",
-      href: "/sutra",
+      label: 'ພຣະສູດ',
+      href: '/sutra',
     },
     {
-      label: "ຖືກໃຈ",
-      href: "/favorites",
+      label: 'ຖືກໃຈ',
+      href: '/favorites',
     },
-    { label: "ປື້ມ", href: "/book" },
+    { label: 'ປື້ມ', href: '/book' },
     {
-      label: "Video",
-      href: "/video",
-    },
-    {
-      label: "ປະຕິທິນ",
-      href: "/calendar",
+      label: 'Video',
+      href: '/video',
     },
     {
-      label: "ພຣະທັມ",
-      href: "/dhamma",
+      label: 'ປະຕິທິນ',
+      href: '/calendar',
     },
     {
-      label: "ຂໍ້ມູນຕິດຕໍ່",
-      href: "/about",
+      label: 'ພຣະທັມ',
+      href: '/dhamma',
     },
   ],
   links: {
-    facebook: 'https://web.facebook.com/profile.php?id=100077638042542'
+    facebook: 'https://web.facebook.com/profile.php?id=100077638042542',
   },
 };
