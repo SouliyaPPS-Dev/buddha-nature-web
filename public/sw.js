@@ -3,22 +3,27 @@ const CACHE_NAME = 'buddhaword-cache-v1';
 
 // Precache manifest injected by vite-plugin-pwa
 const urlsToCache = [
-  '/', // Root URL
-  '/index.html', // Main HTML entry
-  ...self.__WB_MANIFEST, // Injected precache manifest from VitePWA
+  '/',
+  '/index.html',
+  ...self.__WB_MANIFEST.map((entry) => entry.url).filter(Boolean), // Ensure only valid URLs
 ];
 
 // Install event: Cache essential resources
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
+    caches.open(CACHE_NAME).then(async (cache) => {
       console.log('Service Worker: Caching assets');
-      return cache.addAll(urlsToCache).catch((err) => {
-        console.error('Failed to cache assets:', err);
-      });
+
+      for (const url of urlsToCache) {
+        try {
+          await cache.add(url);
+        } catch (err) {
+          console.warn(`Failed to cache ${url}:`, err);
+        }
+      }
     })
   );
-  self.skipWaiting(); // Activate immediately
+  self.skipWaiting();
 });
 
 // Activate event: Clean up old caches
