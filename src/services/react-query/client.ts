@@ -1,22 +1,24 @@
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import { QueryClient } from '@tanstack/react-query';
 
-// Define a 1-day timeout in milliseconds
-const ONE_DAY = 1000 * 60 * 60 * 24;
+// Define a 1-day timeout in milliseconds (optional, for finite caching)
+// const ONE_DAY = 1000 * 60 * 60 * 24;
 
-// Modify Client to initialize queryClient
 const createQueryClient = () => {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        retry: false, // No retries for queries by default
-        staleTime: ONE_DAY,
-        gcTime: ONE_DAY,
-        networkMode: 'offlineFirst',
+        retry: false, // No retries on failure
+        staleTime: Infinity, // Data never becomes stale
+        gcTime: Infinity, // Cache never garbage collected
+        networkMode: 'offlineFirst', // Prioritize cache, fetch only if no cache
+        refetchOnWindowFocus: false, // Prevent refetch on tab focus
+        refetchOnReconnect: false, // Prevent refetch on network reconnect
+        refetchOnMount: false, // Prevent refetch when component mounts
         throwOnError(error) {
           if (error instanceof Error) {
-            console.log(error);
-            return false;
+            console.error('Query error:', error.message);
+            return false; // Suppress error throwing
           }
           return true;
         },
@@ -24,7 +26,7 @@ const createQueryClient = () => {
       mutations: {
         onError: (error) => {
           if (error instanceof Error) {
-            console.log(error);
+            console.error('Mutation error:', error.message);
           }
         },
       },
@@ -32,10 +34,17 @@ const createQueryClient = () => {
   });
 };
 
-// Initialize query client with global error handler
+// Initialize query client
 export const queryClient = createQueryClient();
 
-// Use appropriate persister based on platform
+// Create persister for localStorage
 export const persister = createSyncStoragePersister({
   storage: window.localStorage,
 });
+
+// Debug cache state in development
+if (process.env.NODE_ENV === 'development') {
+  queryClient.getQueryCache().subscribe((event) => {
+    console.log('Query cache event:', event);
+  });
+}

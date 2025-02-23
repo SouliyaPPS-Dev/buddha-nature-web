@@ -1,26 +1,27 @@
 // src/sw.js
-const CACHE_NAME = 'my-pwa-cache-v1';
+const CACHE_NAME = 'buddhaword-cache-v1';
 
-// Precache manifest will be injected here by vite-plugin-pwa
+// Precache manifest injected by vite-plugin-pwa
 const urlsToCache = [
-  '/', // Cache the root
-  '/index.html',
-  // Add more static assets if needed
-  ...self.__WB_MANIFEST, // This is where the plugin injects the manifest
+  '/', // Root URL
+  '/index.html', // Main HTML entry
+  ...self.__WB_MANIFEST, // Injected precache manifest from VitePWA
 ];
 
-// Install event: Cache resources when the service worker is installed
+// Install event: Cache essential resources
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('Opened cache and storing assets');
-      return cache.addAll(urlsToCache);
+      console.log('Service Worker: Caching assets');
+      return cache.addAll(urlsToCache).catch((err) => {
+        console.error('Failed to cache assets:', err);
+      });
     })
   );
-  self.skipWaiting();
+  self.skipWaiting(); // Activate immediately
 });
 
-// Activate event: Clean up old caches if needed
+// Activate event: Clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -31,30 +32,52 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  self.clients.claim();
+  self.clients.claim(); // Take control of clients
 });
 
-// Fetch event: Serve from cache first, fallback to network
+// Fetch event: Serve cached UI offline, fallback to network
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return (
-        response ||
-        fetch(event.request).then((networkResponse) => {
-          if (event.request.method === 'GET') {
-            return caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, networkResponse.clone());
-              return networkResponse;
-            });
-          }
-          return networkResponse;
+  const request = event.request;
+
+  // Handle navigation requests (HTML/UI)
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request).catch(() =>
+        caches.match('/index.html').then((response) => {
+          return response || Promise.reject('No cached UI available');
         })
-      );
-    })
-  );
+      )
+    );
+  } else {
+    // Handle other assets (JS, CSS, images, etc.)
+    event.respondWith(
+      caches
+        .match(request)
+        .then((cachedResponse) => {
+          // Return cached response if available
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          // Otherwise fetch from network and cache
+          return fetch(request).then((networkResponse) => {
+            if (request.method === 'GET' && networkResponse.ok) {
+              return caches.open(CACHE_NAME).then((cache) => {
+                cache.put(request, networkResponse.clone());
+                return networkResponse;
+              });
+            }
+            return networkResponse;
+          });
+        })
+        .catch(() => {
+          // Offline fallback for non-navigation requests (optional)
+          return caches.match('/index.html'); // Fallback to UI shell
+        })
+    );
+  }
 });
 
-// Handle updates from the app (optional)
+// Handle skipWaiting messages from the app
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
