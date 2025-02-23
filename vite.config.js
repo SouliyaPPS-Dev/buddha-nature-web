@@ -38,6 +38,8 @@ export default defineConfig(({ mode }) => {
           'icons/*.png',
           'robots.txt',
           '**/*.{woff,woff2,svg,json}',
+          'index.html',
+          'assets/**/*',
         ],
         registerType: 'autoUpdate',
         strategies: 'injectManifest',
@@ -68,9 +70,8 @@ export default defineConfig(({ mode }) => {
             },
           ],
         },
-
         workbox: {
-          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB for larger apps
+          maximumFileSizeToCacheInBytes: 100 * 1024 * 1024, // 100MB for larger apps
           globPatterns: [
             '**/*.{js,css,html,svg,png,jpg,jpeg,gif,woff,woff2,ico,json}',
           ],

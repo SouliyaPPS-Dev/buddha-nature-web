@@ -2,7 +2,7 @@ import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persist
 import { QueryClient } from '@tanstack/react-query';
 
 // Define a 1-day timeout in milliseconds
-// const ONE_DAY = 24 * 60 * 60 * 1000;
+const ONE_DAY = 1000 * 60 * 60 * 24;
 
 // Modify Client to initialize queryClient
 const createQueryClient = () => {
@@ -10,8 +10,9 @@ const createQueryClient = () => {
     defaultOptions: {
       queries: {
         retry: false, // No retries for queries by default
-        staleTime: Infinity,
-        gcTime: Infinity,
+        staleTime: ONE_DAY,
+        gcTime: ONE_DAY,
+        networkMode: 'offlineFirst',
         throwOnError(error) {
           if (error instanceof Error) {
             console.log(error);

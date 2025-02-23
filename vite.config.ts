@@ -38,13 +38,16 @@ export default defineConfig(({ mode }) => {
           'icons/*.png',
           'robots.txt',
           '**/*.{woff,woff2,svg,json}',
+          'index.html',
+          'assets/**/*',
         ],
         registerType: 'autoUpdate',
         strategies: 'injectManifest',
         srcDir: 'src', // Source directory for sw.js
         filename: 'sw.js', // Source service worker file
         injectManifest: {
-          globPatterns: ['**/*.{js,css,html,png,jpg,svg,ico}'], // Cache all common file types
+          globPatterns: ['**/*.{js,css,html,png,jpg,svg,ico}'], // Files to precache
+          maximumFileSizeToCacheInBytes: 100 * 1024 * 1024, // Set to 100 MiB (adjust as needed)
         },
         manifest: {
           name: 'Buddhaword',
@@ -67,9 +70,8 @@ export default defineConfig(({ mode }) => {
             },
           ],
         },
-
         workbox: {
-          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB for larger apps
+          maximumFileSizeToCacheInBytes: 100 * 1024 * 1024, // 100MB for larger apps
           globPatterns: [
             '**/*.{js,css,html,svg,png,jpg,jpeg,gif,woff,woff2,ico,json}',
           ],
