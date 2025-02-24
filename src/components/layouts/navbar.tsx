@@ -29,7 +29,7 @@ import {
 import { link as linkStyles } from '@heroui/theme';
 import { Link, useRouterState } from '@tanstack/react-router';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import { IoShareSocialSharp } from 'react-icons/io5';
 import { SearchDropdown } from '../search/SearchDropdown';
@@ -38,6 +38,7 @@ import { useMenuContext } from './MenuProvider';
 export const Navbar = () => {
   const [activeItem, setActiveItem] = useState<string>('');
   const { isMenuOpen, setIsMenuOpen } = useMenuContext(); // Use the context
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   const location = useRouterState({ select: (s) => s.location });
 
@@ -73,6 +74,21 @@ export const Navbar = () => {
       alert('Sharing is not supported on this device.');
     }
   };
+
+  useEffect(() => {
+    // Update status when online/offline events occur
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // Cleanup listeners on unmount
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   return (
     <NextUINavbar
@@ -171,9 +187,11 @@ export const Navbar = () => {
         </NavbarItem>
 
         {/* Update Data Button */}
-        <NavbarItem className='hidden sm:flex gap-2 '>
-          <ButtonUpdateData />
-        </NavbarItem>
+        {isOnline && (
+          <NavbarItem className='hidden sm:flex gap-2'>
+            <ButtonUpdateData />
+          </NavbarItem>
+        )}
 
         {/* Theme Switch */}
         <NavbarItem className='hidden sm:flex gap-2 '>
