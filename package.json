@@ -14,7 +14,6 @@
   "dependencies": {
     "@cdk0507/react-pageflip": "^1.6.0",
     "@emotion/react": "^11.14.0",
-    "@internationalized/date": "^3.6.0",
     "@heroui/badge": "2.2.6",
     "@heroui/button": "2.2.10",
     "@heroui/card": "2.2.10",
@@ -35,6 +34,7 @@
     "@heroui/system": "2.4.7",
     "@heroui/tabs": "2.2.8",
     "@heroui/theme": "2.4.6",
+    "@internationalized/date": "^3.6.0",
     "@react-pdf-viewer/core": "^3.12.0",
     "@react-pdf-viewer/default-layout": "^3.12.0",
     "@rsbuild/plugin-react": "^1.0.7",
@@ -94,7 +94,8 @@
     "swiper": "^11.1.15",
     "use-debounce": "^10.0.4",
     "vite-bundle-visualizer": "^1.2.1",
-    "vite-plugin-compression": "^0.5.1"
+    "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-static-copy": "^2.2.0"
   },
   "devDependencies": {
     "@tanstack/router-devtools": "^1.85.0",

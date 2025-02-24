@@ -5,6 +5,7 @@ import path from 'path-browserify';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import loadEnv from './loadEnv';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
@@ -24,6 +25,14 @@ export default defineConfig(({ mode }) => {
       pluginReact(),
       TanStackRouterVite({ autoCodeSplitting: true }),
       react(),
+      viteStaticCopy({
+        targets: [
+          {
+            src: 'src/sw.js', // Adjust path if your sw.js is in `src`
+            dest: '', // Copy it to the root of `dist/`
+          },
+        ],
+      }),
       VitePWA({
         registerType: 'autoUpdate',
         injectRegister: 'auto',
@@ -42,12 +51,12 @@ export default defineConfig(({ mode }) => {
         },
         workbox: {
           maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB
-          globPatterns: ['**/*.{js,css,html,svg,png,ico,json}'],
+          globPatterns: ['**/*.{js,css,html,svg,png,ico,json,woff2}'],
           cleanupOutdatedCaches: true,
           skipWaiting: true,
           clientsClaim: true,
           navigateFallback: '/index.html',
-          navigateFallbackDenylist: [/^\/api\//, /\/admin/], // ❌ Prevents serving index.html for API calls
+          navigateFallbackDenylist: [/^\/api\//, /\/admin/], // ❌ Avoid caching API endpoints
 
           runtimeCaching: [
             {
@@ -77,9 +86,9 @@ export default defineConfig(({ mode }) => {
               },
             },
             {
-              // 🔹 Cache API responses in a way that works offline
+              // 🔹 Cache API responses for offline mode
               urlPattern: /^https:\/\/example-api\.com\/.*/,
-              handler: 'StaleWhileRevalidate', // 🚀 Serve cached API data first
+              handler: 'StaleWhileRevalidate',
               options: {
                 cacheName: 'api-cache',
                 expiration: {
@@ -87,6 +96,43 @@ export default defineConfig(({ mode }) => {
                   maxAgeSeconds: 7 * 24 * 60 * 60, // 7 Days
                 },
                 cacheableResponse: { statuses: [0, 200] },
+                backgroundSync: {
+                  name: 'api-queue',
+                  options: {
+                    maxRetentionTime: 24 * 60, // 24 hours
+                  },
+                },
+              },
+            },
+            {
+              // 🔹 Fallback for offline images
+              urlPattern: /\.(?:png|jpg|jpeg|svg|gif|ico|webp)$/,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'image-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+                },
+              },
+            },
+            {
+              // 🔹 Cache API responses and serve from cache when offline
+              urlPattern: /^https:\/\/example-api\.com\/.*/,
+              handler: 'StaleWhileRevalidate', // 🚀 Use cache first, update in the background
+              options: {
+                cacheName: 'api-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 7 * 24 * 60 * 60, // 7 Days
+                },
+                cacheableResponse: { statuses: [0, 200] },
+                backgroundSync: {
+                  name: 'api-queue',
+                  options: {
+                    maxRetentionTime: 24 * 60, // 24 hours
+                  },
+                },
               },
             },
           ],
