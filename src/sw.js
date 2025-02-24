@@ -3,71 +3,75 @@ importScripts(
 );
 
 if (workbox) {
-  console.log('Service Worker Loaded ✔️');
+  console.log('✅ Workbox loaded successfully!');
 
-  // 🔹 Precache UI Shell
+  // 🔹 Precache All Build Files
   workbox.precaching.precacheAndRoute(self.__WB_MANIFEST || []);
 
-  // 🔹 Cache UI pages & fallback to cache when offline
+  // 🔹 Cache All UI Pages (HTML)
   workbox.routing.registerRoute(
     ({ request }) => request.mode === 'navigate',
-    new workbox.strategies.CacheFirst({
-      cacheName: 'html-cache',
+    new workbox.strategies.NetworkFirst({
+      cacheName: 'pages-cache',
+      plugins: [
+        new workbox.cacheableResponse.CacheableResponsePlugin({
+          statuses: [0, 200],
+        }),
+        new workbox.expiration.ExpirationPlugin({
+          maxEntries: 50, // Cache last 50 visited pages
+          maxAgeSeconds: 7 * 24 * 60 * 60, // 7 Days
+        }),
+      ],
+    })
+  );
+
+  // 🔹 Cache Static Assets (JS, CSS, Images, Icons, Fonts)
+  workbox.routing.registerRoute(
+    /\.(?:js|css|png|jpg|jpeg|svg|webp|ico|woff2|woff|ttf|eot)/,
+    new workbox.strategies.StaleWhileRevalidate({
+      cacheName: 'static-assets',
+      plugins: [
+        new workbox.cacheableResponse.CacheableResponsePlugin({
+          statuses: [0, 200],
+        }),
+        new workbox.expiration.ExpirationPlugin({
+          maxEntries: 200, // Keep 200 static files in cache
+          maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+        }),
+      ],
+    })
+  );
+
+  // 🔹 Cache API Requests (Optional: Replace `example-api.com`)
+  workbox.routing.registerRoute(
+    /^https:\/\/example-api\.com\/.*/,
+    new workbox.strategies.NetworkFirst({
+      cacheName: 'api-cache',
       plugins: [
         new workbox.cacheableResponse.CacheableResponsePlugin({
           statuses: [0, 200],
         }),
         new workbox.expiration.ExpirationPlugin({
           maxEntries: 50,
-          maxAgeSeconds: 7 * 24 * 60 * 60,
+          maxAgeSeconds: 7 * 24 * 60 * 60, // 7 Days
         }),
       ],
     })
   );
 
-  // 🔹 Cache static assets (JS, CSS, Fonts, Images)
-  workbox.routing.registerRoute(
-    ({ request }) =>
-      ['script', 'style', 'font', 'image'].includes(request.destination),
-    new workbox.strategies.StaleWhileRevalidate({
-      cacheName: 'static-assets',
-      plugins: [
-        new workbox.expiration.ExpirationPlugin({
-          maxEntries: 200,
-          maxAgeSeconds: 30 * 24 * 60 * 60,
-        }),
-      ],
-    })
-  );
-
-  // 🔹 Cache API responses for 7 days (Fallback to cache when offline)
-  workbox.routing.registerRoute(
-    /^https:\/\/example-api\.com\/.*/,
-    new workbox.strategies.NetworkFirst({
-      cacheName: 'api-cache',
-      networkTimeoutSeconds: 5,
-      plugins: [
-        new workbox.expiration.ExpirationPlugin({
-          maxEntries: 50,
-          maxAgeSeconds: 7 * 24 * 60 * 60,
-        }),
-      ],
-    })
-  );
-
-  // 🔹 Serve `/offline.html` when no network
+  // 🔹 Fallback for Offline Mode (Serve `index.html`)
   self.addEventListener('fetch', (event) => {
     if (event.request.mode === 'navigate') {
       event.respondWith(
-        fetch(event.request).catch(() => caches.match('/offline.html'))
+        fetch(event.request).catch(() => caches.match('/index.html'))
       );
     }
   });
 
-  // 🔹 Activate SW immediately
+  // 🔹 Activate New SW Immediately
   self.addEventListener('activate', (event) => {
     event.waitUntil(self.clients.claim());
   });
 } else {
-  console.error('❌ Workbox failed to load');
+  console.error('❌ Workbox failed to load.');
 }

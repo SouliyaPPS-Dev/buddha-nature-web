@@ -7,6 +7,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import loadEnv from './loadEnv';
 
 export default defineConfig(({ mode }) => {
+  // Load the appropriate .env file based on the mode
   const env = loadEnv(mode, process.cwd());
 
   return {
@@ -27,8 +28,7 @@ export default defineConfig(({ mode }) => {
       }),
       react(),
       VitePWA({
-        registerType: 'autoUpdate',
-        injectRegister: 'auto',
+        registerType: 'autoUpdate', // Automatically register service worker and auto-update
         manifest: {
           name: 'Buddhaword',
           short_name: 'Buddhaword',
@@ -50,26 +50,48 @@ export default defineConfig(({ mode }) => {
             },
           ],
         },
-        injectManifest: {
-          swSrc: 'public/sw.js', // Use custom service worker
-          swDest: 'sw.js',
-        },
-        devOptions: {
-          enabled: true, // Enable in dev mode, useful for testing
-        },
+        injectRegister: 'auto', // Automatically inject service worker registration script
         workbox: {
-          globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+          maximumFileSizeToCacheInBytes: 3000000,
+          globPatterns: ['**/*.{js,css,html,svg,png,ico,json}'],
+          cleanupOutdatedCaches: true, // Automatically delete outdated caches
           navigateFallback: '/index.html',
-          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+          runtimeCaching: [
+            {
+              urlPattern:
+                /\.(?:js|css|png|jpg|jpeg|svg|webp|ico|woff2|woff|ttf|eot)/,
+              handler: 'StaleWhileRevalidate',
+              options: {
+                cacheName: 'static-assets',
+                expiration: {
+                  maxEntries: 200,
+                  maxAgeSeconds: 60 * 60 * 24 * 30, // Cache 30 days
+                },
+                cacheableResponse: { statuses: [0, 200] },
+              },
+            },
+            {
+              urlPattern: ({ request }) => request.mode === 'navigate',
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'pages-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 24 * 7, // 7 Days cache
+                },
+              },
+            },
+          ],
         },
       }),
     ],
     build: {
-      chunkSizeWarningLimit: 4000, // Increase chunk warning size to 1 MB
+      chunkSizeWarningLimit: 5000,
       rollupOptions: {
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
+              // Separate all node_modules into individual chunks
               return id.toString().split('node_modules/')[1].split('/')[0];
             }
           },
