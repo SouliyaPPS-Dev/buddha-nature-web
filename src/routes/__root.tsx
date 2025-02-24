@@ -11,10 +11,10 @@ import React from 'react';
 const isDevelopment = import.meta.env.MODE === 'development';
 
 export const Route = createRootRoute({
-  beforeLoad: async () => {
-    return (window.location.href =
-      'https://buddha-nature.firebaseapp.com/sutra');
-  },
+  // beforeLoad: async () => {
+  //   return (window.location.href =
+  //     'https://buddha-nature.firebaseapp.com/sutra');
+  // },
   component: RootComponent,
 });
 
