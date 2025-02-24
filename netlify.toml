@@ -34,7 +34,7 @@
   for = "/manifest.webmanifest"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
-
+    
 # 🔹 Prevent Caching of `index.html` (Ensures UI Changes Appear Immediately)
 [[headers]]
   for = "/index.html"
