@@ -5,10 +5,10 @@ importScripts(
 if (workbox) {
   console.log('✅ Workbox is loaded!');
 
-  // 🔹 Precache all built files
+  // 🔹 Precache all build files and ensure UI loads offline
   workbox.precaching.precacheAndRoute(self.__WB_MANIFEST || []);
 
-  // 🔹 Cache UI assets efficiently (Instant loading when offline)
+  // 🔹 Cache UI assets efficiently (Load from **CACHE FIRST** when offline)
   workbox.routing.registerRoute(
     /\.(?:js|css|png|jpg|jpeg|svg|webp|ico|woff2|woff|ttf|eot)/,
     new workbox.strategies.CacheFirst({
@@ -25,7 +25,7 @@ if (workbox) {
     })
   );
 
-  // 🔹 Ensure UI pages (`index.html`) can load offline instantly
+  // 🔹 Cache UI pages (`index.html`) to always work offline
   workbox.routing.registerRoute(
     ({ request }) => request.mode === 'navigate',
     new workbox.strategies.CacheFirst({
@@ -33,7 +33,7 @@ if (workbox) {
       plugins: [
         new workbox.expiration.ExpirationPlugin({
           maxEntries: 10,
-          maxAgeSeconds: 7 * 24 * 60 * 60, // 7 Days
+          maxAgeSeconds: 7 * 24 * 60 * 60, // Cache for 7 Days
         }),
       ],
     })
@@ -50,13 +50,13 @@ if (workbox) {
         }),
         new workbox.expiration.ExpirationPlugin({
           maxEntries: 50,
-          maxAgeSeconds: 7 * 24 * 60 * 60, // 7 Days
+          maxAgeSeconds: 7 * 24 * 60 * 60, // Cache for 7 Days
         }),
       ],
     })
   );
 
-  // 🔹 Serve `/index.html` when a request fails (Fallback for Offline Mode)
+  // 🔹 Serve `/index.html` when a request fails (Required for SPA and Offline Mode)
   self.addEventListener('fetch', (event) => {
     if (event.request.mode === 'navigate') {
       event.respondWith(
@@ -65,12 +65,15 @@ if (workbox) {
     }
   });
 
-  // 🔹 Immediately take control of the page
+  // 🔹 Immediately update & activate new service worker
   self.addEventListener('activate', (event) => {
     event.waitUntil(self.clients.claim());
   });
 
-  // 🔹 Send Message to Notify Clients about Online/Offline Status
+  // 🔹 Force service worker updates immediately
+  self.skipWaiting();
+
+  // 🔹 Send Online/Offline Status to Clients in Real-Time
   self.addEventListener('message', (event) => {
     if (event.data === 'check-connection') {
       self.clients.matchAll().then((clients) => {

@@ -1,157 +1,163 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buddhaword</title>
+    <!-- Meta -->
+    <meta name="description" content="The Word of Buddha" />
+    <meta
+      name="keywords"
+      content="Buddhaword, ຄຳສອນພຣະພຸດທະເຈົ້າ, ທັມມະ, ທັມມະຊາດ, lao, laos, the word of buddha, buddha, nature"
+    />
+    <link rel="manifest" href="/manifest.json" />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Buddhaword</title>
-  <!-- Meta -->
-  <meta name='description' content='The Word of Buddha' />
-  <meta name='keywords'
-    content='Buddhaword, ຄຳສອນພຣະພຸດທະເຈົ້າ, ທັມມະ, ທັມມະຊາດ, lao, laos, the word of buddha, buddha, nature' />
-  <link rel="manifest" href="/manifest.json" />
+    <!--  Open Graph Metadata (for social cards) -->
+    <meta property="og:title" content="Buddhaword | The Word of Buddha" />
+    <meta property="og:description" content="ຄຳສອນພຣະພຸດທະເຈົ້າ" />
+    <meta
+      property="og:image"
+      content="https://buddhaword.netlify.app/images/logo.png"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://buddhaword.netlify.app" />
 
-  <!--  Open Graph Metadata (for social cards) -->
-  <meta property='og:title' content='Buddhaword | The Word of Buddha' />
-  <meta property='og:description' content='ຄຳສອນພຣະພຸດທະເຈົ້າ' />
-  <meta property='og:image' content='https://buddhaword.netlify.app/images/logo.png' />
-  <meta property='og:type' content='website' />
-  <meta property='og:url' content='https://buddhaword.netlify.app' />
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Buddhaword" />
+    <meta name="twitter:description" content="The Word of Buddha" />
+    <meta
+      name="twitter:image"
+      content="https://buddhaword.netlify.app/images/logo.png"
+    />
 
-  <!-- Twitter Meta Tags -->
-  <meta name='twitter:card' content='summary_large_image' />
-  <meta name='twitter:title' content='Buddhaword' />
-  <meta name='twitter:description' content='The Word of Buddha' />
-  <meta name='twitter:image' content='https://buddhaword.netlify.app/images/logo.png' />
+    <!-- Add the favicon -->
+    <link rel="icon" type="image/png" href="/images/logo.png" />
 
+    <!-- PWA Support -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#FFAF5D" />
+    <meta name="apple-mobile-web-app-title" content="Buddha-Nature" />
+    <meta name="theme-color" content="#FFAF5D" />
+    <link rel="apple-touch-icon" href="/images/logo.png" />
 
-  <!-- Add the favicon -->
-  <link rel="icon" type="image/png" href="/images/logo.png" />
-
-  <!-- PWA Support -->
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="#FFAF5D" />
-  <meta name="apple-mobile-web-app-title" content="Buddha-Nature" />
-  <meta name="theme-color" content="#FFAF5D" />
-  <link rel="apple-touch-icon" href="/images/logo.png" />
-
-  <!-- Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Buddhaword",
-    "url": "https://buddhaword.netlify.app",
-    "description": "ຄຳສອນພຣະພຸດທະເຈົ້າ",
-    "publisher": {
-      "@type": "Organization",
-      "name": "Buddhaword",
-      "url": "https://buddhaword.netlify.app",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://buddhaword.netlify.app/images/logo.png"
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Buddhaword",
+        "url": "https://buddhaword.netlify.app",
+        "description": "ຄຳສອນພຣະພຸດທະເຈົ້າ",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Buddhaword",
+          "url": "https://buddhaword.netlify.app",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://buddhaword.netlify.app/images/logo.png"
+          }
+        }
       }
-    }
-  }
-  </script>
+    </script>
 
-  <!-- Scroll View Style Reset -->
-  <style>
-    /* Ensure the body does not block overlays */
-    body {
-      margin: 0;
-      padding: 0;
-    }
+    <!-- Scroll View Style Reset -->
+    <style>
+      /* Ensure the body does not block overlays */
+      body {
+        margin: 0;
+        padding: 0;
+      }
 
-    /* Make overlay banners always the top-most layer */
-    /* Inside global CSS or inline styles */
-    .install-alert {
-      z-index: 9999;
-      /* Ensure it's the topmost layer */
-      position: fixed;
-      /* Anchor it to the viewport */
-      bottom: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: auto;
-      /* Prevent overlapping */
-      pointer-events: auto;
-      /* Ensure interactions */
-    }
+      /* Make overlay banners always the top-most layer */
+      /* Inside global CSS or inline styles */
+      .install-alert {
+        z-index: 9999;
+        /* Ensure it's the topmost layer */
+        position: fixed;
+        /* Anchor it to the viewport */
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: auto;
+        /* Prevent overlapping */
+        pointer-events: auto;
+        /* Ensure interactions */
+      }
 
-    .modal {
-      position: fixed;
-      /* Sticks to viewport */
-      z-index: 9999;
-      /* Topmost layer */
-      /* Ensures nothing overlaps these elements */
-    }
+      .modal {
+        position: fixed;
+        /* Sticks to viewport */
+        z-index: 9999;
+        /* Topmost layer */
+        /* Ensures nothing overlaps these elements */
+      }
 
-    /* Ensure interactive buttons are clickable */
-    .install-alert *,
-    .modal * {
-      pointer-events: auto;
-      /* Allow interaction */
-    }
+      /* Ensure interactive buttons are clickable */
+      .install-alert *,
+      .modal * {
+        pointer-events: auto;
+        /* Allow interaction */
+      }
 
-    /* Prevent background content from interfering */
-    .install-alert-blocker,
-    .modal-blocker {
-      pointer-events: none;
-      /* Block clicks to underlying layers */
-    }
+      /* Prevent background content from interfering */
+      .install-alert-blocker,
+      .modal-blocker {
+        pointer-events: none;
+        /* Block clicks to underlying layers */
+      }
 
-    .sticky-element {
-      position: sticky;
-      z-index: 999;
-    }
-  </style>
+      .sticky-element {
+        position: sticky;
+        z-index: 999;
+      }
+    </style>
 
-  <!-- Register Service Worker and Add to Home Screen scripts -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      // Register the service worker
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("/sw.js")
-          .then((registration) => {
-            console.log(
-              "Service Worker registered successfully with scope:",
-              registration.scope
-            );
-          })
-          .catch((error) => {
-            console.error("Service Worker registration failed:", error);
-          });
-      });
-      let deferredPrompt; // To handle the "Add to Home Screen" prompt
-      const hasShownA2HS = localStorage.getItem("hasShownA2HS") === "true";
-      if (!hasShownA2HS) {
-        // Listen for the "beforeinstallprompt" event
-        window.addEventListener("beforeinstallprompt", (event) => {
-          console.log("Detected beforeinstallprompt event");
-          // Prevent default mini-info bar from appearing
-          event.preventDefault();
-          deferredPrompt = event; // Save the event for triggering the prompt later
-          // Show the custom banner
-          const installAlert = document.createElement("div");
-          installAlert.style.position = "fixed";
-          installAlert.style.bottom = "20px";
-          installAlert.style.left = "50%";
-          installAlert.style.transform = "translateX(-50%)";
-          installAlert.style.backgroundColor = "#ffffff";
-          installAlert.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.15)";
-          installAlert.style.borderRadius = "12px";
-          installAlert.style.padding = "15px 20px";
-          installAlert.style.zIndex = "999";
-          installAlert.style.display = "flex";
-          installAlert.style.alignItems = "center";
-          installAlert.style.justifyContent = "space-between";
-          installAlert.style.width = "95%";
-          installAlert.style.maxWidth = "400px";
-          installAlert.style.fontFamily = "Arial, sans-serif";
-          // Add content: message, install button, and close button
-          installAlert.innerHTML = `
+    <!-- Register Service Worker and Add to Home Screen scripts -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        // Register the service worker
+        window.addEventListener('load', () => {
+          navigator.serviceWorker
+            .register('/sw.js')
+            .then((registration) => {
+              console.log(
+                'Service Worker registered successfully with scope:',
+                registration.scope
+              );
+            })
+            .catch((error) => {
+              console.error('Service Worker registration failed:', error);
+            });
+        });
+        let deferredPrompt; // To handle the "Add to Home Screen" prompt
+        const hasShownA2HS = localStorage.getItem('hasShownA2HS') === 'true';
+        if (!hasShownA2HS) {
+          // Listen for the "beforeinstallprompt" event
+          window.addEventListener('beforeinstallprompt', (event) => {
+            console.log('Detected beforeinstallprompt event');
+            // Prevent default mini-info bar from appearing
+            event.preventDefault();
+            deferredPrompt = event; // Save the event for triggering the prompt later
+            // Show the custom banner
+            const installAlert = document.createElement('div');
+            installAlert.style.position = 'fixed';
+            installAlert.style.bottom = '20px';
+            installAlert.style.left = '50%';
+            installAlert.style.transform = 'translateX(-50%)';
+            installAlert.style.backgroundColor = '#ffffff';
+            installAlert.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.15)';
+            installAlert.style.borderRadius = '12px';
+            installAlert.style.padding = '15px 20px';
+            installAlert.style.zIndex = '999';
+            installAlert.style.display = 'flex';
+            installAlert.style.alignItems = 'center';
+            installAlert.style.justifyContent = 'space-between';
+            installAlert.style.width = '95%';
+            installAlert.style.maxWidth = '400px';
+            installAlert.style.fontFamily = 'Arial, sans-serif';
+            // Add content: message, install button, and close button
+            installAlert.innerHTML = `
                     <div style="flex: 1; z-index: 999;">
                       <p style="margin: 0; font-size: 16px; font-weight: bold; color: #333;">
                         Add to Home Screen
@@ -185,45 +191,44 @@
                       ">Close</button>
                     </div>
                   `;
-          // Append the alert to the body
-          document.body.appendChild(installAlert);
-          // Automatically remove the alert after 15 seconds
-          const timeout = setTimeout(() => {
-            console.log("Install alert timed out after 15 seconds");
-            installAlert.remove();
-          }, 15000);
-          // Handle "Install" button click
-          const installButton = document.getElementById("install-pwa-button");
-          installButton?.addEventListener("click", async () => {
-            clearTimeout(timeout); // Cancel timeout when interacting
-            if (deferredPrompt) {
-              deferredPrompt.prompt(); // Trigger the install prompt
-              const { outcome } = await deferredPrompt.userChoice;
-              console.log("User choice:", outcome);
-              if (outcome === "accepted") {
-                localStorage.setItem("hasShownA2HS", "true"); // Mark as installed
+            // Append the alert to the body
+            document.body.appendChild(installAlert);
+            // Automatically remove the alert after 15 seconds
+            const timeout = setTimeout(() => {
+              console.log('Install alert timed out after 15 seconds');
+              installAlert.remove();
+            }, 15000);
+            // Handle "Install" button click
+            const installButton = document.getElementById('install-pwa-button');
+            installButton?.addEventListener('click', async () => {
+              clearTimeout(timeout); // Cancel timeout when interacting
+              if (deferredPrompt) {
+                deferredPrompt.prompt(); // Trigger the install prompt
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log('User choice:', outcome);
+                if (outcome === 'accepted') {
+                  localStorage.setItem('hasShownA2HS', 'true'); // Mark as installed
+                }
+                deferredPrompt = null; // Clear saved prompt after user action
               }
-              deferredPrompt = null; // Clear saved prompt after user action
-            }
-            installAlert.remove(); // Once clicked, remove the alert
+              installAlert.remove(); // Once clicked, remove the alert
+            });
+            // Handle "Close" button click
+            const closeButton = document.getElementById('close-alert-button');
+            closeButton?.addEventListener('click', () => {
+              console.log('Install alert closed manually by user');
+              clearTimeout(timeout); // Cancel timeout
+              installAlert.remove(); // Remove alert
+              localStorage.setItem('hasShownA2HS', 'false'); // Track dismissal
+            });
           });
-          // Handle "Close" button click
-          const closeButton = document.getElementById("close-alert-button");
-          closeButton?.addEventListener("click", () => {
-            console.log("Install alert closed manually by user");
-            clearTimeout(timeout); // Cancel timeout
-            installAlert.remove(); // Remove alert
-            localStorage.setItem("hasShownA2HS", "false"); // Track dismissal
-          });
-        });
+        }
       }
-    }
-  </script>
-</head>
+    </script>
+  </head>
 
-<body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
-</body>
-
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
