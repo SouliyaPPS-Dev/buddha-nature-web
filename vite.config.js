@@ -28,6 +28,7 @@ export default defineConfig(({ mode }) => {
       react(),
       VitePWA({
         registerType: 'autoUpdate',
+        injectRegister: 'auto',
         manifest: {
           name: 'Buddhaword',
           short_name: 'Buddhaword',
@@ -49,56 +50,17 @@ export default defineConfig(({ mode }) => {
             },
           ],
         },
-        injectRegister: 'auto',
+        injectManifest: {
+          swSrc: 'public/sw.js', // Use custom service worker
+          swDest: 'sw.js',
+        },
         devOptions: {
           enabled: true, // Enable in dev mode, useful for testing
         },
         workbox: {
-          globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
-          cleanupOutdatedCaches: true,
-          skipWaiting: true,
-          clientsClaim: true,
+          globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
           navigateFallback: '/index.html',
-          cacheId: 'vite-pwa-cache',
           maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-          runtimeCaching: [
-            {
-              urlPattern: ({ request }) => request.destination === 'document',
-              handler: 'NetworkFirst',
-              options: {
-                cacheName: 'html-cache',
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 60 * 60 * 24 * 7, // Cache for 7 days
-                },
-              },
-            },
-            {
-              urlPattern: ({ request }) =>
-                ['script', 'style', 'font', 'image'].includes(
-                  request.destination
-                ),
-              handler: 'StaleWhileRevalidate',
-              options: {
-                cacheName: 'static-assets',
-                expiration: {
-                  maxEntries: 200,
-                  maxAgeSeconds: 60 * 60 * 24 * 30, // Cache for 30 days
-                },
-              },
-            },
-            {
-              urlPattern: /^https:\/\/example-api\.com\/.*/, // Replace with your API
-              handler: 'NetworkFirst',
-              options: {
-                cacheName: 'api-cache',
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 60 * 60 * 24 * 7, // Cache for 7 days
-                },
-              },
-            },
-          ],
         },
       }),
     ],
