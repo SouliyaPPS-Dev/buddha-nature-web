@@ -1,12 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 
 // Define the route
 export const Route = createFileRoute('/')({
   beforeLoad: async () => {
-    // return redirect({
-    //   to: '/sutra',
-    // });
-    return (window.location.href = 'https://buddha-nature.firebaseapp.com/');
+    return redirect({
+      to: '/sutra',
+    });
   },
   component: RouteComponent,
 });
