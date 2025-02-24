@@ -4,14 +4,14 @@ import react from '@vitejs/plugin-react';
 import path from 'path-browserify';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
-import compress from 'vite-plugin-compression';
 import loadEnv from './loadEnv';
+import compress from 'vite-plugin-compression';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
 
   return {
-    base: '/', // Ensures consistent paths for caching
+    base: '/',
     resolve: {
       alias: {
         path: 'path-browserify',
@@ -23,8 +23,8 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       compress({
-        algorithm: 'brotliCompress',
-        ext: '.br',
+        algorithm: 'brotliCompress', // Use Brotli compression
+        ext: '.br', // Output compressed files with .br extension
       }),
       pluginReact(),
       TanStackRouterVite({
@@ -32,66 +32,77 @@ export default defineConfig(({ mode }) => {
       }),
       react(),
       VitePWA({
-        registerType: 'autoUpdate', // Auto-update service worker on new version
-        strategies: 'injectManifest', // Use custom sw.js
-        srcDir: 'src',
-        filename: 'sw.js',
-        injectManifest: {
-          globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,svg,ico,woff,woff2,json}'],
-          maximumFileSizeToCacheInBytes: 100 * 1024 * 1024, // 100 MiB
-        },
         includeAssets: [
-          'index.html', // Explicitly include root HTML
-          'images/**/*.{png,jpg}',
-          'icons/*.png',
-          'robots.txt',
-          '**/*.{woff,woff2,svg,json}',
-          'assets/**/*',
+          'logo.png',
+          'logo_shared.png',
+          'robots.txt', // Include robots.txt
         ],
+        registerType: 'autoUpdate',
         manifest: {
           name: 'Buddhaword',
           short_name: 'Buddhaword',
           description: 'The Word of Buddha',
-          theme_color: '#FFAF5D',
+          theme_color: '#ffffff',
           background_color: '#ffffff',
           display: 'standalone',
           start_url: '/',
           icons: [
-            { src: '/icons/Icon-192.png', sizes: '192x192', type: 'image/png' },
-            { src: '/icons/Icon-512.png', sizes: '512x512', type: 'image/png' },
+            {
+              src: '/icons/Icon-192.png',
+              sizes: '192x192',
+              type: 'image/png',
+            },
+            {
+              src: '/icons/Icon-512.png',
+              sizes: '512x512',
+              type: 'image/png',
+            },
           ],
         },
+        injectRegister: 'auto',
         workbox: {
-          navigateFallback: '/index.html', // Serve index.html for all navigation requests
-          cleanupOutdatedCaches: true, // Remove old caches
-          skipWaiting: true, // Activate new SW immediately
-          clientsClaim: true, // Take control of clients ASAP
+          maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // Set 4 MiB (or any desired value)
+          globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+          cleanupOutdatedCaches: true,
+          skipWaiting: true,
+          clientsClaim: true,
+          navigateFallback: '/index.html',
           runtimeCaching: [
             {
-              // Cache static assets (JS, CSS, images, fonts)
-              urlPattern: /\.(?:js|css|woff2?|png|jpg|jpeg|svg|ico|json)$/i,
-              handler: 'CacheFirst',
+              urlPattern:
+                /\.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|avif)$/i,
+              handler: 'StaleWhileRevalidate',
               options: {
                 cacheName: 'static-assets',
                 expiration: {
-                  maxEntries: 300,
-                  maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
+                  maxEntries: 200,
+                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
                 },
-                cacheableResponse: { statuses: [0, 200] },
+                cacheableResponse: {
+                  statuses: [0, 200],
+                },
               },
             },
             {
-              // Cache HTML navigation requests (UI shell)
               urlPattern: ({ request }) => request.mode === 'navigate',
-              handler: 'NetworkFirst', // Try network, fall back to cache
+              handler: 'NetworkFirst',
               options: {
                 cacheName: 'html-cache',
                 expiration: {
                   maxEntries: 50,
                   maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
                 },
-                networkTimeoutSeconds: 5, // Fallback to cache if network fails fast
-                cacheableResponse: { statuses: [0, 200] },
+              },
+            },
+            {
+              urlPattern: /^https:\/\/example-api\.com\/.*/,
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'api-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+                },
               },
             },
           ],
@@ -99,12 +110,13 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     build: {
-      chunkSizeWarningLimit: 4000,
+      chunkSizeWarningLimit: 4000, // Increase chunk warning size to 1 MB
       rollupOptions: {
         output: {
           manualChunks: {
+            // Split specific libraries into separate chunks
             react: ['react', 'react-dom'],
-            router: ['@tanstack/react-router'],
+            lodash: ['lodash'], // Example for splitting lodash
           },
         },
       },

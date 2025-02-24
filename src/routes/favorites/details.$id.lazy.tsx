@@ -547,7 +547,7 @@ function RouteComponent() {
         <meta property='og:description' content='ຄຳສອນພຣະພຸດທະເຈົ້າ' />
         <meta
           property='og:image'
-          content='https://buddhaword.netlify.app/images/logo_shared.png'
+          content='https://buddhaword.netlify.appimages/logo_shared.png'
         />
         <meta property='og:type' content='website' />
         <meta property='og:url' content='https://buddhaword.netlify.app' />
@@ -557,7 +557,7 @@ function RouteComponent() {
         <meta name='twitter:description' content='The Word of Buddha' />
         <meta
           name='twitter:image'
-          content='https://buddhaword.netlify.app/images/logo_shared.png'
+          content='https://buddhaword.netlify.appimages/logo_shared.png'
         />
 
         <link rel='icon' type='image/png' href='/images/logo_shared.png' />
