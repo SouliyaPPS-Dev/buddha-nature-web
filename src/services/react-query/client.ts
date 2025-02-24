@@ -35,14 +35,7 @@ const storage = getStorage();
 
 // ✅ Create a Query Client
 const createQueryClient = () => {
-  return new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-        staleTime: Infinity, // Makes queries cache forever unless invalidated
-      },
-    },
-  });
+  return new QueryClient();
 };
 
 // 🎯 Use the improved storage method
