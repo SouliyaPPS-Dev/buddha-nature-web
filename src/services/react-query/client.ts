@@ -24,7 +24,7 @@ const createQueryClient = () => {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        retry: 1, // Retry once if API fails
+        retry: false,
         staleTime: Infinity, // Prevent refetching
       },
     },

@@ -8,10 +8,10 @@ if (workbox) {
   // 🔹 Precache all built files
   workbox.precaching.precacheAndRoute(self.__WB_MANIFEST || []);
 
-  // 🔹 Cache UI assets efficiently
+  // 🔹 Cache UI assets efficiently (Instant loading when offline)
   workbox.routing.registerRoute(
     /\.(?:js|css|png|jpg|jpeg|svg|webp|ico|woff2|woff|ttf|eot)/,
-    new workbox.strategies.StaleWhileRevalidate({
+    new workbox.strategies.CacheFirst({
       cacheName: 'static-assets',
       plugins: [
         new workbox.cacheableResponse.CacheableResponsePlugin({
@@ -25,10 +25,10 @@ if (workbox) {
     })
   );
 
-  // 🔹 Ensure UI (HTML Pages) can load offline
+  // 🔹 Ensure UI pages (`index.html`) can load offline instantly
   workbox.routing.registerRoute(
     ({ request }) => request.mode === 'navigate',
-    new workbox.strategies.StaleWhileRevalidate({
+    new workbox.strategies.CacheFirst({
       cacheName: 'html-cache',
       plugins: [
         new workbox.expiration.ExpirationPlugin({
@@ -39,7 +39,7 @@ if (workbox) {
     })
   );
 
-  // 🔹 Cache API Responses Properly for Offline Use
+  // 🔹 Cache API Responses for Offline Use
   workbox.routing.registerRoute(
     /^https:\/\/example-api\.com\/.*/,
     new workbox.strategies.StaleWhileRevalidate({
@@ -56,7 +56,7 @@ if (workbox) {
     })
   );
 
-  // 🔹 Serve `/index.html` when a request fails (fallback for offline mode)
+  // 🔹 Serve `/index.html` when a request fails (Fallback for Offline Mode)
   self.addEventListener('fetch', (event) => {
     if (event.request.mode === 'navigate') {
       event.respondWith(
@@ -68,6 +68,20 @@ if (workbox) {
   // 🔹 Immediately take control of the page
   self.addEventListener('activate', (event) => {
     event.waitUntil(self.clients.claim());
+  });
+
+  // 🔹 Send Message to Notify Clients about Online/Offline Status
+  self.addEventListener('message', (event) => {
+    if (event.data === 'check-connection') {
+      self.clients.matchAll().then((clients) => {
+        clients.forEach((client) => {
+          client.postMessage({
+            type: 'NETWORK_STATUS',
+            online: navigator.onLine,
+          });
+        });
+      });
+    }
   });
 } else {
   console.error('❌ Workbox failed to load.');
