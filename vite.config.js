@@ -47,12 +47,14 @@ export default defineConfig(({ mode }) => {
           skipWaiting: true,
           clientsClaim: true,
           navigateFallback: '/index.html',
+          navigateFallbackDenylist: [/^\/api\//, /\/admin/], // ❌ Prevents serving index.html for API calls
+
           runtimeCaching: [
             {
               // 🔹 Cache UI assets (CSS, JS, images, fonts)
               urlPattern:
                 /\.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|avif)$/i,
-              handler: 'StaleWhileRevalidate',
+              handler: 'CacheFirst',
               options: {
                 cacheName: 'static-assets',
                 expiration: {
@@ -63,9 +65,9 @@ export default defineConfig(({ mode }) => {
               },
             },
             {
-              // 🔹 Ensure `index.html` works offline
+              // 🔹 Ensure `index.html` works in offline mode
               urlPattern: ({ request }) => request.mode === 'navigate',
-              handler: 'StaleWhileRevalidate',
+              handler: 'NetworkFirst',
               options: {
                 cacheName: 'html-cache',
                 expiration: {
@@ -77,7 +79,7 @@ export default defineConfig(({ mode }) => {
             {
               // 🔹 Cache API responses in a way that works offline
               urlPattern: /^https:\/\/example-api\.com\/.*/,
-              handler: 'StaleWhileRevalidate', // Serve stale data first, then update
+              handler: 'StaleWhileRevalidate', // 🚀 Serve cached API data first
               options: {
                 cacheName: 'api-cache',
                 expiration: {

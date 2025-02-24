@@ -29,12 +29,6 @@
     Pragma = "no-cache"
     Expires = "0"
 
-# 🔹 Ensure PWA manifest updates correctly (Avoid old cache issues)
-[[headers]]
-  for = "/manifest.webmanifest"
-  [headers.values]
-    Cache-Control = "no-cache, no-store, must-revalidate"
-    
 # 🔹 Prevent Caching of `index.html` (Ensures UI Changes Appear Immediately)
 [[headers]]
   for = "/index.html"

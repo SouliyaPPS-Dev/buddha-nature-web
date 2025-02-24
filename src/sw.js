@@ -8,9 +8,9 @@ if (workbox) {
   // 🔹 Precache all built files
   workbox.precaching.precacheAndRoute(self.__WB_MANIFEST || []);
 
-  // 🔹 Cache UI assets efficiently (Instant loading when offline)
+  // 🔹 Cache UI assets efficiently (Load from **CACHE FIRST** when offline)
   workbox.routing.registerRoute(
-    /\.(?:js|css|png|jpg|jpeg|svg|webp|ico|woff2|woff|ttf|eot)/,
+    /\.(?:js|css|png|jpg|jpeg|svg|webp|ico|woff2|woff|ttf|eot)$/,
     new workbox.strategies.CacheFirst({
       cacheName: 'static-assets',
       plugins: [
@@ -25,15 +25,15 @@ if (workbox) {
     })
   );
 
-  // 🔹 Ensure UI pages (`index.html`) can load offline instantly
+  // 🔹 Ensure UI pages (HTML) always work offline
   workbox.routing.registerRoute(
     ({ request }) => request.mode === 'navigate',
-    new workbox.strategies.CacheFirst({
+    new workbox.strategies.NetworkFirst({
       cacheName: 'html-cache',
       plugins: [
         new workbox.expiration.ExpirationPlugin({
           maxEntries: 10,
-          maxAgeSeconds: 7 * 24 * 60 * 60, // 7 Days
+          maxAgeSeconds: 7 * 24 * 60 * 60, // Cache for 7 Days
         }),
       ],
     })
@@ -50,13 +50,13 @@ if (workbox) {
         }),
         new workbox.expiration.ExpirationPlugin({
           maxEntries: 50,
-          maxAgeSeconds: 7 * 24 * 60 * 60, // 7 Days
+          maxAgeSeconds: 7 * 24 * 60 * 60, // Cache for 7 Days
         }),
       ],
     })
   );
 
-  // 🔹 Serve `/index.html` when a request fails (Fallback for Offline Mode)
+  // 🔹 Serve `/index.html` when a route fails (ALL Pages will load even when offline)
   self.addEventListener('fetch', (event) => {
     if (event.request.mode === 'navigate') {
       event.respondWith(
@@ -69,6 +69,9 @@ if (workbox) {
   self.addEventListener('activate', (event) => {
     event.waitUntil(self.clients.claim());
   });
+
+  // 🔹 Force Service Worker Updates Immediately
+  self.skipWaiting();
 
   // 🔹 Send Message to Notify Clients about Online/Offline Status
   self.addEventListener('message', (event) => {
@@ -86,17 +89,3 @@ if (workbox) {
 } else {
   console.error('❌ Workbox failed to load.');
 }
-
-self.addEventListener('message', (event) => {
-  if (event.data === 'check-connection') {
-    self.clients.matchAll().then((clients) => {
-      clients.forEach((client) => {
-        client.postMessage({
-          type: 'NETWORK_STATUS',
-          online: navigator.onLine,
-        });
-      });
-    });
-  }
-});
-
