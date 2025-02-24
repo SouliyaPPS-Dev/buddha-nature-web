@@ -39,24 +39,25 @@ if (workbox) {
     })
   );
 
-  // 🔹 Cache API Responses for Offline Use
+  // 🔹 Improved API Caching Strategy (Fix Offline Problems)
   workbox.routing.registerRoute(
-    /^https:\/\/example-api\.com\/.*/,
-    new workbox.strategies.StaleWhileRevalidate({
+    ({ url }) => url.origin.includes('example-api.com'), // ⚡ Target API calls
+    new workbox.strategies.NetworkFirst({
       cacheName: 'api-cache',
+      networkTimeoutSeconds: 5, // ⏳ Avoid long waits when offline
       plugins: [
         new workbox.cacheableResponse.CacheableResponsePlugin({
           statuses: [0, 200],
         }),
         new workbox.expiration.ExpirationPlugin({
           maxEntries: 50,
-          maxAgeSeconds: 7 * 24 * 60 * 60, // Cache for 7 Days
+          maxAgeSeconds: 7 * 24 * 60 * 60, // Cache API responses for 7 Days
         }),
       ],
     })
   );
 
-  // 🔹 Serve `/index.html` when a route fails (ALL Pages will load even when offline)
+  // 🔹 Serve `/index.html` when a route fails (ALL Pages work even when offline)
   self.addEventListener('fetch', (event) => {
     if (event.request.mode === 'navigate') {
       event.respondWith(

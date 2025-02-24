@@ -2,42 +2,27 @@ import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persist
 import { QueryClient } from '@tanstack/react-query';
 import { persistQueryClient } from '@tanstack/react-query-persist-client';
 
-// 🔹 Check if `localStorage` is available (Fixes Safari Private Mode blocking)
-const isLocalStorageAvailable = (): boolean => {
-  try {
-    const testKey = '__storage_test__';
-    window.localStorage.setItem(testKey, 'test');
-    window.localStorage.removeItem(testKey);
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
-
-// 🔹 Choose storage: Use `localStorage` or fallback to `sessionStorage`
-const storage = isLocalStorageAvailable()
-  ? window.localStorage
-  : window.sessionStorage;
-
-// 🔥 Setup React Query & Storage Persistence
+// ✅ Create a Query Client
 const createQueryClient = () => {
   return new QueryClient({
     defaultOptions: {
       queries: {
         retry: false,
-        staleTime: Infinity, // Prevent refetching
+        staleTime: Infinity, // Makes queries cache forever unless invalidated
       },
     },
   });
 };
 
-// Initialize QueryClient
+// 🎯 Use the improved storage method
+export const persister = createSyncStoragePersister({
+  storage, // Now properly detects storage support including Safari Private Mode
+});
+
+// 🎯 Initialize Query Client
 export const queryClient = createQueryClient();
 
-// 🔹 Persist Cached Data in Storage
-export const persister = createSyncStoragePersister({ storage });
-
-// 🔹 Persist React Query Cache on Load
+// 🎯 Automatically Persist React Query Cache
 persistQueryClient({
   queryClient,
   persister,
