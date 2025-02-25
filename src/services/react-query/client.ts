@@ -1,8 +1,8 @@
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
-import { QueryClient } from '@tanstack/react-query';
+import { QueryClient, QueryCache } from '@tanstack/react-query';
 import { persistQueryClient } from '@tanstack/react-query-persist-client';
 
-// 🔹 A Safe Storage Provider that handles Safari Private mode
+// 🔹 Offline-safe storage (Handles Safari Private Mode)
 const getStorage = () => {
   try {
     const testKey = '__storage_test__';
@@ -11,11 +11,9 @@ const getStorage = () => {
     return window.localStorage;
   } catch (e) {
     try {
-      // 🟢 Fallback to sessionStorage if localStorage isn't available
       return window.sessionStorage;
     } catch (e) {
       console.warn('⚠️ No Web Storage Available - Using In-Memory Cache');
-      // 🏆 In-memory fallback (persists data only during session)
       let memoryStorage: Record<string, string> = {};
       return {
         setItem: (key: string, value: string) => {
@@ -30,23 +28,37 @@ const getStorage = () => {
   }
 };
 
-// 🔥 Use this storage strategy everywhere BEFORE persister is created
 const storage = getStorage();
 
-// ✅ Create a Query Client
+// ✅ Create a React Query Client that prevents API calls when offline
 const createQueryClient = () => {
-  return new QueryClient();
+  return new QueryClient({
+    queryCache: new QueryCache({
+      onError: (error) => {
+        console.error('React Query Error:', error);
+      },
+    }),
+    defaultOptions: {
+      queries: {
+        retry: 1, // Retry once if an error occurs
+        staleTime: 5 * 60 * 1000, // 5 minutes (Keeps data fresh)
+        refetchOnMount: () => navigator.onLine, // ✅ Only refetch when online
+        refetchOnReconnect: true, // ✅ Refetch when back online
+        refetchOnWindowFocus: () => navigator.onLine, // ✅ Avoid refetching if offline
+        networkMode: 'online', // 🛑 Block queries if offline
+      },
+    },
+  });
 };
 
-// 🎯 Use the improved storage method
+// 🎯 Persist Query Data with Correct Storage
 export const persister = createSyncStoragePersister({
-  storage, // ✅ storage is now properly initialized before use
+  storage,
 });
 
-// 🎯 Initialize Query Client
 export const queryClient = createQueryClient();
 
-// 🎯 Automatically Persist React Query Cache
+// 🎯 Persist Query Cache Data for Offline Use
 persistQueryClient({
   queryClient,
   persister,
