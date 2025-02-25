@@ -28,6 +28,7 @@ export default defineConfig(({ mode }) => {
         registerType: 'autoUpdate', // Automatically updates the service worker
         devOptions: { enabled: true }, // Enables service worker in development
         workbox: {
+          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
           // Cache navigation requests (e.g., HTML pages)
           runtimeCaching: [
             {

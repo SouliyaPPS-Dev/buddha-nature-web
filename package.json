@@ -115,6 +115,7 @@
     "vite": "^5.4.11",
     "vite-plugin-pwa": "^0.20.5",
     "workbox-core": "^7.3.0",
+    "workbox-sw": "^7.3.0",
     "workbox-window": "^7.3.0"
   },
   "resolutions": {
