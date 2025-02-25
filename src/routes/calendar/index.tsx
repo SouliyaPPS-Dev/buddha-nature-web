@@ -169,7 +169,6 @@ function RouteComponent() {
             <span
               key={index}
               className='bg-yellow-200 font-bold text-black cursor-text'
-              contentEditable={true}
               style={{ fontSize: `20px` }}
             >
               {ReactHtmlParser(part)}

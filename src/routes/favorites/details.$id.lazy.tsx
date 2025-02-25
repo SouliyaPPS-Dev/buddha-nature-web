@@ -275,7 +275,6 @@ function RouteComponent() {
     if (!searchTerm?.trim()) {
       return (
         <div
-          contentEditable={true}
           style={{ fontSize: `${fontSize}px` }}
           className='cursor-text'
         >
@@ -293,7 +292,6 @@ function RouteComponent() {
             <span
               key={index}
               className='bg-yellow-200 font-bold text-black cursor-text'
-              contentEditable={true}
               style={{ fontSize: `${fontSize}px` }}
             >
               {ReactHtmlParser(part)}
@@ -601,7 +599,7 @@ function RouteComponent() {
                 }
               }}
             >
-              <div contentEditable={true}>
+              <div>
                 {/* ຊື່ພຣະສູດ */}
                 <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
                   <Highlighter

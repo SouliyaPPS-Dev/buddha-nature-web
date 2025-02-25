@@ -91,7 +91,6 @@ function SutraCard({
     if (!searchTerm?.trim()) {
       return (
         <div
-          contentEditable={true}
           style={{
             fontSize: `${fontSize}px`,
           }}
@@ -110,7 +109,6 @@ function SutraCard({
           <span
             key={index}
             className='bg-yellow-200 font-bold text-black cursor-text'
-            contentEditable={true}
             style={{ fontSize: `${fontSize}px` }}
           >
             {ReactHtmlParser(part)}
@@ -183,7 +181,6 @@ function SutraCard({
               <>
                 {/* Scrollable Content */}
                 <div
-                  contentEditable={true}
                   className='mt-2 prose mx-auto overflow-y-auto border rounded-md p-4 w-full'
                   style={{
                     maxHeight: '200px', // Scrollable content area

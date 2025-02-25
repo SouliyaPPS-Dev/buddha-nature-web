@@ -13,7 +13,7 @@ import { ThemeSwitch } from '@/components/layouts/theme-switch';
 import { useNavigation } from '@/components/NavigationProvider';
 import DownloadBook from '@/containers/book/DownloadBook';
 import { DeleteFavorites } from '@/containers/favorites/DeleteFavorites';
-import { ButtonUpdateData } from '@/containers/sutra/ButtonUpdateData';
+import { ButtonUpdateData } from '@/containers/ButtonUpdateData';
 import { siteConfig } from '@/layouts/site';
 import { router } from '@/router';
 import { localStorageData } from '@/services/cache';
