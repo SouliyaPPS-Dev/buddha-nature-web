@@ -21,6 +21,15 @@ declare module '@react-types/shared' {
   }
 }
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker
+    .register('/sw.js')
+    .then(() => console.log('Service Worker registered!'))
+    .catch((error) =>
+      console.error('Service Worker registration failed:', error)
+    );
+}
+
 function App() {
   return (
     <HelmetProvider>

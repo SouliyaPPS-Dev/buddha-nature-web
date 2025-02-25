@@ -1,11 +1,10 @@
-import { pluginReact } from '@rsbuild/plugin-react';
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path-browserify';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
-import loadEnv from './loadEnv';
 import tsConfigPaths from 'vite-tsconfig-paths';
+import loadEnv from './loadEnv';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
@@ -25,7 +24,6 @@ export default defineConfig(({ mode }) => {
       tsConfigPaths({
         projects: ['./tsconfig.json'],
       }),
-      pluginReact(), // Keep only one React plugin (remove @vitejs/plugin-react if not needed)
       TanStackRouterVite({ autoCodeSplitting: true }),
       react(),
       VitePWA({
@@ -38,50 +36,24 @@ export default defineConfig(({ mode }) => {
           cleanupOutdatedCaches: true,
           skipWaiting: true,
           clientsClaim: true,
-          navigateFallback: '/',
+          navigateFallback: '/index.html',
+          importScripts: ['https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js'],
           // Cache navigation requests (e.g., HTML pages)
           runtimeCaching: [
-            {
-              urlPattern:
-                /\.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|avif)$/i,
-              handler: 'StaleWhileRevalidate',
-              options: {
-                cacheName: 'static-assets',
-                expiration: {
-                  maxEntries: 200,
-                  maxAgeSeconds: 60 * 60 * 24 * 30,
-                },
-                cacheableResponse: {
-                  statuses: [0, 200],
-                },
-              },
-            },
             {
               urlPattern: ({ request }) => request.mode === 'navigate',
               handler: 'NetworkFirst',
               options: {
-                cacheName: 'html-cache',
+                cacheName: 'pages-cache',
                 expiration: {
                   maxEntries: 50,
-                  maxAgeSeconds: 60 * 60 * 24 * 7,
-                },
-              },
-            },
-            {
-              urlPattern: ({ request }) => request.mode === 'navigate',
-              handler: 'NetworkFirst', // Try network first, fall back to cache
-              options: {
-                cacheName: 'pages',
-                expiration: {
-                  maxEntries: 50, // Limit cache size
                   maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
                 },
               },
             },
-            // Cache static assets (JS, CSS, images)
             {
-              urlPattern: /\.(?:js|css|png|jpg|jpeg|svg|woff2)$/,
-              handler: 'CacheFirst', // Serve from cache first
+              urlPattern: /\.(?:js|css|png|jpg|jpeg|svg|woff2|ico)$/,
+              handler: 'CacheFirst',
               options: {
                 cacheName: 'static-assets',
                 expiration: {
@@ -90,12 +62,11 @@ export default defineConfig(({ mode }) => {
                 },
               },
             },
-            // Cache API calls (optional, adjust based on your needs)
             {
               urlPattern: /^https:\/\/your-api-endpoint\.com\/.*/,
-              handler: 'NetworkFirst', // Try network, fall back to cache
+              handler: 'NetworkFirst',
               options: {
-                cacheName: 'api',
+                cacheName: 'api-cache',
                 expiration: {
                   maxEntries: 50,
                   maxAgeSeconds: 24 * 60 * 60, // 1 day

@@ -96,7 +96,8 @@
     "vite-bundle-visualizer": "^1.2.1",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-static-copy": "^2.2.0",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "workbox-build": "^7.3.0"
   },
   "devDependencies": {
     "@tanstack/router-devtools": "^1.85.0",
