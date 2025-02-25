@@ -29,6 +29,14 @@
     Pragma = "no-cache"
     Expires = "0"
 
+# 🔹 Ensure Service Worker updates immediately (Crucial for UI Updates)
+[[headers]]
+  for = "/src/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
 # 🔹 Prevent Caching of `index.html` (Ensures UI Changes Appear Immediately)
 [[headers]]
   for = "/index.html"

@@ -8,7 +8,7 @@ import { SutraDataModel } from '@/model/sutra';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-h5-audio-player/lib/styles.css';
 import Highlighter from 'react-highlight-words';
 import ReactHtmlParser from 'react-html-parser';
@@ -42,6 +42,16 @@ function RouteComponent() {
   const itemsPerPage = 1; // Always show 1 item per "chunk"
   const [filteredDetails, setFilteredDetails] = useState<any[]>([]); // Filtered data displayed in the flipbook
   const [currentPage, setCurrentPage] = useState(0); // Current page index
+
+  const [isTextSelected, setIsTextSelected] = useState(false);
+
+  // Function to check if text is selected
+  const handleSelection = () => {
+    const selection = window.getSelection();
+    setIsTextSelected(
+      selection && selection.toString().length > 0 ? true : false
+    );
+  };
 
   // Find current index in the original data array
   const currentGlobalIndex = data?.findIndex(
@@ -217,15 +227,20 @@ function RouteComponent() {
   const copyToClipboard = () => {
     if (filteredDetails.length) {
       const currentItem = filteredDetails[currentPage];
+
+      // Extract text while sanitizing unwanted <b> and <br> tags
       const textToCopy = `
-       ${currentItem['ຊື່ພຣະສູດ']}
-       ${currentItem['ພຣະສູດ']}
-       ${currentItem['ໝວດທັມ']}
-    `.trim(); // Using trim() to remove extra leading/trailing whitespace or newlines
+      ${currentItem['ຊື່ພຣະສູດ']}
+      ${currentItem['ພຣະສູດ']}
+      ${currentItem['ໝວດທັມ']}
+    `
+        .replace(/<br\s*\/?>/gi, '') // Remove <br> and </br> tags
+        .replace(/<\/?b>/gi, '') // Remove <b> and </b> tags
+        .trim(); // Remove unnecessary whitespace or newlines
 
       navigator.clipboard.writeText(textToCopy).then(() => {
-        setIsCopied(true); // Set the state to true (show success icon)
-        setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+        setIsCopied(true); // ✅ Show copied success message
+        setTimeout(() => setIsCopied(false), 2000); // Reset after 2s
       });
     }
   };
@@ -251,40 +266,96 @@ function RouteComponent() {
     }
   };
 
-  // Function to sanitize and parse HTML content
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Force blur every time the component renders
+    setTimeout(() => {
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+    }, 100); // Small delay ensures it runs after render
+  }, []);
+
+  const handleTouchOrClick = () => {
+    if (contentRef.current) {
+      contentRef.current.style.cursor = 'text'; // Ensure cursor blinks
+      contentRef.current.blur(); // ✅ Immediately removes focus on click
+    }
+  };
+
+  // Prevent text modifications while allowing selection
+  const preventEditing = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    e.preventDefault(); // Stops typing inside the div
+  };
+
   const renderDetail = (htmlContent: string, searchTerm?: string) => {
     const sanitizedHtmlContent = DOMPurify.sanitize(htmlContent);
-    const contentWithBreaks = sanitizedHtmlContent.replace(/\n/g, '<br/>');
 
-    if (!searchTerm?.trim()) {
-      return (
-        <div
-          style={{ fontSize: `${fontSize}px` }}
-          className='cursor-text'
-        >
-          {ReactHtmlParser(contentWithBreaks)}
-        </div>
-      );
-    } else {
-      // Highlighting functionality if searchTerm is provided
-      const parts = contentWithBreaks.split(
-        new RegExp(`(${searchTerm})`, 'gi')
-      );
-      return parts.map((part, index) => {
-        if (part.toLowerCase() === searchTerm.toLowerCase()) {
-          return (
-            <span
-              key={index}
-              className='bg-yellow-200 font-bold text-black cursor-text'
-              style={{ fontSize: `${fontSize}px` }}
-            >
-              {ReactHtmlParser(part)}
-            </span>
-          );
-        }
-        return <span key={index}>{ReactHtmlParser(part)}</span>;
-      });
-    }
+    return (
+      <div
+        ref={contentRef}
+        onMouseDown={handleTouchOrClick} // Ensures cursor shows on click
+        onTouchStart={handleTouchOrClick} // Fix for mobile (iOS/Android)
+        onKeyDown={preventEditing} // Prevent typing inside div
+        contentEditable='true' // ✅ Enables blinking cursor
+        suppressContentEditableWarning={true} // Prevents React warnings
+        style={{
+          fontSize: `${fontSize}px`,
+          cursor: 'text', // Ensure text cursor
+          userSelect: 'text', // Allow text selection
+          WebkitUserSelect: 'text', // ✅ Fix for iOS Safari
+          touchAction: 'manipulation', // ✅ Improves mobile compatibility
+          pointerEvents: 'auto', // Allow interactions
+          wordBreak: 'break-word', // Prevents overflow
+          whiteSpace: 'pre-wrap', // ✅ Ensures newlines (`\n`) show correctly
+          outline: 'none', // Removes unwanted focus outline
+          caretColor: 'black', // Ensures blinking cursor visibility
+        }}
+        className='relative p-2 rounded-md no-edit'
+      >
+        {searchTerm?.trim()
+          ? sanitizedHtmlContent
+              .split(new RegExp(`(${searchTerm})`, 'gi'))
+              .map((part, index) =>
+                part.toLowerCase() === searchTerm.toLowerCase() ? (
+                  <span
+                    key={index}
+                    className='bg-yellow-200 font-bold text-black cursor-text'
+                    style={{ fontSize: `${fontSize}px` }}
+                  >
+                    {ReactHtmlParser(part)}
+                  </span>
+                ) : (
+                  <span key={index}>
+                    {
+                      // ✅ Convert `<br>Contents</br>` to Bold
+                      ReactHtmlParser(
+                        part
+                          .replace(/<br>(.*?)<\/br>/gi, '<strong>$1</strong>') // Make text inside <br> bold
+                          .replace(/\n/g, '<br />') // ✅ Convert `\n` to `<br>` for proper line breaks
+                          .replace(/<br\s*\/?>/gi, '<br />') // Ensure all `<br>` tags are correctly formatted
+                      )
+                    }
+                  </span>
+                )
+              )
+          : sanitizedHtmlContent
+              .split(/\n|<br\s*\/?>/gi) // ✅ Split on `\n` or `<br>` tags
+              .map((line, index, arr) => (
+                <span key={index}>
+                  {
+                    // ✅ Convert `<br>Contents</br>` into `<strong>Contents</strong>`
+                    ReactHtmlParser(
+                      line.replace(/<br>(.*?)<\/br>/gi, '<strong>$1</strong>')
+                    )
+                  }
+                  {index !== arr.length - 1 && <br />}{' '}
+                  {/* ✅ Preserve manual line breaks */}
+                </span>
+              ))}
+      </div>
+    );
   };
 
   const renderPositionBar = () => (
@@ -601,23 +672,25 @@ function RouteComponent() {
               style={{
                 fontSize: `${fontSize}px`,
                 perspective: '1000px', // Perspective for flip effect
-                position: 'relative', // Ensure stacking context for shadow effect
+                position: 'relative',
               }}
               transition={{
                 duration: 0.6,
                 ease: 'easeInOut',
               }}
-              drag='x' // Enable dragging only on the x-axis
-              dragConstraints={{ left: 0, right: 0 }} // Limit drag direction
-              onDragStart={(event) => {
-                // Prevent scrolling during horizontal drag
-                event.stopPropagation();
-              }}
+              drag={isTextSelected ? false : 'x'} // ❌ Disable swipe when text is selected
+              dragConstraints={{ left: 0, right: 0 }}
+              onMouseUp={handleSelection} // Check for text selection
+              onMouseDown={handleSelection} // Also check on click
+              onTouchEnd={handleSelection} // Detect selection on mobile
               onDragEnd={(_event, info) => {
-                if (info.offset.x < -100) {
-                  goToNextPage(); // Go to the next page on left swipe
-                } else if (info.offset.x > 100 && currentPage > 0) {
-                  goToPreviousPage(); // Go to the previous page on right swipe
+                if (!isTextSelected) {
+                  // 🛑 Prevent page swipe if text is selected
+                  if (info.offset.x < -100) {
+                    goToNextPage(); // Go to the next page on left swipe
+                  } else if (info.offset.x > 100 && currentPage > 0) {
+                    goToPreviousPage(); // Go to the previous page on right swipe
+                  }
                 }
               }}
             >

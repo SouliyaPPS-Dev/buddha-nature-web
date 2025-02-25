@@ -28,8 +28,8 @@ export default defineConfig(({ mode }) => {
       viteStaticCopy({
         targets: [
           {
-            src: 'src/sw.js', // Adjust path if your sw.js is in `src`
-            dest: '', // Copy it to the root of `dist/`
+            src: 'src/sw.js', // Ensure the service worker is copied
+            dest: '',
           },
         ],
       }),
@@ -50,87 +50,66 @@ export default defineConfig(({ mode }) => {
           ],
         },
         workbox: {
-          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB
-          globPatterns: ['**/*.{js,css,html,svg,png,ico,json,woff2}'],
+          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // Increase Cache Limit (10MB)
           cleanupOutdatedCaches: true,
           skipWaiting: true,
           clientsClaim: true,
           navigateFallback: '/index.html',
-          navigateFallbackDenylist: [/^\/api\//, /\/admin/], // ❌ Avoid caching API endpoints
+          navigateFallbackDenylist: [/^\/api\//, /\/admin/], // Don't cache API/Admin Pages
+
           runtimeCaching: [
             {
-              // 🔹 Cache UI assets (CSS, JS, images, fonts)
+              // ✅ Cache All Pages for Offline Mode
+              urlPattern: ({ request }) => request.mode === 'navigate',
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'pages-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 30 * 24 * 60 * 60,
+                },
+              },
+            },
+            {
+              // ✅ Cache UI assets (CSS, JS, Fonts, Images)
               urlPattern:
-                /\.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|avif)$/i,
+                /\.(?:js|css|woff2?|ttf|eot|png|jpg|jpeg|svg|gif|ico|webp|avif)$/i,
               handler: 'CacheFirst',
               options: {
                 cacheName: 'static-assets',
                 expiration: {
-                  maxEntries: 200,
-                  maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+                  maxEntries: 500,
+                  maxAgeSeconds: 60 * 24 * 60 * 60,
                 },
                 cacheableResponse: { statuses: [0, 200] },
               },
             },
             {
-              // 🔹 Ensure `index.html` works in offline mode
-              urlPattern: ({ request }) => request.mode === 'navigate',
-              handler: 'NetworkFirst',
-              options: {
-                cacheName: 'html-cache',
-                expiration: {
-                  maxEntries: 1,
-                  maxAgeSeconds: 7 * 24 * 60 * 60, // 7 Days
-                },
-              },
-            },
-            {
-              // 🔹 Cache API responses for offline mode
+              // ✅ Cache API responses (Offline-First)
               urlPattern: /^https:\/\/example-api\.com\/.*/,
-              handler: 'StaleWhileRevalidate',
+              handler: 'NetworkFirst',
               options: {
                 cacheName: 'api-cache',
                 expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 7 * 24 * 60 * 60, // 7 Days
+                  maxEntries: 100,
+                  maxAgeSeconds: 7 * 24 * 60 * 60,
                 },
                 cacheableResponse: { statuses: [0, 200] },
                 backgroundSync: {
-                  name: 'api-queue',
-                  options: {
-                    maxRetentionTime: 24 * 60, // 24 hours
-                  },
+                  name: 'api-sync',
+                  options: { maxRetentionTime: 24 * 60 },
                 },
               },
             },
             {
-              // 🔹 Fallback for offline images
-              urlPattern: /\.(?:png|jpg|jpeg|svg|gif|ico|webp)$/,
+              // ✅ Cache Image Requests Efficiently
+              urlPattern: /\.(?:png|jpg|jpeg|svg|gif|ico|webp|avif)$/i,
               handler: 'CacheFirst',
               options: {
                 cacheName: 'image-cache',
                 expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
-                },
-              },
-            },
-            {
-              // 🔹 Cache API responses and serve from cache when offline
-              urlPattern: /^https:\/\/example-api\.com\/.*/,
-              handler: 'StaleWhileRevalidate', // 🚀 Use cache first, update in the background
-              options: {
-                cacheName: 'api-cache',
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 7 * 24 * 60 * 60, // 7 Days
-                },
-                cacheableResponse: { statuses: [0, 200] },
-                backgroundSync: {
-                  name: 'api-queue',
-                  options: {
-                    maxRetentionTime: 24 * 60, // 24 hours
-                  },
+                  maxEntries: 200,
+                  maxAgeSeconds: 30 * 24 * 60 * 60,
                 },
               },
             },
