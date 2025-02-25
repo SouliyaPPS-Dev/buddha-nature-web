@@ -68,27 +68,7 @@ if (workbox) {
 
   // 🔹 Immediately take control of the page
   self.addEventListener('activate', (event) => {
-    event.waitUntil(
-      (async () => {
-        // ⚡ Claim clients immediately
-        await self.clients.claim();
-
-        // 🗑 Clear old caches that are not in use
-        const cacheNames = await caches.keys();
-        await Promise.all(
-          cacheNames
-            .filter(
-              (cacheName) =>
-                !['api-cache', 'static-assets', 'html-cache'].includes(
-                  cacheName
-                )
-            )
-            .map((cacheName) => caches.delete(cacheName))
-        );
-
-        console.log('✅ Old caches cleaned up');
-      })()
-    );
+    event.waitUntil(self.clients.claim());
   });
 
   // 🔹 Force Service Worker Updates Immediately
