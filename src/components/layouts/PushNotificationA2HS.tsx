@@ -1,19 +1,32 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ios_addToHomeScreen from '@/assets/images/ios_addToHomeScreen.jpg';
-import { Image } from 'antd';
+import { Image, Button } from 'antd';
+
+export const isSafariBrowser = () => {
+  const userAgent = navigator.userAgent.toLowerCase();
+  return (
+    userAgent.includes('safari') &&
+    !userAgent.includes('chrome') &&
+    !userAgent.includes('android')
+  );
+};
+
 function PushNotificationA2HS() {
-  /**
-   * Function to handle "Add to Home Screen" instructions for Safari iOS users.
-   */
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+
+  useEffect(() => {
+    const dismissed = localStorage.getItem('a2hs_dismissed');
+    if (!dismissed) {
+      setIsVisible(true);
+    }
+  }, []);
+
   const notify = () => {
-    // Check if the user is on iOS Safari
     if (isIOS() && isInStandaloneMode()) {
       alert('App is already installed to your home screen!');
-    } else if (isSafariBrowser()) {
+    } else if (isSafariBrowser() && isVisible) {
       toast.info(
         <div>
           <p>
@@ -35,61 +48,47 @@ function PushNotificationA2HS() {
           <Image
             src={ios_addToHomeScreen}
             alt='Add to Home Screen'
-            preview={true} // Enables the full-screen preview on click
-            style={{ marginTop: 10, width: '100%', height: 'auto', zIndex: 999 }}  
+            preview={true}
+            style={{
+              marginTop: 10,
+              width: '100%',
+              height: 'auto',
+              zIndex: 999,
+            }}
           />
-        </div>,
-        {
-          autoClose: 10000, // Keep the toast visible until the user closes it
-        }
+          <Button
+            type='primary'
+            onClick={() => {
+              localStorage.setItem('a2hs_dismissed', 'true');
+              setIsVisible(false);
+              toast.dismiss(); // Close the notification
+            }}
+            style={{ marginTop: 10, backgroundColor: '#D64550' }}
+          >
+            ປິດບໍ່ໃຫ້ສະແດງອີກ
+          </Button>
+        </div>
       );
-    } else {
-      alert('This feature is only available on iOS Safari.');
     }
   };
 
-  /**
-   * Helper function to check if the browser is Safari.
-   */
-  const isSafariBrowser = () => {
-    const userAgent = navigator.userAgent.toLowerCase();
-    const isSafari =
-      userAgent.includes('safari') &&
-      !userAgent.includes('chrome') &&
-      !userAgent.includes('android');
-    return isSafari;
-  };
+  useEffect(() => {
+    if (isVisible) {
+      notify();
+    }
+  }, [isVisible]);
 
-  /**
-   * Helper function to check if the platform is iOS.
-   */
   const isIOS = () => {
-    const userAgent = navigator.userAgent.toLowerCase();
-    return /iphone|ipad|ipod/.test(userAgent);
+    return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
   };
 
-  /**
-   * Helper to check if the app is already running in standalone mode.
-   */
   const isInStandaloneMode = () => {
     return (
       'standalone' in window.navigator && (window.navigator as any).standalone
     );
   };
 
-  useEffect(() => {
-    if (isSafariBrowser() && !isInStandaloneMode()) {
-      // Show toast only for Safari on iOS when the app is not already installed
-      notify();
-    }
-  }, []); // Runs only once on component mount
-
-  return (
-    <div>
-      {/* Make sure ToastContainer has a lower z-index */}
-      <ToastContainer style={{ zIndex: 50 }} />
-    </div>
-  );
+  return <ToastContainer style={{ zIndex: 50 }} />;
 }
 
 export default PushNotificationA2HS;

@@ -1,4 +1,5 @@
 import PushNotificationA2HS from '@/components/layouts/PushNotificationA2HS';
+import PushNotificationPlayStore from '@/components/layouts/PushNotificationPlayStore';
 import Seo from '@/components/layouts/Seo';
 import { NavigationProvider } from '@/components/NavigationProvider';
 import { SearchProvider } from '@/components/search/SearchContext';
@@ -27,6 +28,7 @@ function RootComponent() {
         <ScrollProvider>
           <NavigationProvider>
             <DefaultLayout>
+              <PushNotificationPlayStore />
               <PushNotificationA2HS />
               <Outlet />
               {isDevelopment && <TanStackRouterDevtools />}
