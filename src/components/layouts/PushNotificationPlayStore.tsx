@@ -60,11 +60,31 @@ function PushNotificationPlayStore() {
     checkAppInstalled();
   }, []);
 
-  const notify = () => {
-    const installLink = isHuaweiDevice()
-      ? 'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka&pcampaignid=web_share' // Replace with your Huawei AppGallery link
-      : 'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka'; // Play Store link
+  const [installLink, setInstallLink] = useState<string>('');
 
+  useEffect(() => {
+    const isHuawei = /huawei/i.test(navigator.userAgent); // Check if the device is Huawei
+    const isAndroid = /android/i.test(navigator.userAgent); // Check if the device is Android
+
+    if (isHuawei) {
+      // Huawei AppGallery link
+      setInstallLink(
+        'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka'
+      ); // Replace with actual Huawei AppGallery URL
+    } else if (isAndroid) {
+      // Google Play Store link
+      setInstallLink(
+        'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka'
+      ); // Replace with actual Play Store URL
+    } else {
+      // Default fallback
+      setInstallLink(
+        'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka'
+      ); // Default to Play Store if not detected
+    }
+  }, []);
+
+  const notify = () => {
     toast.info(
       <div>
         <p>
@@ -85,12 +105,9 @@ function PushNotificationPlayStore() {
         />
 
         <div style={{ marginTop: 10 }}>
-          <Button
-            type='primary'
-            onClick={() => window.open(installLink, '_blank')}
-          >
-            Install
-          </Button>
+          <a href={installLink} target='_blank' rel='noopener noreferrer'>
+            <Button type='primary'>Install</Button>
+          </a>
 
           <Button
             type='default'
