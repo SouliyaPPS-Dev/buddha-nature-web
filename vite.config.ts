@@ -28,15 +28,14 @@ export default defineConfig(({ mode }) => {
       viteStaticCopy({
         targets: [
           {
-            src: 'public/sw.js', // Source file
-            dest: '', // Copy to dist root
+            src: 'src/sw.js', // Adjust path if your sw.js is in `src`
+            dest: '', // Copy it to the root of `dist/`
           },
         ],
       }),
       VitePWA({
         registerType: 'autoUpdate',
         injectRegister: 'auto',
-        includeAssets: ['robots.txt', 'sw.js'],
         manifest: {
           name: 'Buddhaword',
           short_name: 'Buddhaword',
@@ -59,29 +58,6 @@ export default defineConfig(({ mode }) => {
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/api\//, /\/admin/], // ❌ Avoid caching API endpoints
           runtimeCaching: [
-            {
-              urlPattern: /^https:\/\/your-api-url\.com\/.*/i, // Cache API requests
-              handler: 'NetworkFirst', // Try network first, fallback to cache
-              options: {
-                cacheName: 'api-cache',
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 7 * 24 * 60 * 60, // Cache for 7 days
-                },
-                networkTimeoutSeconds: 5, // Failover time
-              },
-            },
-            {
-              urlPattern: /\.(?:js|css|html|json)$/, // Cache static assets
-              handler: 'StaleWhileRevalidate', // Serve from cache first, update in background
-              options: {
-                cacheName: 'static-resources',
-                expiration: {
-                  maxEntries: 100,
-                  maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
-                },
-              },
-            },
             {
               // 🔹 Cache UI assets (CSS, JS, images, fonts)
               urlPattern:

@@ -2,16 +2,6 @@ importScripts(
   'https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js'
 );
 
-const CACHE_NAME = 'buddhaword-cache-v1';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/images/logo.png',
-  '/src/main.tsx', // Ensure this is accessible
-  '/styles.css', // If you have a CSS file
-];
-
 if (workbox) {
   console.log('✅ Workbox is loaded!');
 
@@ -51,17 +41,17 @@ if (workbox) {
 
   // 🔹 Improved API Caching Strategy (Fix Offline Problems)
   workbox.routing.registerRoute(
-    ({ url }) => url.origin.includes('example-api.com'),
+    ({ url }) => url.origin.includes('example-api.com'), // ⚡ Target API calls
     new workbox.strategies.NetworkFirst({
       cacheName: 'api-cache',
-      networkTimeoutSeconds: 5,
+      networkTimeoutSeconds: 5, // ⏳ Avoid long waits when offline
       plugins: [
         new workbox.cacheableResponse.CacheableResponsePlugin({
           statuses: [0, 200],
         }),
         new workbox.expiration.ExpirationPlugin({
           maxEntries: 50,
-          maxAgeSeconds: 7 * 24 * 60 * 60,
+          maxAgeSeconds: 7 * 24 * 60 * 60, // Cache API responses for 7 Days
         }),
       ],
     })
@@ -80,6 +70,7 @@ if (workbox) {
   self.addEventListener('activate', (event) => {
     event.waitUntil(
       (async () => {
+        // ⚡ Claim clients immediately
         await self.clients.claim();
 
         // 🗑 Clear old caches that are not in use
@@ -88,12 +79,9 @@ if (workbox) {
           cacheNames
             .filter(
               (cacheName) =>
-                ![
-                  'api-cache',
-                  'static-assets',
-                  'html-cache',
-                  CACHE_NAME,
-                ].includes(cacheName)
+                !['api-cache', 'static-assets', 'html-cache'].includes(
+                  cacheName
+                )
             )
             .map((cacheName) => caches.delete(cacheName))
         );
@@ -122,21 +110,3 @@ if (workbox) {
 } else {
   console.error('❌ Workbox failed to load.');
 }
-
-// 🔹 Manual Caching for Specific Files (in addition to Workbox)
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('🔹 Caching additional assets');
-      return cache.addAll(urlsToCache);
-    })
-  );
-});
-
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
-  );
-});
