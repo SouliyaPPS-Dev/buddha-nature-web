@@ -5,6 +5,7 @@ import path from 'path-browserify';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import loadEnv from './loadEnv';
+import tsConfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
@@ -21,16 +22,51 @@ export default defineConfig(({ mode }) => {
       'process.env': env,
     },
     plugins: [
+      tsConfigPaths({
+        projects: ['./tsconfig.json'],
+      }),
       pluginReact(), // Keep only one React plugin (remove @vitejs/plugin-react if not needed)
       TanStackRouterVite({ autoCodeSplitting: true }),
       react(),
       VitePWA({
         registerType: 'autoUpdate', // Automatically updates the service worker
         devOptions: { enabled: true }, // Enables service worker in development
+        injectRegister: 'auto',
         workbox: {
           maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+          globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+          cleanupOutdatedCaches: true,
+          skipWaiting: true,
+          clientsClaim: true,
+          navigateFallback: '/',
           // Cache navigation requests (e.g., HTML pages)
           runtimeCaching: [
+            {
+              urlPattern:
+                /\.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|avif)$/i,
+              handler: 'StaleWhileRevalidate',
+              options: {
+                cacheName: 'static-assets',
+                expiration: {
+                  maxEntries: 200,
+                  maxAgeSeconds: 60 * 60 * 24 * 30,
+                },
+                cacheableResponse: {
+                  statuses: [0, 200],
+                },
+              },
+            },
+            {
+              urlPattern: ({ request }) => request.mode === 'navigate',
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'html-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 24 * 7,
+                },
+              },
+            },
             {
               urlPattern: ({ request }) => request.mode === 'navigate',
               handler: 'NetworkFirst', // Try network first, fall back to cache
@@ -67,8 +103,6 @@ export default defineConfig(({ mode }) => {
               },
             },
           ],
-          navigateFallback: '/index.html', // Serve index.html for navigation requests
-          cleanupOutdatedCaches: true, // Remove old caches
         },
         manifest: {
           name: 'Buddhaword',

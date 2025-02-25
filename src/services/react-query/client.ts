@@ -1,6 +1,10 @@
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
-import { QueryClient, QueryCache } from '@tanstack/react-query';
-import { persistQueryClient } from '@tanstack/react-query-persist-client';
+import { QueryClient } from '@tanstack/react-query';
+import {
+  persistQueryClient,
+  persistQueryClientRestore,
+  persistQueryClientSave,
+} from '@tanstack/react-query-persist-client';
 
 // 🔹 Offline-safe storage (Handles Safari Private Mode)
 const getStorage = () => {
@@ -28,24 +32,15 @@ const getStorage = () => {
   }
 };
 
-const storage = getStorage();
+export const storage = getStorage();
 
 // ✅ Create a React Query Client that prevents API calls when offline
 const createQueryClient = () => {
   return new QueryClient({
-    queryCache: new QueryCache({
-      onError: (error) => {
-        console.error('React Query Error:', error);
-      },
-    }),
     defaultOptions: {
       queries: {
-        retry: 1, // Retry once if an error occurs
-        staleTime: 5 * 60 * 1000, // 5 minutes (Keeps data fresh)
-        refetchOnMount: () => navigator.onLine, // ✅ Only refetch when online
-        refetchOnReconnect: true, // ✅ Refetch when back online
-        refetchOnWindowFocus: () => navigator.onLine, // ✅ Avoid refetching if offline
-        networkMode: 'online', // 🛑 Block queries if offline
+        staleTime: Infinity,
+        gcTime: Infinity,
       },
     },
   });
@@ -53,13 +48,12 @@ const createQueryClient = () => {
 
 // 🎯 Persist Query Data with Correct Storage
 export const persister = createSyncStoragePersister({
-  storage,
+  storage: window.localStorage,
 });
 
 export const queryClient = createQueryClient();
 
 // 🎯 Persist Query Cache Data for Offline Use
-persistQueryClient({
-  queryClient,
-  persister,
-});
+persistQueryClient({ queryClient, persister });
+persistQueryClientSave({ queryClient, persister });
+persistQueryClientRestore({ queryClient, persister });
