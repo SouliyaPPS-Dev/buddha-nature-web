@@ -2,41 +2,33 @@
   command = "bun run build"
   publish = "dist"
 
-# 📌 Ensure Netlify Serves Cached Pages for Offline Mode
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  force = true
 
-# 📌 Cache UI Assets (JS, CSS, Fonts, Icons, JSON, etc.)
-[[headers]]
-  for = "/assets/**"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-# 📌 Cache Images Aggressively (Faster Load Times)
-[[headers]]
-  for = "/images/**"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-# 📌 Ensure Service Worker Updates & Is Always Fresh
 [[headers]]
   for = "/sw.js"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
-    Pragma = "no-cache"
-    Expires = "0"
+    Service-Worker-Allowed = "/"
 
-# 📌 Prevent Caching of `index.html` (Ensures Latest UI Updates)
+[[headers]]
+  for = "/workbox-*.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
 [[headers]]
   for = "/index.html"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
 
-# 📌 Allow Offline-Based Requests (Enables Offline-First PWA Behavior)
 [[headers]]
-  for = "/*"
+  for = "/assets/*"
   [headers.values]
-    Service-Worker-Allowed = "/"
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

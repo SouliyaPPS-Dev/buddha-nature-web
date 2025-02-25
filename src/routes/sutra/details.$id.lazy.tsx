@@ -312,7 +312,7 @@ function RouteComponent() {
           outline: 'none', // Removes unwanted focus outline
           caretColor: 'black', // Ensures blinking cursor visibility
         }}
-        className='relative p-2 rounded-md no-edit'
+        className='relative rounded-md no-edit'
       >
         {searchTerm?.trim()
           ? sanitizedHtmlContent

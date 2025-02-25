@@ -41,93 +41,7 @@
     <meta name="theme-color" content="#FFAF5D" />
     <link rel="apple-touch-icon" href="/images/logo.png" />
 
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker
-            .register('/sw.js')
-            .then((registration) => {
-              console.log('✅ Service Worker registered:', registration.scope);
-            })
-            .catch((error) => {
-              console.error('❌ Service Worker registration failed:', error);
-            });
-        });
-      }
-    </script>
-
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Buddhaword",
-        "url": "https://buddhaword.netlify.app",
-        "description": "ຄຳສອນພຣະພຸດທະເຈົ້າ",
-        "publisher": {
-          "@type": "Organization",
-          "name": "Buddhaword",
-          "url": "https://buddhaword.netlify.app",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://buddhaword.netlify.app/images/logo.png"
-          }
-        }
-      }
-    </script>
-
-    <!-- Scroll View Style Reset -->
-    <style>
-      /* Ensure the body does not block overlays */
-      body {
-        margin: 0;
-        padding: 0;
-      }
-
-      /* Make overlay banners always the top-most layer */
-      /* Inside global CSS or inline styles */
-      .install-alert {
-        z-index: 9999;
-        /* Ensure it's the topmost layer */
-        position: fixed;
-        /* Anchor it to the viewport */
-        bottom: 16px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: auto;
-        /* Prevent overlapping */
-        pointer-events: auto;
-        /* Ensure interactions */
-      }
-
-      .modal {
-        position: fixed;
-        /* Sticks to viewport */
-        z-index: 9999;
-        /* Topmost layer */
-        /* Ensures nothing overlaps these elements */
-      }
-
-      /* Ensure interactive buttons are clickable */
-      .install-alert *,
-      .modal * {
-        pointer-events: auto;
-        /* Allow interaction */
-      }
-
-      /* Prevent background content from interfering */
-      .install-alert-blocker,
-      .modal-blocker {
-        pointer-events: none;
-        /* Block clicks to underlying layers */
-      }
-
-      .sticky-element {
-        position: sticky;
-        z-index: 999;
-      }
-    </style>
-
+  
     <!-- Register Service Worker and Add to Home Screen scripts -->
     <script>
       if ('serviceWorker' in navigator) {
@@ -240,6 +154,58 @@
         }
       }
     </script>
+
+      <!-- Scroll View Style Reset -->
+      <style>
+        /* Ensure the body does not block overlays */
+        body {
+          margin: 0;
+          padding: 0;
+        }
+      
+        /* Make overlay banners always the top-most layer */
+        /* Inside global CSS or inline styles */
+        .install-alert {
+          z-index: 9999;
+          /* Ensure it's the topmost layer */
+          position: fixed;
+          /* Anchor it to the viewport */
+          bottom: 16px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: auto;
+          /* Prevent overlapping */
+          pointer-events: auto;
+          /* Ensure interactions */
+        }
+      
+        .modal {
+          position: fixed;
+          /* Sticks to viewport */
+          z-index: 9999;
+          /* Topmost layer */
+          /* Ensures nothing overlaps these elements */
+        }
+      
+        /* Ensure interactive buttons are clickable */
+        .install-alert *,
+        .modal * {
+          pointer-events: auto;
+          /* Allow interaction */
+        }
+      
+        /* Prevent background content from interfering */
+        .install-alert-blocker,
+        .modal-blocker {
+          pointer-events: none;
+          /* Block clicks to underlying layers */
+        }
+      
+        .sticky-element {
+          position: sticky;
+          z-index: 999;
+        }
+      </style>
   </head>
 
   <body>
