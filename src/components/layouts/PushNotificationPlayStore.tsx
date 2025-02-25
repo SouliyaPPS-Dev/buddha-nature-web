@@ -14,6 +14,12 @@ const isSafariBrowser = () => {
   );
 };
 
+// Check if the device is Huawei
+const isHuaweiDevice = () => {
+  const userAgent = navigator.userAgent.toLowerCase();
+  return userAgent.includes('huawei');
+};
+
 function PushNotificationPlayStore() {
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
@@ -33,7 +39,7 @@ function PushNotificationPlayStore() {
         !/edge/i.test(navigator.userAgent);
 
       // Check for Android + non-Safari and Chrome browsers
-      if (!isSafariBrowser() || isChrome && isAndroid) {
+      if (!isSafariBrowser() || (isChrome && isAndroid)) {
         if ('getInstalledRelatedApps' in navigator) {
           try {
             const apps = await (navigator as any).getInstalledRelatedApps();
@@ -55,19 +61,25 @@ function PushNotificationPlayStore() {
   }, []);
 
   const notify = () => {
+    const installLink = isHuaweiDevice()
+      ? 'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka&pcampaignid=web_share' // Replace with your Huawei AppGallery link
+      : 'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka'; // Play Store link
+
     toast.info(
       <div>
         <p>
           Get the best experience by installing our app from the{' '}
           <strong>
-            <u>Google Play Store</u>
+            <u>
+              {isHuaweiDevice() ? 'Huawei AppGallery' : 'Google Play Store'}
+            </u>
           </strong>
           .
         </p>
 
         <Image
           src={playStoreIcon}
-          alt='Google Play Store'
+          alt='App Store Icon'
           preview={false}
           style={{ width: 150, height: 'auto', marginTop: 10 }}
         />
@@ -75,12 +87,7 @@ function PushNotificationPlayStore() {
         <div style={{ marginTop: 10 }}>
           <Button
             type='primary'
-            onClick={() =>
-              window.open(
-                'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka',
-                '_blank'
-              )
-            } // Replace with actual Play Store URL
+            onClick={() => window.open(installLink, '_blank')}
           >
             Install
           </Button>
