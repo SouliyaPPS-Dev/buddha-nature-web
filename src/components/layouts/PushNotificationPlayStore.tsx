@@ -1,4 +1,5 @@
 import playStoreIcon from '@/assets/images/play_store.png'; // Add a Play Store icon
+import { useLinkToStore } from '@/hooks/useLinkToStore';
 import { Button, Image } from 'antd';
 import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
@@ -60,29 +61,7 @@ function PushNotificationPlayStore() {
     checkAppInstalled();
   }, []);
 
-  const [installLink, setInstallLink] = useState<string>('');
-
-  useEffect(() => {
-    const isHuawei = /huawei/i.test(navigator.userAgent); // Check if the device is Huawei
-    const isAndroid = /android/i.test(navigator.userAgent); // Check if the device is Android
-
-    if (isHuawei) {
-      // Huawei AppGallery link
-      setInstallLink(
-        'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka'
-      ); // Replace with actual Huawei AppGallery URL
-    } else if (isAndroid) {
-      // Google Play Store link
-      setInstallLink(
-        'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka'
-      ); // Replace with actual Play Store URL
-    } else {
-      // Default fallback
-      setInstallLink(
-        'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka'
-      ); // Default to Play Store if not detected
-    }
-  }, []);
+  const { installLink } = useLinkToStore();
 
   const notify = () => {
     toast.info(
@@ -97,12 +76,14 @@ function PushNotificationPlayStore() {
           .
         </p>
 
-        <Image
-          src={playStoreIcon}
-          alt='App Store Icon'
-          preview={false}
-          style={{ width: 150, height: 'auto', marginTop: 10 }}
-        />
+        <a href={installLink} target='_blank' rel='noopener noreferrer'>
+          <Image
+            src={playStoreIcon}
+            alt='App Store Icon'
+            preview={false}
+            style={{ width: 150, height: 'auto', marginTop: 10 }}
+          />
+        </a>
 
         <div style={{ marginTop: 10 }}>
           <a href={installLink} target='_blank' rel='noopener noreferrer'>

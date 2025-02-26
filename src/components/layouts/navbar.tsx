@@ -1,3 +1,4 @@
+import playStoreIcon from '@/assets/images/play_store.png'; // Add a Play Store icon
 import {
   AboutIcon,
   BookIcon,
@@ -12,8 +13,9 @@ import {
 import { ThemeSwitch } from '@/components/layouts/theme-switch';
 import { useNavigation } from '@/components/NavigationProvider';
 import DownloadBook from '@/containers/book/DownloadBook';
-import { DeleteFavorites } from '@/containers/favorites/DeleteFavorites';
 import { ButtonUpdateData } from '@/containers/ButtonUpdateData';
+import { DeleteFavorites } from '@/containers/favorites/DeleteFavorites';
+import { useLinkToStore } from '@/hooks/useLinkToStore';
 import { siteConfig } from '@/layouts/site';
 import { router } from '@/router';
 import { localStorageData } from '@/services/cache';
@@ -28,6 +30,7 @@ import {
 } from '@heroui/navbar';
 import { link as linkStyles } from '@heroui/theme';
 import { Link, useRouterState } from '@tanstack/react-router';
+import { Image } from 'antd';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
@@ -43,6 +46,7 @@ export const Navbar = () => {
   const location = useRouterState({ select: (s) => s.location });
 
   const { back } = useNavigation();
+  const { installLink } = useLinkToStore();
 
   const currentPath = location.pathname;
   const pathSegments = currentPath.split('/');
@@ -138,6 +142,7 @@ export const Navbar = () => {
           </NavbarBrand>
         </div>
       </NavbarContent>
+
       {/* Right: Search, Theme Switch */}
       <NavbarContent
         className='hidden sm:flex basis-1/5 sm:basis-full'
@@ -198,6 +203,17 @@ export const Navbar = () => {
           <ThemeSwitch />
         </NavbarItem>
 
+        <NavbarItem className='hidden sm:flex gap-2 '>
+          <a href={installLink} target='_blank' rel='noopener noreferrer'>
+            <Image
+              src={playStoreIcon}
+              alt='App Store Icon'
+              preview={false}
+              style={{ width: 150, height: 'auto', marginTop: 10 }}
+            />
+          </a>
+        </NavbarItem>
+
         {/* Conditionally hide search input when the current path is '/sutra' */}
         {currentPath !== '/sutra' && (
           <NavbarItem className='hidden lg:flex'>
@@ -205,6 +221,7 @@ export const Navbar = () => {
           </NavbarItem>
         )}
       </NavbarContent>
+
       {/* Mobile Menu Toggle */}
       <NavbarContent className='sm:hidden basis-1 pl-4' justify='end'>
         {/* Download Book Button */}
@@ -239,6 +256,7 @@ export const Navbar = () => {
         {/* Mobile Menu Toggle */}
         <NavbarMenuToggle />
       </NavbarContent>
+
       {/* Mobile Menu */}
       <NavbarMenu
         style={{
@@ -303,6 +321,15 @@ export const Navbar = () => {
             );
           })}
         </div>
+
+        <a href={installLink} target='_blank' rel='noopener noreferrer'>
+          <Image
+            src={playStoreIcon}
+            alt='App Store Icon'
+            preview={false}
+            style={{ width: 150, height: 'auto', marginTop: 10 }}
+          />
+        </a>
       </NavbarMenu>
     </NextUINavbar>
   );
