@@ -1,4 +1,3 @@
-import playStoreIcon from '@/assets/images/play_store.png'; // Add a Play Store icon
 import {
   AboutIcon,
   BookIcon,
@@ -15,7 +14,6 @@ import { useNavigation } from '@/components/NavigationProvider';
 import DownloadBook from '@/containers/book/DownloadBook';
 import { ButtonUpdateData } from '@/containers/ButtonUpdateData';
 import { DeleteFavorites } from '@/containers/favorites/DeleteFavorites';
-import { useLinkToStore } from '@/hooks/useLinkToStore';
 import { siteConfig } from '@/layouts/site';
 import { router } from '@/router';
 import { localStorageData } from '@/services/cache';
@@ -30,11 +28,11 @@ import {
 } from '@heroui/navbar';
 import { link as linkStyles } from '@heroui/theme';
 import { Link, useRouterState } from '@tanstack/react-router';
-import { Image } from 'antd';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import { IoShareSocialSharp } from 'react-icons/io5';
+import ImagePlayStore from './ImagePlayStore';
 import { SearchDropdown } from '../search/SearchDropdown';
 import { useMenuContext } from './MenuProvider';
 
@@ -46,7 +44,6 @@ export const Navbar = () => {
   const location = useRouterState({ select: (s) => s.location });
 
   const { back } = useNavigation();
-  const { installLink } = useLinkToStore();
 
   const currentPath = location.pathname;
   const pathSegments = currentPath.split('/');
@@ -203,16 +200,8 @@ export const Navbar = () => {
           <ThemeSwitch />
         </NavbarItem>
 
-        <NavbarItem className='hidden sm:flex gap-2 '>
-          <a href={installLink} target='_blank' rel='noopener noreferrer'>
-            <Image
-              src={playStoreIcon}
-              alt='App Store Icon'
-              preview={false}
-              style={{ width: 150, height: 'auto', marginTop: 10 }}
-            />
-          </a>
-        </NavbarItem>
+        {/* Play Store */}
+        <ImagePlayStore />
 
         {/* Conditionally hide search input when the current path is '/sutra' */}
         {currentPath !== '/sutra' && (
@@ -322,14 +311,8 @@ export const Navbar = () => {
           })}
         </div>
 
-        <a href={installLink} target='_blank' rel='noopener noreferrer'>
-          <Image
-            src={playStoreIcon}
-            alt='App Store Icon'
-            preview={false}
-            style={{ width: 150, height: 'auto', marginTop: 10 }}
-          />
-        </a>
+        {/* Play Store */}
+        <ImagePlayStore />
       </NavbarMenu>
     </NextUINavbar>
   );

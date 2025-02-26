@@ -1,8 +1,8 @@
+import ios_addToHomeScreen from '@/assets/images/ios_addToHomeScreen.jpg';
+import { Button, Image } from 'antd';
 import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ios_addToHomeScreen from '@/assets/images/ios_addToHomeScreen.jpg';
-import { Image, Button } from 'antd';
 
 export const isSafariBrowser = () => {
   const userAgent = navigator.userAgent.toLowerCase();
@@ -12,6 +12,10 @@ export const isSafariBrowser = () => {
     !userAgent.includes('android')
   );
 };
+
+export function isIOSDevice() {
+  return /iPad|iPhone|iPod/i.test(navigator.userAgent);
+}
 
 function PushNotificationA2HS() {
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -24,7 +28,7 @@ function PushNotificationA2HS() {
   }, []);
 
   const notify = () => {
-    if (isIOS() && isInStandaloneMode()) {
+    if (isIOSDevice() && isInStandaloneMode()) {
       alert('App is already installed to your home screen!');
     } else if (isSafariBrowser() && isVisible) {
       toast.info(
@@ -77,10 +81,6 @@ function PushNotificationA2HS() {
       notify();
     }
   }, [isVisible]);
-
-  const isIOS = () => {
-    return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
-  };
 
   const isInStandaloneMode = () => {
     return (
