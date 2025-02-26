@@ -18,7 +18,7 @@ const ImagePlayStore = () => {
   if (isIOS || isSafari) return null; // Don't render on iOS or Safari
 
   return (
-    <NavbarItem className='hidden sm:flex gap-2'>
+    <NavbarItem className='sm:flex gap-2'>
       <a href={installLink} target='_blank' rel='noopener noreferrer'>
         <Image
           src={playStoreIcon}
