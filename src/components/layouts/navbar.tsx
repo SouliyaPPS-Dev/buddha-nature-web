@@ -35,6 +35,7 @@ import { IoShareSocialSharp } from 'react-icons/io5';
 import ImagePlayStore from './ImagePlayStore';
 import { SearchDropdown } from '../search/SearchDropdown';
 import { useMenuContext } from './MenuProvider';
+import IOSInstaller from './IOSInstaller';
 
 export const Navbar = () => {
   const [activeItem, setActiveItem] = useState<string>('');
@@ -203,6 +204,9 @@ export const Navbar = () => {
         {/* Play Store */}
         <ImagePlayStore />
 
+        {/* IOS Installer */}
+        <IOSInstaller />
+
         {/* Conditionally hide search input when the current path is '/sutra' */}
         {currentPath !== '/sutra' && (
           <NavbarItem className='hidden lg:flex'>
@@ -313,6 +317,11 @@ export const Navbar = () => {
 
         {/* Play Store */}
         <ImagePlayStore />
+
+        {/* IOS Installer */}
+        <div className='mt-3'>
+          <IOSInstaller />
+        </div>
       </NavbarMenu>
     </NextUINavbar>
   );
