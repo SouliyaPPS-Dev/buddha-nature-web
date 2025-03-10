@@ -4,10 +4,10 @@ import { openDB } from 'idb';
 
 const checkInternetConnectivity = async () => {
   try {
-    const response = await fetch('https://www.google.com/favicon.ico', { mode: 'no-cors' });
+    const response = await fetch('https://www.gstatic.com/generate_204', { method: 'HEAD' });
     return response.ok || navigator.onLine;
   } catch {
-    return false;
+    return navigator.onLine;
   }
 };
 
@@ -39,26 +39,38 @@ const createQueryClient = () => {
   return queryClient;
 };
 
-// ✅ Use IndexedDB for storage (better compatibility with Safari)
-const createIdbPersister = async () => {
-  const db = await openDB('query-cache', 1, {
-    upgrade(db) {
-      db.createObjectStore('persistedQueries');
-    },
-  });
+// ✅ Check if IndexedDB is available
+const isIndexedDBAvailable = () => {
+  return !!(window.indexedDB && openDB);
+};
 
-  return createAsyncStoragePersister({
-    storage: {
-      getItem: async (key: IDBKeyRange | IDBValidKey) => (await db.get('persistedQueries', key)) ?? null,
-      setItem: async (key: IDBKeyRange | IDBValidKey | undefined, value: any) =>
-        db.put('persistedQueries', value, key),
-      removeItem: async (key: IDBKeyRange | IDBValidKey) => db.delete('persistedQueries', key),
-    },
-  });
+// ✅ Dual Persister: IndexedDB (Primary) + localStorage (Fallback)
+const createDualPersister = async () => {
+  if (isIndexedDBAvailable()) {
+    const db = await openDB('query-cache', 1, {
+      upgrade(db) {
+        db.createObjectStore('persistedQueries');
+      },
+    });
+
+    return createAsyncStoragePersister({
+      storage: {
+        getItem: async (key: IDBKeyRange | IDBValidKey) => (await db.get('persistedQueries', key)) ?? null,
+        setItem: async (key: IDBKeyRange | IDBValidKey | undefined, value: any) =>
+          db.put('persistedQueries', value, key),
+        removeItem: async (key: IDBKeyRange | IDBValidKey) => db.delete('persistedQueries', key),
+      },
+    });
+  } else {
+    console.warn('IndexedDB not available, falling back to localStorage.');
+    return createAsyncStoragePersister({
+      storage: window.localStorage,
+    });
+  }
 };
 
 export const queryClient = createQueryClient();
-export const persisterPromise = createIdbPersister(); // Returns a Promise
+export const persisterPromise = createDualPersister(); // Returns a Promise
 
 // ✅ Usage Example (inside an async function)
 export const setupPersister = async () => {

@@ -139,6 +139,10 @@ export default defineConfig(({ mode }) => {
     build: {
       chunkSizeWarningLimit: 4000,
       rollupOptions: {
+        input: {
+          main: 'index.html',
+          sw: '/sw.js' // Ensure the service worker is included
+        },
         output: {
           manualChunks(id) {
             if (id.includes("node_modules")) {
