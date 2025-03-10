@@ -34,9 +34,11 @@ export default defineConfig(({ mode }) => {
         srcDir: 'public',
         filename: 'sw.js', // Use our custom service worker
         manifestFilename: 'manifest.json',
-        workbox: {
-          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+        injectManifest: {
+          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MB limit
           globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+        },
+        workbox: {
           cleanupOutdatedCaches: true,
           skipWaiting: true,
           clientsClaim: true,
