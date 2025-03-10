@@ -29,8 +29,7 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: 'prompt', // Changed to prompt to give users control
         devOptions: { enabled: true }, // Enables service worker in development
-        injectRegister: 'auto',
-        strategies: 'injectManifest', // Use injectManifest for more control
+        strategies: 'generateSW', // Use injectManifest for more control
         srcDir: 'public',
         filename: 'sw.js', // Use our custom service worker
         manifestFilename: 'manifest.json',
