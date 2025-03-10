@@ -27,9 +27,13 @@ export default defineConfig(({ mode }) => {
       TanStackRouterVite({ autoCodeSplitting: true }),
       react(),
       VitePWA({
-        registerType: 'autoUpdate', // Automatically updates the service worker
+        registerType: 'prompt', // Changed to prompt to give users control
         devOptions: { enabled: true }, // Enables service worker in development
         injectRegister: 'auto',
+        strategies: 'injectManifest', // Use injectManifest for more control
+        srcDir: 'public',
+        filename: 'sw.js', // Use our custom service worker
+        manifestFilename: 'manifest.json',
         workbox: {
           maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
           globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
@@ -37,61 +41,59 @@ export default defineConfig(({ mode }) => {
           skipWaiting: true,
           clientsClaim: true,
           navigateFallback: '/index.html',
-          importScripts: [
-            'https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js',
-          ],
-          // Cache navigation requests (e.g., HTML pages)
-          runtimeCaching: [
-            {
-              urlPattern: ({ request }) => request.mode === 'navigate',
-              handler: 'NetworkFirst',
-              options: {
-                cacheName: 'pages-cache',
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
-                },
-              },
-            },
-            {
-              urlPattern: /\.(?:js|css|png|jpg|jpeg|svg|woff2|ico)$/,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'static-assets',
-                expiration: {
-                  maxEntries: 100,
-                  maxAgeSeconds: 60 * 24 * 60 * 60, // 60 days
-                },
-              },
-            },
-            {
-              urlPattern: /^https:\/\/your-api-endpoint\.com\/.*/,
-              handler: 'NetworkFirst',
-              options: {
-                cacheName: 'api-cache',
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 24 * 60 * 60, // 1 day
-                },
-              },
-            },
-          ],
+          navigateFallbackDenylist: [/^\/api\//], // Don't use fallback for API routes
         },
         manifest: {
           name: 'Buddhaword',
           short_name: 'Buddhaword',
           description: 'The Word of Buddha',
           theme_color: '#FFAF5D',
+          background_color: '#FFFFFF',
+          display: 'standalone',
+          orientation: 'portrait',
+          start_url: '/',
           icons: [
             {
               src: '/images/logo.png',
               sizes: '192x192',
               type: 'image/png',
+              purpose: 'any',
             },
             {
               src: '/images/logo.png',
               sizes: '512x512',
               type: 'image/png',
+              purpose: 'any',
+            },
+            {
+              src: '/images/maskable-icon.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'maskable',
+            },
+          ],
+          shortcuts: [
+            {
+              name: 'Home',
+              url: '/',
+              icons: [
+                {
+                  src: '/images/home-icon.png',
+                  sizes: '96x96',
+                  type: 'image/png',
+                },
+              ],
+            },
+            {
+              name: 'Offline Content',
+              url: '/cache-management',
+              icons: [
+                {
+                  src: '/images/offline-icon.png',
+                  sizes: '96x96',
+                  type: 'image/png',
+                },
+              ],
             },
           ],
         },

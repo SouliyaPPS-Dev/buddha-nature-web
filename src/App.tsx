@@ -9,7 +9,7 @@ import {
   RouterProvider,
   ToOptions,
 } from '@tanstack/react-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import PageTransition from './components/PageTransition';
 import { router } from './router';
@@ -30,7 +30,30 @@ if ('serviceWorker' in navigator) {
     );
 }
 
+
 function App() {
+  const [isServiceWorkerActive, setIsServiceWorkerActive] = useState(false);
+
+  useEffect(() => {
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker
+          .register('/sw.js')
+          .then((registration) => {
+            console.log(
+              'ServiceWorker registration successful with scope: ',
+              registration.scope
+            );
+            setIsServiceWorkerActive(true);
+          })
+          .catch((error) => {
+            console.error('ServiceWorker registration failed: ', error);
+          });
+      });
+    }
+  }, []);
+
   return (
     <HelmetProvider>
       <ThemeProvider>
@@ -46,6 +69,7 @@ function App() {
             <PageTransition>
               <React.Suspense fallback={<div>Loading...</div>}>
                 <RouterProvider router={router} />
+                {isServiceWorkerActive}
               </React.Suspense>
             </PageTransition>
 
