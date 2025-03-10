@@ -141,7 +141,7 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           main: 'index.html',
-          sw: '/sw.js' // Ensure the service worker is included
+          sw: 'src/sw.js' // Ensure the service worker is included
         },
         output: {
           manualChunks(id) {
