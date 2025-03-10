@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@/hooks/use-theme';
 import { persisterPromise, queryClient } from '@/services/react-query/client';
 import '@/styles/globals.css';
-import { HeroUIProvider } from '@heroui/react';
+import { HeroUIProvider, Spinner } from '@heroui/react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import {
@@ -49,7 +49,7 @@ function App() {
   }, []);
 
   if (!persister) {
-    return <div>Loading...</div>; // Avoid rendering before persister is ready
+    return <Spinner />; // Avoid rendering before persister is ready
   }
 
   return (
@@ -64,7 +64,7 @@ function App() {
             persistOptions={{ persister }}
           >
             <PageTransition>
-              <React.Suspense fallback={<div>Loading...</div>}>
+              <React.Suspense fallback={<Spinner />}>
                 <RouterProvider router={router} />
                 {isServiceWorkerActive}
               </React.Suspense>
