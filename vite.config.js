@@ -27,28 +27,58 @@ export default defineConfig(({ mode }) => {
       TanStackRouterVite({ autoCodeSplitting: true }),
       react(),
       VitePWA({
-        registerType: "prompt", // Changed to prompt to give users control
-        devOptions: { enabled: true }, // Enables service worker in development
-        strategies: "generateSW", // Using generateSW strategy
+        registerType: "autoUpdate",
+        devOptions: { enabled: true },
+        strategies: "generateSW",
         srcDir: "public",
         filename: "sw.js",
         manifestFilename: "manifest.json",
+        manifest: {
+          name: "Buddhaword",
+          short_name: "Buddhaword",
+          description: "The Word of Buddha",
+          theme_color: "#FFAF5D", // ✅ This fixes the warning
+          background_color: "#FFFFFF",
+          display: "standalone",
+          orientation: "portrait",
+          start_url: "/",
+          icons: [
+            {
+              src: "/images/logo.png",
+              sizes: "192x192",
+              type: "image/png",
+              purpose: "any",
+            },
+            {
+              src: "/images/logo.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "any",
+            },
+            {
+              src: "/images/maskable-icon.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "maskable",
+            },
+          ],
+        },
         workbox: {
-          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MB limit - moved here for generateSW
+          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB limit
           globPatterns: ["**/*.{js,css,html,svg,png,ico}"],
           cleanupOutdatedCaches: true,
           skipWaiting: true,
           clientsClaim: true,
-          navigateFallback: "/index.html",
-          navigateFallbackDenylist: [/^\/api\//], // Don't use fallback for API routes
+          navigateFallback: "/offline.html",
+          navigateFallbackDenylist: [/^\/api\//], // Exclude API calls from offline cache
           runtimeCaching: [
             {
-              urlPattern: /^https:\/\/api\.your-domain\.com\//,
+              urlPattern: /^https:\/\/buddhaword\.netlify\.app\/sutra/,
               handler: "NetworkFirst",
               options: {
-                cacheName: "api-cache",
+                cacheName: "sutra-cache",
                 expiration: {
-                  maxEntries: 100,
+                  maxEntries: 10,
                   maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
                 },
                 cacheableResponse: {
@@ -77,60 +107,6 @@ export default defineConfig(({ mode }) => {
                   maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
                 },
               },
-            },
-          ],
-        },
-        manifest: {
-          name: "Buddhaword",
-          short_name: "Buddhaword",
-          description: "The Word of Buddha",
-          theme_color: "#FFAF5D",
-          background_color: "#FFFFFF",
-          display: "standalone",
-          orientation: "portrait",
-          start_url: "/",
-          icons: [
-            {
-              src: "/images/logo.png",
-              sizes: "192x192",
-              type: "image/png",
-              purpose: "any",
-            },
-            {
-              src: "/images/logo.png",
-              sizes: "512x512",
-              type: "image/png",
-              purpose: "any",
-            },
-            {
-              src: "/images/maskable-icon.png",
-              sizes: "512x512",
-              type: "image/png",
-              purpose: "maskable",
-            },
-          ],
-          shortcuts: [
-            {
-              name: "Home",
-              url: "/",
-              icons: [
-                {
-                  src: "/images/home-icon.png",
-                  sizes: "96x96",
-                  type: "image/png",
-                },
-              ],
-            },
-            {
-              name: "Offline Content",
-              url: "/cache-management",
-              icons: [
-                {
-                  src: "/images/offline-icon.png",
-                  sizes: "96x96",
-                  type: "image/png",
-                },
-              ],
             },
           ],
         },
