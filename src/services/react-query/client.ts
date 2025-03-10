@@ -40,7 +40,7 @@ const createQueryClient = () => {
 };
 
 // ✅ Use IndexedDB for storage (better compatibility with Safari)
-const idbPersister = async () => {
+const createIdbPersister = async () => {
   const db = await openDB('query-cache', 1, {
     upgrade(db) {
       db.createObjectStore('persistedQueries');
@@ -50,11 +50,18 @@ const idbPersister = async () => {
   return createAsyncStoragePersister({
     storage: {
       getItem: async (key: IDBKeyRange | IDBValidKey) => (await db.get('persistedQueries', key)) ?? null,
-      setItem: async (key: IDBKeyRange | IDBValidKey | undefined, value: any) => db.put('persistedQueries', value, key),
+      setItem: async (key: IDBKeyRange | IDBValidKey | undefined, value: any) =>
+        db.put('persistedQueries', value, key),
       removeItem: async (key: IDBKeyRange | IDBValidKey) => db.delete('persistedQueries', key),
     },
   });
 };
 
 export const queryClient = createQueryClient();
-export const persister = await idbPersister();
+export const persisterPromise = createIdbPersister(); // Returns a Promise
+
+// ✅ Usage Example (inside an async function)
+export const setupPersister = async () => {
+  const persister = await persisterPromise;
+  return persister;
+};

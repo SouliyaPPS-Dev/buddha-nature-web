@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@/hooks/use-theme';
-import { persister, queryClient } from '@/services/react-query/client';
+import { persisterPromise, queryClient } from '@/services/react-query/client';
 import '@/styles/globals.css';
 import { HeroUIProvider } from '@heroui/react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -30,11 +30,14 @@ if ('serviceWorker' in navigator) {
     );
 }
 
-
 function App() {
+  const [persister, setPersister] = useState<any>(null);
   const [isServiceWorkerActive, setIsServiceWorkerActive] = useState(false);
 
   useEffect(() => {
+    // Fetch persister asynchronously
+    persisterPromise.then(setPersister);
+
     // Register service worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -54,6 +57,10 @@ function App() {
     }
   }, []);
 
+  if (!persister) {
+    return <div>Loading...</div>; // Avoid rendering before persister is ready
+  }
+
   return (
     <HelmetProvider>
       <ThemeProvider>
@@ -65,7 +72,6 @@ function App() {
             client={queryClient}
             persistOptions={{ persister }}
           >
-            {/* Wrapping only the page content inside the transition */}
             <PageTransition>
               <React.Suspense fallback={<div>Loading...</div>}>
                 <RouterProvider router={router} />
@@ -73,7 +79,6 @@ function App() {
               </React.Suspense>
             </PageTransition>
 
-            {/* Add React Query Devtools */}
             <ReactQueryDevtools initialIsOpen={false} />
           </PersistQueryClientProvider>
         </HeroUIProvider>
