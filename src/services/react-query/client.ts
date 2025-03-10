@@ -1,59 +1,60 @@
-import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { QueryClient } from '@tanstack/react-query';
-import {
-  persistQueryClient,
-  persistQueryClientRestore,
-  persistQueryClientSave,
-} from '@tanstack/react-query-persist-client';
+import { openDB } from 'idb';
 
-// 🔹 Offline-safe storage (Handles Safari Private Mode)
-const getStorage = () => {
+const checkInternetConnectivity = async () => {
   try {
-    const testKey = '__storage_test__';
-    window.localStorage.setItem(testKey, 'test');
-    window.localStorage.removeItem(testKey);
-    return window.localStorage;
-  } catch (e) {
-    try {
-      return window.sessionStorage;
-    } catch (e) {
-      console.warn('⚠️ No Web Storage Available - Using In-Memory Cache');
-      let memoryStorage: Record<string, string> = {};
-      return {
-        setItem: (key: string, value: string) => {
-          memoryStorage[key] = value;
-        },
-        getItem: (key: string) => memoryStorage[key] || null,
-        removeItem: (key: string) => {
-          delete memoryStorage[key];
-        },
-      };
-    }
+    const response = await fetch('https://www.google.com/favicon.ico', { mode: 'no-cors' });
+    return response.ok || navigator.onLine;
+  } catch {
+    return false;
   }
 };
 
-export const storage = getStorage();
+const getStaleTime = (isOnline: boolean) => (isOnline ? 1 : Infinity);
 
-// ✅ Create a React Query Client that prevents API calls when offline
 const createQueryClient = () => {
-  return new QueryClient({
+  const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: Infinity,
+        staleTime: getStaleTime(navigator.onLine),
         gcTime: Infinity,
       },
     },
   });
+
+  const updateStaleTime = async () => {
+    const isOnline = await checkInternetConnectivity();
+    queryClient.setDefaultOptions({
+      queries: {
+        staleTime: getStaleTime(isOnline),
+        gcTime: Infinity,
+      },
+    });
+  };
+
+  window.addEventListener('online', updateStaleTime);
+  window.addEventListener('offline', updateStaleTime);
+
+  return queryClient;
 };
 
-// 🎯 Persist Query Data with Correct Storage
-export const persister = createSyncStoragePersister({
-  storage: window.localStorage,
-});
+// ✅ Use IndexedDB for storage (better compatibility with Safari)
+const idbPersister = async () => {
+  const db = await openDB('query-cache', 1, {
+    upgrade(db) {
+      db.createObjectStore('persistedQueries');
+    },
+  });
+
+  return createAsyncStoragePersister({
+    storage: {
+      getItem: async (key: IDBKeyRange | IDBValidKey) => (await db.get('persistedQueries', key)) ?? null,
+      setItem: async (key: IDBKeyRange | IDBValidKey | undefined, value: any) => db.put('persistedQueries', value, key),
+      removeItem: async (key: IDBKeyRange | IDBValidKey) => db.delete('persistedQueries', key),
+    },
+  });
+};
 
 export const queryClient = createQueryClient();
-
-// 🎯 Persist Query Cache Data for Offline Use
-persistQueryClient({ queryClient, persister });
-persistQueryClientSave({ queryClient, persister });
-persistQueryClientRestore({ queryClient, persister });
+export const persister = await idbPersister();

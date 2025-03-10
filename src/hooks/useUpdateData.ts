@@ -67,9 +67,9 @@ export const useUpdateData = () => {
       });
 
       // Refresh the page after 1 second
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1000);
     } catch (error) {
       toast.error('Failed to update data. Please try again later.', {
         position: 'top-right',

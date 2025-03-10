@@ -29,20 +29,56 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: 'prompt', // Changed to prompt to give users control
         devOptions: { enabled: true }, // Enables service worker in development
-        strategies: 'generateSW', // Use injectManifest for more control
+        strategies: 'generateSW', // Using generateSW strategy
         srcDir: 'public',
-        filename: 'sw.js', // Use our custom service worker
+        filename: 'sw.js',
         manifestFilename: 'manifest.json',
-        injectManifest: {
-          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MB limit
-          globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
-        },
         workbox: {
+          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MB limit - moved here for generateSW
+          globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
           cleanupOutdatedCaches: true,
           skipWaiting: true,
           clientsClaim: true,
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/api\//], // Don't use fallback for API routes
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/api\.your-domain\.com\//,
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'api-cache',
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
+                },
+                cacheableResponse: {
+                  statuses: [0, 200],
+                },
+              },
+            },
+            {
+              urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'images-cache',
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+                },
+              },
+            },
+            {
+              urlPattern: /\.(?:js|css)$/,
+              handler: 'StaleWhileRevalidate',
+              options: {
+                cacheName: 'static-resources',
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
+                },
+              },
+            },
+          ],
         },
         manifest: {
           name: 'Buddhaword',
