@@ -45,6 +45,7 @@ function RouteComponent() {
           {embedLink ? (
             <>
               <iframe
+                key={embedLink} // Forces reloading when the URL changes
                 id='videoPlayer'
                 width='100%'
                 height='100%'
@@ -175,7 +176,7 @@ function extractVideoLink(url: string): string | null {
       /(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/|.*embed\/|.*shorts\/))([\w-]+)/;
     const youtubeMatch = url.match(youtubeRegex);
     if (youtubeMatch) {
-      return `https://www.youtube.com/embed/${youtubeMatch[1]}?autoplay=1`;
+      return `https://www.youtube.com/embed/${youtubeMatch[1]}?autoplay=1&mute=0&rel=0&playsinline=1`;
     }
 
     // Match Google Drive Links
@@ -189,21 +190,14 @@ function extractVideoLink(url: string): string | null {
     const facebookWatchRegex = /facebook\.com\/watch\/\?v=([\d]+)/;
     const facebookWatchMatch = url.match(facebookWatchRegex);
     if (facebookWatchMatch) {
-      return `https://www.facebook.com/video/embed?video_id=${facebookWatchMatch[1]}&autoplay=1`;
+      return `https://www.facebook.com/video/embed?video_id=${facebookWatchMatch[1]}&autoplay=1&muted=1`;
     }
 
     // Match Facebook Video Links (Full URLs)
     const facebookVideoRegex = /facebook\.com\/.*\/videos\/([\d]+)/;
     const facebookVideoMatch = url.match(facebookVideoRegex);
     if (facebookVideoMatch) {
-      return `https://www.facebook.com/video/embed?video_id=${facebookVideoMatch[1]}&autoplay=1`;
-    }
-
-    // Match Facebook Post Links
-    const facebookPostRegex = /facebook\.com\/plugins\/post\.php\?href=([^&]+)/;
-    const facebookPostMatch = url.match(facebookPostRegex);
-    if (facebookPostMatch) {
-      return `https://www.facebook.com/plugins/post.php?href=${facebookPostMatch[1]}&show_text=true&width=100&autoplay=1`;
+      return `https://www.facebook.com/video/embed?video_id=${facebookVideoMatch[1]}&autoplay=1&muted=1`;
     }
 
     return null;
