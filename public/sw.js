@@ -1,5 +1,5 @@
 import { precacheAndRoute } from 'workbox-precaching';
-import { registerRoute, setDefaultHandler } from 'workbox-routing';
+import { registerRoute } from 'workbox-routing';
 import {
   CacheFirst,
   NetworkFirst,
@@ -8,12 +8,13 @@ import {
 import { ExpirationPlugin } from 'workbox-expiration';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 
-// ✅ Precache essential assets (from Vite PWA)
+// Precache all assets from Vite PWA
 precacheAndRoute(self.__WB_MANIFEST || []);
 
-// ✅ Cache static resources (JS, CSS, fonts)
+// Cache static resources (JS, CSS)
 registerRoute(
-  ({ request }) => ['script', 'style', 'font'].includes(request.destination),
+  ({ request }) =>
+    request.destination === 'script' || request.destination === 'style',
   new StaleWhileRevalidate({
     cacheName: 'static-resources',
     plugins: [
@@ -22,7 +23,7 @@ registerRoute(
   })
 );
 
-// ✅ Cache images using CacheFirst strategy
+// Cache images using CacheFirst strategy
 registerRoute(
   ({ request }) => request.destination === 'image',
   new CacheFirst({
@@ -37,49 +38,33 @@ registerRoute(
   })
 );
 
-// ✅ Cache all navigation requests (HTML pages) for offline refresh
+// Cache `/sutra` page using NetworkFirst strategy
 registerRoute(
-  ({ request }) => request.mode === 'navigate', // All pages
+  ({ url }) => url.pathname.startsWith('/sutra'),
   new NetworkFirst({
-    cacheName: 'html-pages',
+    cacheName: 'sutra-cache',
     plugins: [
-      new ExpirationPlugin({ maxEntries: 20, maxAgeSeconds: 7 * 24 * 60 * 60 }), // Cache pages for 7 days
+      new ExpirationPlugin({ maxEntries: 10, maxAgeSeconds: 7 * 24 * 60 * 60 }), // 7 days
       new CacheableResponsePlugin({ statuses: [0, 200] }),
     ],
   })
 );
 
-// ✅ Cache API responses for offline access to dynamic data
-registerRoute(
-  ({ url }) =>
-    url.origin === self.location.origin && url.pathname.startsWith('/api'),
-  new NetworkFirst({
-    cacheName: 'api-cache',
-    plugins: [
-      new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 60 * 60 }), // 1 hour
-      new CacheableResponsePlugin({ statuses: [0, 200] }),
-    ],
-  })
-);
-
-// ✅ Serve an offline fallback page when no network
-const OFFLINE_FALLBACK_URL = '/offline.html';
+// Offline fallback page for UI when offline
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open('offline-cache').then((cache) => {
-      return cache.add(OFFLINE_FALLBACK_URL);
+    caches.open('sutra-cache').then((cache) => {
+      return cache.addAll([
+        '/offline.html', // Create this page to show when offline
+      ]);
     })
   );
 });
 
-// ✅ If offline, serve a cached page or fallback page
-setDefaultHandler(async ({ event }) => {
+self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
-    try {
-      return await fetch(event.request);
-    } catch {
-      return caches.match(event.request) || caches.match(OFFLINE_FALLBACK_URL);
-    }
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match('/offline.html'))
+    );
   }
-  return fetch(event.request);
 });
