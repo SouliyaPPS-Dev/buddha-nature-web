@@ -38,13 +38,13 @@ registerRoute(
   })
 );
 
-// Cache `/sutra` page using NetworkFirst strategy
+// Cache pages dynamically using NetworkFirst strategy
 registerRoute(
-  ({ url }) => url.pathname.startsWith('/sutra'),
+  ({ request }) => request.mode === 'navigate',
   new NetworkFirst({
-    cacheName: 'sutra-cache',
+    cacheName: 'pages-cache',
     plugins: [
-      new ExpirationPlugin({ maxEntries: 10, maxAgeSeconds: 7 * 24 * 60 * 60 }), // 7 days
+      new ExpirationPlugin({ maxEntries: 20, maxAgeSeconds: 7 * 24 * 60 * 60 }), // 7 days
       new CacheableResponsePlugin({ statuses: [0, 200] }),
     ],
   })
@@ -53,7 +53,7 @@ registerRoute(
 // Offline fallback page for UI when offline
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open('sutra-cache').then((cache) => {
+    caches.open('offline-cache').then((cache) => {
       return cache.addAll([
         '/offline.html', // Create this page to show when offline
       ]);
@@ -64,7 +64,23 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match('/offline.html'))
+      fetch(event.request)
+        .then((response) => {
+          // Clone and store the response in cache
+          const responseClone = response.clone();
+          caches.open('pages-cache').then((cache) => {
+            cache.put(event.request, responseClone);
+          });
+          return response;
+        })
+        .catch(() =>
+          caches
+            .match(event.request)
+            .then(
+              (cachedResponse) =>
+                cachedResponse || caches.match('/offline.html')
+            )
+        )
     );
   }
 });
