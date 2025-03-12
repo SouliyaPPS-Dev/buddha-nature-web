@@ -8,10 +8,10 @@ import {
 import { ExpirationPlugin } from 'workbox-expiration';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 
-// Precache all assets from Vite PWA
+// ✅ Precache all assets from Vite PWA
 precacheAndRoute(self.__WB_MANIFEST || []);
 
-// Cache static resources (JS, CSS)
+// ✅ Cache static resources (JS, CSS)
 registerRoute(
   ({ request }) =>
     request.destination === 'script' || request.destination === 'style',
@@ -23,7 +23,7 @@ registerRoute(
   })
 );
 
-// Cache images using CacheFirst strategy
+// ✅ Cache images using CacheFirst strategy
 registerRoute(
   ({ request }) => request.destination === 'image',
   new CacheFirst({
@@ -31,14 +31,67 @@ registerRoute(
     plugins: [
       new ExpirationPlugin({
         maxEntries: 100,
-        maxAgeSeconds: 30 * 24 * 60 * 60,
-      }), // 30 days
+        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+      }),
       new CacheableResponsePlugin({ statuses: [0, 200] }),
     ],
   })
 );
 
-// Cache `/sutra` page using NetworkFirst strategy
+import { precacheAndRoute } from 'workbox-precaching';
+import { registerRoute } from 'workbox-routing';
+import {
+  CacheFirst,
+  NetworkFirst,
+  StaleWhileRevalidate,
+} from 'workbox-strategies';
+import { ExpirationPlugin } from 'workbox-expiration';
+import { CacheableResponsePlugin } from 'workbox-cacheable-response';
+
+// ✅ Precache all assets from Vite PWA
+precacheAndRoute(self.__WB_MANIFEST || []);
+
+// ✅ Dynamically Cache All Images Found in Project
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open('images-cache').then(async (cache) => {
+      const cachedRequests = (self.__WB_MANIFEST || [])
+        .map(entry => entry.url)
+        .filter(url => url.match(/\.(png|jpg|jpeg|svg|gif|webp)$/)); // Only images
+
+      await cache.addAll(cachedRequests);
+    })
+  );
+});
+
+// ✅ Serve Images from Cache or Network if Not Cached
+registerRoute(
+  ({ request }) => request.destination === 'image',
+  new CacheFirst({
+    cacheName: 'images-cache',
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 200, // Store up to 200 images
+        maxAgeSeconds: 30 * 24 * 60 * 60, // Cache for 30 days
+      }),
+      new CacheableResponsePlugin({ statuses: [0, 200] }),
+    ],
+  })
+);
+
+// ✅ Provide an Offline Fallback for Images
+self.addEventListener('fetch', (event) => {
+  if (event.request.destination === 'image') {
+    event.respondWith(
+      caches.match(event.request).then(response => {
+        return response || caches.match('/images/offline-image.png'); // Fallback image
+      })
+    );
+    return;
+  }
+});
+
+// ✅ Cache `/sutra` page using NetworkFirst strategy
 registerRoute(
   ({ url }) => url.pathname.startsWith('/sutra'),
   new NetworkFirst({
@@ -49,22 +102,3 @@ registerRoute(
     ],
   })
 );
-
-// Offline fallback page for UI when offline
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open('sutra-cache').then((cache) => {
-      return cache.addAll([
-        '/offline.html', // Create this page to show when offline
-      ]);
-    })
-  );
-});
-
-self.addEventListener('fetch', (event) => {
-  if (event.request.mode === 'navigate') {
-    event.respondWith(
-      fetch(event.request).catch(() => caches.match('/offline.html'))
-    );
-  }
-});

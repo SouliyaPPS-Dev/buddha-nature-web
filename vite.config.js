@@ -69,7 +69,7 @@ export default defineConfig(({ mode }) => {
           cleanupOutdatedCaches: true,
           skipWaiting: true,
           clientsClaim: true,
-          navigateFallback: "/offline.html",
+          navigateFallback: "/sutra",
           navigateFallbackDenylist: [/^\/api\//], // Exclude API calls from offline cache
           runtimeCaching: [
             {
