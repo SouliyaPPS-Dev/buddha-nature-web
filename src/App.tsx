@@ -49,7 +49,11 @@ function App() {
   }, []);
 
   if (!persister) {
-    return <Spinner />; // Avoid rendering before persister is ready
+    return (
+      <div className='flex justify-center items-center h-screen'>
+        <Spinner />
+      </div>
+    );
   }
 
   return (
