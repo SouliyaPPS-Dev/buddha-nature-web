@@ -50,17 +50,6 @@ registerRoute(
   })
 );
 
-// Offline fallback page for UI when offline
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open('offline-cache').then((cache) => {
-      return cache.addAll([
-        '/offline.html', // Create this page to show when offline
-      ]);
-    })
-  );
-});
-
 self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     event.respondWith(
@@ -74,12 +63,7 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(() =>
-          caches
-            .match(event.request)
-            .then(
-              (cachedResponse) =>
-                cachedResponse || caches.match('/offline.html')
-            )
+          caches.match(event.request).then((cachedResponse) => cachedResponse)
         )
     );
   }

@@ -52,7 +52,6 @@ export default defineConfig(({ mode }) => {
           cleanupOutdatedCaches: true,
           skipWaiting: true,
           clientsClaim: true,
-          navigateFallback: '/offline.html', // This ensures offline navigation works
           navigateFallbackDenylist: [/^\/api\//], // Exclude API calls from offline cache
           runtimeCaching: [
             {
