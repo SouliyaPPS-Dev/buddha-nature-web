@@ -4,7 +4,7 @@ function Seo() {
       <meta charSet='UTF-8' />
       <meta name='viewport' content='width=device-width, initial-scale=1.0' />
       <title>Buddhaword</title>
-      <meta name='description' content='The Word of Buddha' />
+      <meta name='description' content='ຄຳສອນພຣະພຸດທະເຈົ້າ' />
       <meta
         name='keywords'
         content='Buddhaword, ຄຳສອນພຣະພຸດທະເຈົ້າ, ທັມມະ, ທັມມະຊາດ, lao, laos, the word of buddha, buddha, nature'
@@ -14,7 +14,7 @@ function Seo() {
       <meta property='og:title' content='ຄຳສອນພຣະພຸດທະເຈົ້າ' />
       <meta
         property='og:description'
-        content='Buddhaword | The Word of Buddha'
+        content='Buddhaword | ຄຳສອນພຣະພຸດທະເຈົ້າ'
       />
       <meta
         property='og:image'
@@ -25,7 +25,7 @@ function Seo() {
 
       <meta name='twitter:card' content='summary_large_image' />
       <meta name='twitter:title' content='Buddhaword' />
-      <meta name='twitter:description' content='The Word of Buddha' />
+      <meta name='twitter:description' content='ຄຳສອນພຣະພຸດທະເຈົ້າ' />
       <meta
         name='twitter:image'
         content='https://buddhaword.netlify.appimages/logo_shared.png'

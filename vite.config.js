@@ -34,7 +34,7 @@ export default defineConfig(({ mode }) => {
         manifest: {
           name: 'Buddhaword',
           short_name: 'Buddhaword',
-          description: 'The Word of Buddha',
+          description: 'ຄຳສອນພຣະພຸດທະເຈົ້າ',
           theme_color: '#FFAF5D',
           background_color: '#FFFFFF',
           display: 'standalone',
