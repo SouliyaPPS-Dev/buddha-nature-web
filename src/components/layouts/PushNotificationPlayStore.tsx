@@ -70,7 +70,7 @@ function PushNotificationPlayStore() {
           Get the best experience by installing our app from the{' '}
           <strong>
             <u>
-              {isHuaweiDevice() ? 'Huawei AppGallery' : 'Google Play Store'}
+              {isHuaweiDevice() ? 'Google Play Store' : 'Google Play Store'}
             </u>
           </strong>
           .
