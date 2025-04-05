@@ -1,6 +1,7 @@
 import { useSearchContext } from "@/components/search/SearchContext";
 import { CalendarDataModel } from "@/model/calendar";
 import { calendarApi } from "@/services/https/calendar";
+import { getStaleTime } from "@/services/react-query/client";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
@@ -9,8 +10,10 @@ export const useCalendar = () => {
 
      const { data, isLoading, refetch } = useQuery({
           queryKey: ['calendar'],
-          staleTime: 1,
           queryFn: async () => calendarApi(),
+          staleTime: getStaleTime(navigator.onLine),
+          gcTime: getStaleTime(navigator.onLine),
+          enabled: navigator.onLine,
      });
 
      const filteredData = useMemo(() => {

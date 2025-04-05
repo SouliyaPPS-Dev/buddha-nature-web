@@ -11,7 +11,7 @@ const checkInternetConnectivity = async () => {
   }
 };
 
-const getStaleTime = (isOnline: boolean) => (isOnline ? 1 : Infinity);
+export const getStaleTime = (isOnline: boolean) => (isOnline ? 1 : Infinity);
 
 const createQueryClient = () => {
   const queryClient = new QueryClient({
