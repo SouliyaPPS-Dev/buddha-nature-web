@@ -14,7 +14,7 @@ export const useBook = (id?: string) => {
      const { data, isLoading, refetch } = useQuery({
           queryKey: ["book"],
           queryFn: async () => bookApi(),
-          staleTime: 1
+          staleTime: 1,
      });
 
      // Filter data if available

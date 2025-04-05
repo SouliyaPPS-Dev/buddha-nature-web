@@ -17,6 +17,8 @@ export const useSutra = () => {
      // Fetch Data
      const { data, isLoading, refetch } = useQuery({
           queryKey: ['sutra'],
+          staleTime: Infinity,
+          gcTime: Infinity,
           queryFn: async () => fetchSutraMergeData(),
      });
 
