@@ -26,7 +26,6 @@ export default defineConfig(({ mode }) => {
       react(),
       VitePWA({
         registerType: 'autoUpdate',
-        devOptions: { enabled: true },
         strategies: 'generateSW',
         srcDir: 'public',
         filename: 'sw.js',
@@ -64,9 +63,6 @@ export default defineConfig(({ mode }) => {
         workbox: {
           maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB limit
           globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
-          cleanupOutdatedCaches: true,
-          skipWaiting: true,
-          clientsClaim: true,
           navigateFallbackDenylist: [/^\/api\//], // Exclude API calls from offline cache
           runtimeCaching: [
             {

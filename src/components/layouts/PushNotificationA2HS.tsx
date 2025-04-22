@@ -1,4 +1,5 @@
 import ios_addToHomeScreen from '@/assets/images/ios_addToHomeScreen.jpg';
+import { useNavigate } from '@tanstack/react-router';
 import { Button, Image } from 'antd';
 import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
@@ -19,7 +20,7 @@ export function isIOSDevice() {
 
 function PushNotificationA2HS() {
   const [isVisible, setIsVisible] = useState<boolean>(false);
-
+  const navigate = useNavigate()
   useEffect(() => {
     const dismissed = localStorage.getItem('a2hs_dismissed');
     if (!dismissed) {
@@ -29,7 +30,9 @@ function PushNotificationA2HS() {
 
   const notify = () => {
     if (isIOSDevice() && isInStandaloneMode()) {
-      alert('App is already installed to your home screen!');
+      navigate({
+        to: '/sutra'
+      })
     } else if (isSafariBrowser() && isVisible) {
       toast.info(
         <div>
