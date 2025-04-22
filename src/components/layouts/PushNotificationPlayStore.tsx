@@ -112,7 +112,7 @@ function PushNotificationPlayStore() {
     }
   }, [isVisible]);
 
-  return <ToastContainer style={{ zIndex: 50 }} />;
+  return <ToastContainer style={{ zIndex: 50 }} autoClose={10000} />;
 }
 
 export default PushNotificationPlayStore;

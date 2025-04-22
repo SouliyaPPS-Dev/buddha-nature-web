@@ -88,7 +88,7 @@ function PushNotificationA2HS() {
     );
   };
 
-  return <ToastContainer style={{ zIndex: 50 }} />;
+  return <ToastContainer style={{ zIndex: 50 }} autoClose={15000} />;
 }
 
 export default PushNotificationA2HS;
