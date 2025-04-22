@@ -17,16 +17,24 @@ function IOSInstaller() {
     }
   }, []);
 
-  if (!isIOS) return null; // Hide component on non-iOS devices
+  const showModal = () => {
+    setModalVisible(true);
+
+    // Auto-close modal after 5 seconds
+    setTimeout(() => {
+      setModalVisible(false);
+    }, 15000); // 15000ms = 15 seconds
+  };
+
+  if (!isIOS) return null;
 
   return (
     <NavbarItem className='sm:flex gap-2'>
-      {/* 📲 "Add to Home Screen" Button */}
       <Button
         type='primary'
         shape='round'
         icon={<PlusCircleOutlined />}
-        onClick={() => setModalVisible(true)}
+        onClick={showModal}
         style={{
           backgroundColor: '#795548',
           borderColor: '#795548',
@@ -37,7 +45,6 @@ function IOSInstaller() {
         Add to Home Screen
       </Button>
 
-      {/* 📌 Modal Showing Instructions */}
       <Modal
         title='Install App on iOS'
         visible={modalVisible}
