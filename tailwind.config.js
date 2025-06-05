@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-require-imports */
-const { heroui } = require("@heroui/react");
+import { heroui } from '@heroui/react';
 
 /** @type {import('tailwindcss').Config} */
 export default {

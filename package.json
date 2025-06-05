@@ -61,6 +61,7 @@
     "@types/smoothscroll-polyfill": "^0.3.4",
     "antd": "^5.22.3",
     "axios": "^1.7.8",
+    "caniuse-lite": "^1.0.30001721",
     "date-fns": "^4.1.0",
     "dompurify": "^3.2.3",
     "dotenv": "^16.4.7",
