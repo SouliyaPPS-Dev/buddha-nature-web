@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as PrivacyImport } from './routes/privacy'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as VideoIndexImport } from './routes/video/index'
@@ -33,6 +34,12 @@ const SutraDetailsIdLazyImport = createFileRoute('/sutra/details/$id')()
 const FavoritesDetailsIdLazyImport = createFileRoute('/favorites/details/$id')()
 
 // Create/Update Routes
+
+const PrivacyRoute = PrivacyImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AboutRoute = AboutImport.update({
   id: '/about',
@@ -150,6 +157,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyImport
+      parentRoute: typeof rootRoute
+    }
     '/calendar/$title': {
       id: '/calendar/$title'
       path: '/calendar/$title'
@@ -249,6 +263,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/privacy': typeof PrivacyRoute
   '/calendar/$title': typeof CalendarTitleRoute
   '/sutra/$category': typeof SutraCategoryLazyRoute
   '/sutra/search': typeof SutraSearchLazyRoute
@@ -267,6 +282,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/privacy': typeof PrivacyRoute
   '/calendar/$title': typeof CalendarTitleRoute
   '/sutra/$category': typeof SutraCategoryLazyRoute
   '/sutra/search': typeof SutraSearchLazyRoute
@@ -286,6 +302,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/privacy': typeof PrivacyRoute
   '/calendar/$title': typeof CalendarTitleRoute
   '/sutra/$category': typeof SutraCategoryLazyRoute
   '/sutra/search': typeof SutraSearchLazyRoute
@@ -306,6 +323,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/privacy'
     | '/calendar/$title'
     | '/sutra/$category'
     | '/sutra/search'
@@ -323,6 +341,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/privacy'
     | '/calendar/$title'
     | '/sutra/$category'
     | '/sutra/search'
@@ -340,6 +359,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/privacy'
     | '/calendar/$title'
     | '/sutra/$category'
     | '/sutra/search'
@@ -359,6 +379,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  PrivacyRoute: typeof PrivacyRoute
   CalendarTitleRoute: typeof CalendarTitleRoute
   SutraCategoryLazyRoute: typeof SutraCategoryLazyRoute
   SutraSearchLazyRoute: typeof SutraSearchLazyRoute
@@ -377,6 +398,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  PrivacyRoute: PrivacyRoute,
   CalendarTitleRoute: CalendarTitleRoute,
   SutraCategoryLazyRoute: SutraCategoryLazyRoute,
   SutraSearchLazyRoute: SutraSearchLazyRoute,
@@ -404,6 +426,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/privacy",
         "/calendar/$title",
         "/sutra/$category",
         "/sutra/search",
@@ -424,6 +447,9 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
+    },
+    "/privacy": {
+      "filePath": "privacy.tsx"
     },
     "/calendar/$title": {
       "filePath": "calendar/$title.tsx"
