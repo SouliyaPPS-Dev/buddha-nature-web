@@ -3,6 +3,9 @@
           {
                "site": "buddha-nature",
                "public": "dist",
+               "predeploy": [
+                    "bun run build"
+               ],
                "ignore": [
                     "firebase.json",
                     "**/.*",

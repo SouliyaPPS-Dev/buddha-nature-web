@@ -18,17 +18,17 @@ function Seo() {
       />
       <meta
         property='og:image'
-        content='https://buddhaword.netlify.appimages/logo_shared.png'
+        content='https://buddha-nature.firebaseapp.comimages/logo_shared.png'
       />
       <meta property='og:type' content='website' />
-      <meta property='og:url' content='https://buddhaword.netlify.app' />
+      <meta property='og:url' content='https://buddha-nature.firebaseapp.com' />
 
       <meta name='twitter:card' content='summary_large_image' />
       <meta name='twitter:title' content='Buddhaword' />
       <meta name='twitter:description' content='ຄຳສອນພຣະພຸດທະເຈົ້າ' />
       <meta
         name='twitter:image'
-        content='https://buddhaword.netlify.appimages/logo_shared.png'
+        content='https://buddha-nature.firebaseapp.comimages/logo_shared.png'
       />
 
       <link rel='icon' type='image/png' href='/images/logo_shared.png' />
