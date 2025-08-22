@@ -1,3 +1,4 @@
 # Allow all web crawlers to access everything
 User-agent: *
 Disallow:
+Sitemap: https://buddha-nature.firebaseapp.com/sitemap.xml
