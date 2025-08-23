@@ -1,0 +1,95 @@
+# Deploy Vite site to GitHub Pages
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Compute base path for Pages
+        env:
+          REPO_SITE_URL_VAR: ${{ vars.SITE_URL }}
+        shell: bash
+        run: |
+          if [[ -n "$REPO_SITE_URL_VAR" ]]; then
+            # Custom domain provided; use root base
+            echo "BASE_PATH=/" >> "$GITHUB_ENV"
+          else
+            REPO="${GITHUB_REPOSITORY#*/}"
+            if [[ "$REPO" == *.github.io ]]; then
+              echo "BASE_PATH=/" >> "$GITHUB_ENV"
+            else
+              echo "BASE_PATH=/$REPO/" >> "$GITHUB_ENV"
+            fi
+          fi
+
+      - name: Compute SITE_URL for sitemap.xml
+        env:
+          REPO_SITE_URL_VAR: ${{ vars.SITE_URL }}
+        shell: bash
+        run: |
+          if [[ -n "$REPO_SITE_URL_VAR" ]]; then
+            echo "SITE_URL=$REPO_SITE_URL_VAR" >> "$GITHUB_ENV"
+          else
+            OWNER="${GITHUB_REPOSITORY%%/*}"
+            REPO="${GITHUB_REPOSITORY#*/}"
+            if [[ "$REPO" == *.github.io ]]; then
+              echo "SITE_URL=https://$REPO" >> "$GITHUB_ENV"
+            else
+              echo "SITE_URL=https://$OWNER.github.io/$REPO" >> "$GITHUB_ENV"
+            fi
+          fi
+
+      - name: Build
+        env:
+          NODE_ENV: production
+          SITE_URL: ${{ env.SITE_URL }}
+        run: bun run build -- --base="$BASE_PATH"
+
+      - name: Create SPA fallback (404.html)
+        run: |
+          cp dist/index.html dist/404.html
+        # Ignore error if dist doesn't exist (would fail upload anyway)
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
