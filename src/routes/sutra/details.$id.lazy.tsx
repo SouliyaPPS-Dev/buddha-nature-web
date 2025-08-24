@@ -1,4 +1,5 @@
 import AudioPlayerStyled from '@/components/AudioPlayer';
+import Seo from '@/components/layouts/Seo';
 import { useFontSizeContext } from '@/components/FontSizeProvider';
 import { useSearchContext } from '@/components/search/SearchContext';
 import FavoriteButton from '@/containers/sutra/FavoriteButton';
@@ -358,6 +359,30 @@ function RouteComponent() {
     );
   };
 
+  // ----- SEO: derive dynamic meta for current sutra -----
+  const currentItem = filteredDetails?.[currentPage];
+  const sutraTitle = currentItem?.['ຊື່ພຣະສູດ'] || '';
+  const sutraCategory = currentItem?.['ໝວດທັມ'] || '';
+  const rawContent = currentItem?.['ພຣະສູດ'] || '';
+  const textContent = DOMPurify.sanitize(rawContent, { ALLOWED_TAGS: [] })
+    .replace(/\s+/g, ' ')
+    .trim();
+  const description = (textContent || sutraCategory).slice(0, 160);
+  const canonical = typeof window !== 'undefined'
+    ? `${window.location.origin}/sutra/details/${id}`
+    : undefined;
+  const pageUrl = typeof window !== 'undefined' ? window.location.href : undefined;
+  const schemaJson = sutraTitle
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: sutraTitle,
+        description,
+        inLanguage: 'lo',
+        mainEntityOfPage: pageUrl,
+      }
+    : null;
+
   const renderPositionBar = () => (
     <div className='fixed bottom-0 left-0 right-0 z-10 px-4 py-4 flex justify-between items-center md:mb-[64px] mb-5 text-white'>
       {/* Previous Page Button (Left Side) */}
@@ -622,45 +647,14 @@ function RouteComponent() {
 
   return (
     <>
-      <article>
-        <meta charSet='UTF-8' />
-        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-        <title>{filteredDetails?.[currentPage]?.['ຊື່ພຣະສູດ']}</title>
-        <meta name='description' content='ຄຳສອນພຣະພຸດທະເຈົ້າ' />
-        <meta
-          name='keywords'
-          content='Buddhaword, ຄຳສອນພຣະພຸດທະເຈົ້າ, ທັມມະ, ທັມມະຊາດ, lao, laos, the word of buddha, buddha, nature'
-        />
-        <link rel='manifest' href='/manifest.json' />
-
-        <meta property='og:title' content='Buddhaword | ຄຳສອນພຣະພຸດທະເຈົ້າ' />
-        <meta property='og:description' content='ຄຳສອນພຣະພຸດທະເຈົ້າ' />
-        <meta
-          property='og:image'
-          content='https://buddha-nature.firebaseapp.comimages/logo_shared.png'
-        />
-        <meta property='og:type' content='website' />
-        <meta
-          property='og:url'
-          content='https://buddha-nature.firebaseapp.com'
-        />
-
-        <meta name='twitter:card' content='summary_large_image' />
-        <meta name='twitter:title' content='Buddhaword' />
-        <meta name='twitter:description' content='ຄຳສອນພຣະພຸດທະເຈົ້າ' />
-        <meta
-          name='twitter:image'
-          content='https://buddha-nature.firebaseapp.comimages/logo_shared.png'
-        />
-
-        <link rel='icon' type='image/png' href='/images/logo_shared.png' />
-
-        <meta name='mobile-web-app-capable' content='yes' />
-        <meta name='apple-mobile-web-app-status-bar-style' content='#FFAF5D' />
-        <meta name='apple-mobile-web-app-title' content='Buddha-Nature' />
-        <meta name='theme-color' content='#FFAF5D' />
-        <link rel='apple-touch-icon' href='/images/logo_shared.png' />
-      </article>
+      <Seo
+        title={(sutraTitle ? `${sutraTitle} | ` : '') + 'Buddhaword'}
+        description={description}
+        url={pageUrl}
+        canonical={canonical}
+        type='article'
+        schemaJson={schemaJson as any}
+      />
 
       {/* Flipbook Container */}
       <section

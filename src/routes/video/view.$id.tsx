@@ -1,4 +1,5 @@
 import VideoCard from '@/containers/video/VideoCard';
+import Seo from '@/components/layouts/Seo';
 import { useScrollingStore } from '@/hooks/ScrollProvider';
 import useVideo from '@/hooks/video/useVideo';
 import { VideoDataModel } from '@/model/video';
@@ -30,12 +31,38 @@ function RouteComponent() {
   // Extract Video Link
   const embedLink = extractVideoLink(originalLink);
 
+  // ----- SEO -----
+  const pageUrl = typeof window !== 'undefined' ? window.location.href : undefined;
+  const canonical = typeof window !== 'undefined'
+    ? `${window.location.origin}/video/view/${id}`
+    : undefined;
+  const description = videoDescription || 'Buddhaword video';
+  const schemaJson = embedLink
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'VideoObject',
+        name: videoTitle,
+        description,
+        embedUrl: embedLink,
+        thumbnailUrl: [],
+      }
+    : null;
+
   useEffect(() => {
     localStorageData.setTitle(videoTitle);
   }, [videoTitle]);
 
   return (
-    <section
+    <>
+      <Seo
+        title={`${videoTitle} | Buddhaword`}
+        description={description}
+        url={pageUrl}
+        canonical={canonical}
+        type='video.other'
+        schemaJson={schemaJson as any}
+      />
+      <section
       ref={scrollContainerRef}
       className='w-full min-h-screen items-center justify-center'
     >
@@ -164,7 +191,8 @@ function RouteComponent() {
           </div>
         )}
       </div>
-    </section>
+      </section>
+    </>
   );
 }
 

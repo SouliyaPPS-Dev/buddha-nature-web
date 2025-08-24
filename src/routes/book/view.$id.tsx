@@ -1,4 +1,5 @@
 import { useBook } from '@/hooks/book/useBook'
+import Seo from '@/components/layouts/Seo'
 import { useScrollingStore } from '@/hooks/ScrollProvider'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -15,10 +16,40 @@ function RouteComponent() {
   const {
     // PDF Link
     pdfEmbedLink,
+    titleBook,
+    linkBook,
   } = useBook(id)
 
+  // ----- SEO -----
+  const pageUrl = typeof window !== 'undefined' ? window.location.href : undefined
+  const canonical = typeof window !== 'undefined' ? `${window.location.origin}/book/view/${id}` : undefined
+  const description = titleBook ? `ປຶ້ມ: ${titleBook}` : 'Buddhaword book'
+  const schemaJson = titleBook
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Book',
+        name: titleBook,
+        url: pageUrl,
+        potentialAction: linkBook
+          ? {
+              '@type': 'ReadAction',
+              target: linkBook,
+            }
+          : undefined,
+      }
+    : null
+
   return (
-    <div
+    <>
+      <Seo
+        title={`${titleBook || 'Book'} | Buddhaword`}
+        description={description}
+        url={pageUrl}
+        canonical={canonical}
+        type='book'
+        schemaJson={schemaJson as any}
+      />
+      <div
       ref={scrollContainerRef}
       className="flex flex-col items-center justify-center w-full h-screen"
     >
@@ -39,6 +70,7 @@ function RouteComponent() {
           No PDF link available, and you're offline.
         </p>
       )}
-    </div>
+      </div>
+    </>
   )
 }
