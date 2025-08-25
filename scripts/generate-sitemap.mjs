@@ -24,7 +24,7 @@ if (fs.existsSync(productionEnv)) dotenv.config({ path: productionEnv });
 else if (fs.existsSync(developmentEnv)) dotenv.config({ path: developmentEnv });
 
 const SITE_URL = (process.env.SITE_URL || '').replace(/\/$/, '') ||
-  'https://buddha-nature.firebaseapp.com';
+  'https://buddhaword.net';
 
 // Helpers
 const todayISO = new Date().toISOString();

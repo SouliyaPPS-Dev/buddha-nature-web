@@ -1,4 +1,9 @@
-# Allow all web crawlers to access everything
+# robots.txt for BuddhaWord
+# Allow all crawlers; block user-specific and offline pages
 User-agent: *
-Disallow:
-Sitemap: https://buddha-nature.firebaseapp.com/sitemap.xml
+Allow: /
+Disallow: /favorites/
+Disallow: /favorites/details/
+Disallow: /offline.html
+
+Sitemap: https://buddhaword.net/sitemap.xml

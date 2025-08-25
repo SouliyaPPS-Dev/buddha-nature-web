@@ -14,7 +14,7 @@ const isDevelopment = import.meta.env.MODE === 'development';
 export const Route = createRootRoute({
   // beforeLoad: async () => {
   //   return (window.location.href =
-  //     'https://buddha-nature.firebaseapp.com/sutra');
+  //     'https://buddhaword.net/sutra');
   // },
   component: RootComponent,
 });
