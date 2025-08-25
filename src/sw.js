@@ -51,6 +51,9 @@ registerRoute(
 );
 
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+  // Never intercept SEO-critical files
+  if (url.pathname === '/sitemap.xml' || url.pathname === '/robots.txt') return;
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
@@ -79,6 +82,9 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+  // Never intercept SEO-critical files
+  if (url.pathname === '/sitemap.xml' || url.pathname === '/robots.txt') return;
   event.respondWith(
     fetch(event.request).catch(() => {
       return new Response('Network error happened', {
