@@ -49,6 +49,13 @@ function App() {
     }
   }, []);
 
+  // Notify index.html splash screen when app is ready to render
+  useEffect(() => {
+    if (persister) {
+      document.dispatchEvent(new Event('app:ready'));
+    }
+  }, [persister]);
+
   if (!persister) {
     return (
       <div className='flex justify-center items-center h-screen'>

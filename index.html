@@ -205,11 +205,74 @@
           position: sticky;
           z-index: 999;
         }
+
+        /* Splash Screen */
+        .splash-screen {
+          position: fixed;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          background: #ffffff;
+          z-index: 10000;
+          transition: opacity 300ms ease;
+        }
+        .splash-screen.fade-out {
+          opacity: 0;
+          pointer-events: none;
+        }
+        .splash-logo {
+          width: clamp(180px, 35vw, 420px);
+          max-width: 80vw;
+          height: auto;
+          object-fit: contain;
+        }
+        .splash-title {
+          margin-top: 16px;
+          font-size: 20px;
+          font-weight: 700;
+          color: #333333;
+        }
+
+        /* Make logo larger on mobile */
+        @media (max-width: 640px) {
+          .splash-logo {
+            width: clamp(240px, 75vw, 520px);
+          }
+        }
       </style>
   </head>
 
   <body>
+    <!-- Startup Splash Screen -->
+    <div id="splash-screen" class="splash-screen" aria-label="loading">
+      <img class="splash-logo" src="/logo_wutdarn.png" alt="Buddhaword logo" />
+      <!-- <div class="splash-title">ວັດປ່າດານພຣະ</div> -->
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Hide Splash Screen once app signals readiness -->
+    <script>
+      (function () {
+        const splash = document.getElementById('splash-screen');
+        if (!splash) return;
+
+        function hideSplash() {
+          if (!splash || splash.classList.contains('fade-out')) return;
+          splash.classList.add('fade-out');
+          // Remove from DOM after transition
+          setTimeout(() => splash.remove(), 320);
+        }
+
+        // Primary: wait for the app to signal readiness
+        document.addEventListener('app:ready', hideSplash);
+
+        // Fallbacks: ensure we never get stuck on splash
+        window.addEventListener('load', () => setTimeout(hideSplash, 100));
+        setTimeout(hideSplash, 6000); // ultimate safety timeout
+      })();
+    </script>
   </body>
 </html>
