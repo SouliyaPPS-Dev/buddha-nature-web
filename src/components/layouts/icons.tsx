@@ -8,7 +8,7 @@ import favorites from '@/assets/icons/favorites.png';
 import video from '@/assets/icons/vdo.png';
 import dhamma from '@/assets/icons/dhamma.png';
 import about from '@/assets/icons/about.png';
-import logo from '@/assets/images/logo.png';
+// import logo from '@/assets/images/logo.png';
 import { IconSvgProps, LogoProps } from '@/model';
 import { router } from '@/router';
 
@@ -20,7 +20,7 @@ export const Logo: React.FC<LogoProps> = ({
 }) => {
   return (
     <img
-      src={logo}
+      src={'/logo_wutdarn.png'}
       alt={alt}
       width={width}
       height={height || width} // Default height equals the width if not provided

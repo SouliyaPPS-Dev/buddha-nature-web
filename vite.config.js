@@ -41,13 +41,13 @@ export default defineConfig(({ mode }) => {
           start_url: '/',
           icons: [
             {
-              src: '/images/logo.png',
+              src: '/logo_wutdarn.png',
               sizes: '192x192',
               type: 'image/png',
               purpose: 'any',
             },
             {
-              src: '/images/logo.png',
+              src: '/logo_wutdarn.png',
               sizes: '512x512',
               type: 'image/png',
               purpose: 'any',

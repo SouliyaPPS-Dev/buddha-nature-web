@@ -41,8 +41,8 @@ export default defineConfig(({ mode }) => {
           orientation: 'portrait',
           start_url: '/',
           icons: [
-            { src: '/images/logo.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
-            { src: '/images/logo.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+            { src: '/logo_wutdarn.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+            { src: '/logo_wutdarn.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
             { src: '/images/maskable-icon.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
           ],
         },

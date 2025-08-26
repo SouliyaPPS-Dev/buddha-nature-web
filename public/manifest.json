@@ -3,12 +3,12 @@
   "name": "Buddhaword",
   "icons": [
     {
-      "src": "icons/Icon-192.png",
+      "src": "/logo_wutdarn.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "icons/Icon-512.png",
+      "src": "/logo_wutdarn.png",
       "type": "image/png",
       "sizes": "512x512"
     }

@@ -16,7 +16,7 @@ function Seo({
   title = 'Buddhaword',
   description = 'ຄຳສອນພຣະພຸດທະເຈົ້າ',
   keywords = 'Buddhaword, ຄຳສອນພຣະພຸດທະເຈົ້າ, ທັມມະ, ທັມມະຊາດ, lao, laos, the word of buddha, buddha, nature',
-  image = 'https://buddhaword.net/images/logo.png',
+  image = 'https://buddhaword.net/logo_wutdarn.png',
   url = 'https://buddhaword.net',
   type = 'website',
   canonical,
@@ -54,12 +54,12 @@ function Seo({
       {image && <meta name='twitter:image' content={image} />}
 
       {/* Icons / PWA */}
-      <link rel='icon' type='image/png' href='/images/logo.png' />
+      <link rel='icon' type='image/png' href='/logo_wutdarn.png' />
       <meta name='mobile-web-app-capable' content='yes' />
       <meta name='apple-mobile-web-app-status-bar-style' content='#FFAF5D' />
       <meta name='apple-mobile-web-app-title' content='Buddha-Nature' />
       <meta name='theme-color' content='#FFAF5D' />
-      <link rel='apple-touch-icon' href='/images/logo.png' />
+      <link rel='apple-touch-icon' href='/logo_wutdarn.png' />
 
       {/* Canonical */}
       {canonical && <link rel='canonical' href={canonical} />}

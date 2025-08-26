@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { FaEnvelope, FaFacebook, FaUserCircle, FaWhatsapp } from 'react-icons/fa'; // Social & Contact Icons
+import { FaFacebook, FaUserCircle, FaWhatsapp } from 'react-icons/fa'; // Social & Contact Icons
 
 export const Route = createFileRoute('/about')({
   component: RouteComponent,
@@ -9,14 +9,26 @@ function RouteComponent() {
   return (
     <>
       <section className='text-lg py-10 px-4 md:px-10 mx-auto rounded-lg mb-10'>
+        {/* Logo + Title */}
+        <div className='max-w-5xl mx-auto flex flex-col items-center mb-4'>
+          <img
+            src='/logo_wutdarn.png'
+            alt='ວັດປ່າດານພຣະ logo'
+            className='w-40 h-auto rounded-xl' // Increased width from w-24 to w-40
+          />
+          <h1 className='mt-3 text-2xl md:text-3xl font-bold text-center text-[#4b2e23]'>
+            ວັດປ່າດານພຣະ
+          </h1>
+        </div>
         {/* About Section */}
-        <div className='max-w-5xl mx-auto text-center mb-8'>
-          <h1 className={`font-bold mb-5 text-2xl md:text-3xl`}>ກ່ຽວກັບ</h1>
+        <div className='max-w-5xl mx-auto text-center mb-7'>
+          {/* <h1 className={`font-bold mb-5 text-2xl md:text-3xl`}>ກ່ຽວກັບ</h1> */}
           <p className='leading-relaxed md:leading-loose max-w-5xl mx-auto px-0 3xl-extra md:text-2xl'>
-            ຄຳສອນພຣະພຸດທະເຈົ້າ, ສ້າງຂື້ນເພື່ອເຜີຍແຜ່ໃຫ້ພວກເຮົາທັງຫຼາຍໄດ້ສຶກສາ
-            ແລະ ປະຕິບັດຕາມ, ດັ່ງທີ່ພຣະຕະຖາຄົດກ່າວວ່າ
-            "ທຳມະຍິ່ງເປີດເຜີຍຍິ່ງຮຸ່ງເຮືອງ". ເມື່ອໄດ້ສຶກສາ ແລະ ປະຕິບັດຕາມ
-            ຈົນເຫັນທຳມະຊາດຕາມຄວາມເປັນຈິງ ກໍຈະຫຼຸດພົ້ນຈາກຄວາມທຸກທັງປວງ.
+            ເເອັບຄຳສອນພຣະພຸດທະເຈົ້າ,
+            ສ້າງຂື້ນເພື່ອເຜີຍແຜ່ໃຫ້ພວກເຮົາທັງຫຼາຍໄດ້ສຶກສາ ແລະ ປະຕິບັດຕາມ,
+            ດັ່ງທີ່ພຣະຕະຖາຄົດກ່າວວ່າ "ທຳມະຍິ່ງເປີດເຜີຍຍິ່ງຮຸ່ງເຮືອງ".
+            ເມື່ອໄດ້ສຶກສາ ແລະ ປະຕິບັດຕາມ ຈົນເຫັນທຳມະຊາດຕາມຄວາມເປັນຈິງ
+            ກໍຈະຫຼຸດພົ້ນຈາກຄວາມທຸກທັງປວງ.
           </p>
         </div>
 
@@ -26,6 +38,17 @@ function RouteComponent() {
           <div className='flex flex-col items-center space-y-6'>
             {/* Phone Numbers */}
             <div className='flex flex-col space-y-4'>
+              <div className='flex items-center space-x-4'>
+                <FaWhatsapp className='text-green-500 text-lg' />
+                <a
+                  href='https://wa.me/8562056118850'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='font-medium text-green-900 hover:underline'
+                >
+                  +8562056118850
+                </a>
+              </div>
               <div className='flex items-center space-x-4'>
                 <FaWhatsapp className='text-green-500 text-lg' />
                 <a
@@ -75,7 +98,7 @@ function RouteComponent() {
             </div>
 
             {/* Emails */}
-            <div className='flex items-center space-x-4'>
+            {/* <div className='flex items-center space-x-4'>
               <FaEnvelope className='text-brown-600 text-lg' />
               <a
                 href='mailto:souliyappsdev@gmail.com'
@@ -92,20 +115,49 @@ function RouteComponent() {
               >
                 Katiya921@gmail.com
               </a>
-            </div>
+            </div> */}
 
             {/* Social Links */}
             <div className='mt-6 text-center'>
               <h3 className='text-lg font-medium mb-2'>Follow Us</h3>
-              <a
-                href='https://www.facebook.com/profile.php?id=100077638042542'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='text-blue-600 text-xl hover:underline flex items-center justify-center space-x-2'
-              >
-                <FaFacebook />
-                <span>Facebook</span>
-              </a>
+              <div className='flex flex-col items-center gap-3'>
+                <a
+                  href='https://web.facebook.com/watdanpra'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-blue-600 text-xl hover:underline flex items-center gap-2'
+                >
+                  <FaFacebook />
+                  <span>ວັດປ່າດານພຣະ</span>
+                </a>
+                <a
+                  href='https://web.facebook.com/dhammakonnon'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-blue-600 text-xl hover:underline flex items-center gap-2'
+                >
+                  <FaFacebook />
+                  <span>ທັມມະກ່ອນນອນ</span>
+                </a>
+                <a
+                  href='https://web.facebook.com/watpavimokkhavanaram.la'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-blue-600 text-xl hover:underline flex items-center gap-2'
+                >
+                  <FaFacebook />
+                  <span>ຕະຖາຄົຕພາສິຕ</span>
+                </a>
+                <a
+                  href='https://www.facebook.com/profile.php?id=100077638042542'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-blue-600 text-xl hover:underline flex items-center gap-2'
+                >
+                  <FaFacebook />
+                  <span>ຄຳສອນພຣະພຸດທະເຈົ້າ</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>

@@ -8,5 +8,5 @@ export default defineConfig({
         preset: '2023',
     },
     preset,
-    images: ['public/images/logo.png', 'public/images/logo_shared.png'],
+    images: ['public/logo_wutdarn.png', 'public/images/logo_shared.png'],
 })
