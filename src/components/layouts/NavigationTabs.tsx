@@ -59,7 +59,7 @@ export const NavigationTabs: React.FC = () => {
   return (
     <Tabs
       size='lg' // Large-sized tabs
-      className='fixed bottom-0 left-1/2 transform -translate-x-1/2 px-0 py-0 rounded-lg shadow-md z-20'
+      className='fixed bottom-4 left-1/2 transform -translate-x-1/2 px-0 py-0 rounded-lg shadow-md z-20'
       aria-label='Dynamic Navigation Tabs'
       selectedKey={getSelectedKey()} // Dynamically highlight based on the current route
       onSelectionChange={(key) => {
