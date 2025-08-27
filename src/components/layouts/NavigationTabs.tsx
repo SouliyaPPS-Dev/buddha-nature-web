@@ -17,6 +17,15 @@ export const NavigationTabs: React.FC = () => {
   const router = useRouter();
   const location = useRouterState({ select: (s) => s.location });
   const currentPath = location.pathname;
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const media = window.matchMedia('(max-width: 768px)');
+    const update = () => setIsMobile(media.matches);
+    update();
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
 
   // Map icons for each tab
   const tabIcons: Record<string, JSX.Element> = {
@@ -38,6 +47,15 @@ export const NavigationTabs: React.FC = () => {
     return validPath ? validPath.href : '/sutra'; // Default to '/sutra' or the first valid path
   };
 
+  // On mobile, hide the About tab
+  const visibleTabs = React.useMemo(
+    () =>
+      siteConfig.tabMenuItems.filter(
+        (item) => !(isMobile && item.href === '/about')
+      ),
+    [isMobile]
+  );
+
   return (
     <Tabs
       size='lg' // Large-sized tabs
@@ -50,7 +68,7 @@ export const NavigationTabs: React.FC = () => {
         }
       }}
     >
-      {siteConfig.tabMenuItems.map((item) => (
+      {visibleTabs.map((item) => (
         <Tab
           key={item.href}
           className='flex items-center justify-center w-full px-2 py-6'
