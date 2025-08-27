@@ -256,7 +256,36 @@ export const Navbar = () => {
           top: '50px',
         }}
       >
+        <div className='grid grid-cols-4 gap-4 mb-4 mt-1 items-center justify-items-center'>
+          {[
+            { src: '/logo_wutdarn.png', alt: 'logo_wutdarn', href: 'https://web.facebook.com/watdanpra' },
+            { src: '/dhammakonnon.png', alt: 'dhammakonnon', href: 'https://web.facebook.com/dhammakonnon' },
+            { src: '/ຮຸ່ງເເສງເເຫ່ງທັມ.png', alt: 'ຮຸ່ງເເສງເເຫ່ງທັມ', href: 'https://www.facebook.com/Sumittosumittabounsong' },
+            { src: '/ຕະຖາຄົຕພາສິຕ.png', alt: 'ຕະຖາຄົຕພາສິຕ', href: 'https://web.facebook.com/watpavimokkhavanaram.la' },
+            { src: '/ພຸທທະວົງສ໌.png', alt: 'ພຸທທະວົງສ໌', href: 'https://www.facebook.com/dhammalife.laos' },
+            { src: '/ວິນັຍສຸຄົຕ.png', alt: 'ວິນັຍສຸຄົຕ', href: 'https://www.facebook.com/profile.php?id=100091798479187' },
+            { src: '/ວັດບ້ານນາຈິກ.png', alt: 'ວັດບ້ານນາຈິກ', href: 'https://www.facebook.com/phouhuck.phousamnieng.7' },
+            { src: '/buddhaword.png', alt: 'buddhaword', href: 'https://web.facebook.com/profile.php?id=100077638042542' },
+          ].map((img) => (
+            <a
+              key={img.src}
+              href={img.href}
+              target='_blank'
+              rel='noopener noreferrer'
+              className='block'
+            >
+              <img
+                src={img.src}
+                alt={img.alt}
+                className='w-16 object-contain cursor-pointer'
+                loading='lazy'
+              />
+            </a>
+          ))}
+        </div>
+
         <SearchDropdown />
+
         <div className='mx-4 mt-2 flex flex-col gap-4'>
           {siteConfig.navMenuItems.map((item, index) => {
             // Define a function or object to map items to icons

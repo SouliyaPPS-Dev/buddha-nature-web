@@ -18,6 +18,12 @@ interface SearchContextType {
 // Create the context
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
+// Safe default to prevent crashes if provider is missing
+const DEFAULT_SEARCH_CONTEXT: SearchContextType = {
+  searchTerm: '',
+  setSearchTerm: () => {},
+};
+
 // SearchProvider: Provide the context to children components
 export const SearchProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -80,7 +86,12 @@ export const SearchProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useSearchContext = (): SearchContextType => {
   const context = useContext(SearchContext);
   if (!context) {
-    throw new Error('useSearchContext must be used within a SearchProvider');
+    if (import.meta?.env?.DEV) {
+      // In dev, warn to help diagnose missing provider placements
+      // eslint-disable-next-line no-console
+      console.warn('useSearchContext used outside of SearchProvider. Falling back to defaults.');
+    }
+    return DEFAULT_SEARCH_CONTEXT;
   }
   return context;
 };

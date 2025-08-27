@@ -32,6 +32,74 @@ function RouteComponent() {
           </p>
         </div>
 
+        {/* Facebook Pages (Logo Grid) */}
+        <div className='max-w-5xl mx-auto mb-6'>
+          <h2 className='text-2xl font-semibold text-center mb-4'>
+            Facebook Pages
+          </h2>
+          <div className='grid grid-cols-4 sm:grid-cols-4 gap-4 items-center justify-items-center'>
+            {[
+              {
+                src: '/logo_wutdarn.png',
+                alt: 'ວັດປ່າດານພຣະ',
+                href: 'https://web.facebook.com/watdanpra',
+              },
+              {
+                src: '/dhammakonnon.png',
+                alt: 'ທັມມະກ່ອນນອນ',
+                href: 'https://web.facebook.com/dhammakonnon',
+              },
+              {
+                src: '/ຮຸ່ງເເສງເເຫ່ງທັມ.png',
+                alt: 'ຮຸ່ງແສງແຫ່ງທັມ',
+                href: 'https://www.facebook.com/Sumittosumittabounsong',
+              },
+              {
+                src: '/ຕະຖາຄົຕພາສິຕ.png',
+                alt: 'ຕະຖາຄົດພາສິດ',
+                href: 'https://web.facebook.com/watpavimokkhavanaram.la',
+              },
+              {
+                src: '/ພຸທທະວົງສ໌.png',
+                alt: 'ພຸທທະວົງສ໌',
+                href: 'https://www.facebook.com/dhammalife.laos',
+              },
+              {
+                src: '/ວິນັຍສຸຄົຕ.png',
+                alt: 'ວິນັຍສຸຄົຕ',
+                href: 'https://www.facebook.com/profile.php?id=100091798479187',
+              },
+              {
+                src: '/ວັດບ້ານນາຈິກ.png',
+                alt: 'ວັດບ້ານນາຈິກ',
+                href: 'https://www.facebook.com/phouhuck.phousamnieng.7',
+              },
+              {
+                src: '/buddhaword.png',
+                alt: 'ຄຳສອນພຣະພຸດທະເຈົ້າ',
+                href: 'https://web.facebook.com/profile.php?id=100077638042542',
+              },
+            ].map((img) => (
+              <a
+                key={img.src}
+                href={img.href}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='block'
+                aria-label={img.alt}
+                title={img.alt}
+              >
+                <img
+                  src={img.src}
+                  alt={img.alt}
+                  className='w-20 h-20 object-contain'
+                  loading='lazy'
+                />
+              </a>
+            ))}
+          </div>
+        </div>
+
         {/* Contact Section */}
         <div>
           <h2 className='text-2xl font-semibold text-center mb-5'>ຕິດຕໍ່</h2>
@@ -139,6 +207,16 @@ function RouteComponent() {
                   <FaFacebook />
                   <span>ທັມມະກ່ອນນອນ</span>
                 </a>
+
+                <a
+                  href='https://www.facebook.com/Sumittosumittabounsong'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-blue-600 text-xl hover:underline flex items-center gap-2'
+                >
+                  <FaFacebook />
+                  <span>ຮຸ່ງແສງແຫ່ງທັມ</span>
+                </a>
                 <a
                   href='https://web.facebook.com/watpavimokkhavanaram.la'
                   target='_blank'
@@ -147,6 +225,34 @@ function RouteComponent() {
                 >
                   <FaFacebook />
                   <span>ຕະຖາຄົຕພາສິຕ</span>
+                </a>
+
+                <a
+                  href='https://www.facebook.com/dhammalife.laos'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-blue-600 text-xl hover:underline flex items-center gap-2'
+                >
+                  <FaFacebook />
+                  <span>ພຸທທະວົງສ໌</span>
+                </a>
+                <a
+                  href='https://www.facebook.com/profile.php?id=100091798479187'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-blue-600 text-xl hover:underline flex items-center gap-2'
+                >
+                  <FaFacebook />
+                  <span>ວິນັຍສຸຄົຕ</span>
+                </a>
+                <a
+                  href='https://www.facebook.com/phouhuck.phousamnieng.7'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-blue-600 text-xl hover:underline flex items-center gap-2'
+                >
+                  <FaFacebook />
+                  <span>ວັດບ້ານນາຈິກ</span>
                 </a>
                 <a
                   href='https://www.facebook.com/profile.php?id=100077638042542'
