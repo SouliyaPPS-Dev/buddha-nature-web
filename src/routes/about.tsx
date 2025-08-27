@@ -37,7 +37,7 @@ function RouteComponent() {
           <h2 className='text-2xl font-semibold text-center mb-4'>
             Facebook Pages
           </h2>
-          <div className='grid grid-cols-4 sm:grid-cols-4 gap-4 items-center justify-items-center'>
+          <div className='grid grid-cols-4 sm:grid-cols-4 gap-x-2 gap-y-4 items-center justify-items-center'>
             {[
               {
                 src: '/logo_wutdarn.png',
