@@ -20,9 +20,62 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
+  const isClient = typeof window !== 'undefined';
+  const pageUrl = isClient ? window.location.href : 'https://buddhaword.net';
+  const canonical = isClient
+    ? `${window.location.origin}${window.location.pathname}`
+    : 'https://buddhaword.net';
+
+  const siteSchema = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'Buddhaword',
+      url: 'https://buddhaword.net',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: 'https://buddhaword.net/sutra/search?query={search_term_string}',
+        'query-input': 'required name=search_term_string',
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'Buddhaword',
+      url: 'https://buddhaword.net',
+      logo: 'https://buddhaword.net/logo_wutdarn.png',
+    },
+  ];
   return (
     <React.Fragment>
-      <Seo />
+      <Seo
+        title={'Buddhaword | ຄຳສອນພຣະພຸດທະເຈົ້າ'}
+        description={'ຄັງຄວາມຮູ້ ແລະ ຄຳສອນຂອງພຣະພຸດທະເຈົ້າ ພາສາລາວ'}
+        keywords={[
+          'Buddhaword',
+          'The Word of Buddha for Research Educational',
+          'Buddha Nature',
+          'The Word of Buddha',
+          'Dhamma',
+          'Research',
+          'Educational',
+          'lao',
+          'laos',
+          'app',
+          'buddha',
+          'nature',
+          'ຄຳສອນພຣະພຸດທະເຈົ້າ',
+          'ທັມ',
+          'ທັມມະ',
+          'ທຳມະ',
+          'ພຸດທະ',
+          'ລາວ',
+        ].join(', ')}
+        url={pageUrl}
+        canonical={canonical}
+        type='website'
+        schemaJson={siteSchema}
+      />
 
       <SearchProvider>
         <ScrollProvider>

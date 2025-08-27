@@ -1,9 +1,6 @@
 # robots.txt for BuddhaWord
-# Allow all crawlers; block user-specific and offline pages
+# Allow all crawlers full access to routes and assets
 User-agent: *
 Allow: /
-Disallow: /favorites/
-Disallow: /favorites/details/
-Disallow: /offline.html
 
 Sitemap: https://buddhaword.net/sitemap.xml
