@@ -31,8 +31,8 @@ export default defineConfig(({ mode }) => {
         filename: 'sw.js',
         manifestFilename: 'manifest.json',
         manifest: {
-          name: 'Buddhaword',
-          short_name: 'Buddhaword',
+          name: 'ຄຳສອນພຸດທະ',
+          short_name: 'ຄຳສອນພຸດທະ',
           description: 'ຄຳສອນພຣະພຸດທະເຈົ້າ',
           theme_color: '#FFAF5D',
           background_color: '#FFFFFF',
@@ -41,19 +41,19 @@ export default defineConfig(({ mode }) => {
           start_url: '/',
           icons: [
             {
-              src: '/logo_wutdarn.png',
+              src: '/buddhaword.png',
               sizes: '192x192',
               type: 'image/png',
               purpose: 'any',
             },
             {
-              src: '/logo_wutdarn.png',
+              src: '/buddhaword.png',
               sizes: '512x512',
               type: 'image/png',
               purpose: 'any',
             },
             {
-              src: '/images/maskable-icon.png',
+              src: '/buddhaword.png',
               sizes: '512x512',
               type: 'image/png',
               purpose: 'maskable',

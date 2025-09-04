@@ -30,7 +30,7 @@ function RootComponent() {
     {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
-      name: 'Buddhaword',
+      name: 'ຄຳສອນພຸດທະ',
       url: 'https://buddhaword.net',
       potentialAction: {
         '@type': 'SearchAction',
@@ -41,7 +41,7 @@ function RootComponent() {
     {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'Buddhaword',
+      name: 'ຄຳສອນພຸດທະ',
       url: 'https://buddhaword.net',
       logo: 'https://buddhaword.net/logo_wutdarn.png',
     },
@@ -49,10 +49,10 @@ function RootComponent() {
   return (
     <React.Fragment>
       <Seo
-        title={'Buddhaword | ຄຳສອນພຣະພຸດທະເຈົ້າ'}
+        title={'ຄຳສອນພຸດທະ'}
         description={'ຄັງຄວາມຮູ້ ແລະ ຄຳສອນຂອງພຣະພຸດທະເຈົ້າ ພາສາລາວ'}
         keywords={[
-          'Buddhaword',
+          'ຄຳສອນພຸດທະ',
           'The Word of Buddha for Research Educational',
           'Buddha Nature',
           'The Word of Buddha',

@@ -36,7 +36,7 @@ function RouteComponent() {
   const canonical = typeof window !== 'undefined'
     ? `${window.location.origin}/video/view/${id}`
     : undefined;
-  const description = videoDescription || 'Buddhaword video';
+  const description = videoDescription || 'ວິດີໂອ ຄຳສອນພຸດທະ';
   const schemaJson = embedLink
     ? {
         '@context': 'https://schema.org',
@@ -55,7 +55,7 @@ function RouteComponent() {
   return (
     <>
       <Seo
-        title={`${videoTitle} | Buddhaword`}
+        title={`${videoTitle} | ຄຳສອນພຸດທະ`}
         description={description}
         url={pageUrl}
         canonical={canonical}

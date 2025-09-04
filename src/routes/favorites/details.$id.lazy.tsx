@@ -603,7 +603,7 @@ function RouteComponent() {
   return (
     <>
       <Seo
-        title={'Favorites | Buddhaword'}
+        title={'Favorites | ຄຳສອນພຸດທະ'}
         description={'User favorites'}
         url={typeof window !== 'undefined' ? window.location.href : undefined}
         canonical={

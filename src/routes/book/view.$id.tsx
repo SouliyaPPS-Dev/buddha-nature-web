@@ -23,7 +23,7 @@ function RouteComponent() {
   // ----- SEO -----
   const pageUrl = typeof window !== 'undefined' ? window.location.href : undefined
   const canonical = typeof window !== 'undefined' ? `${window.location.origin}/book/view/${id}` : undefined
-  const description = titleBook ? `ປຶ້ມ: ${titleBook}` : 'Buddhaword book'
+  const description = titleBook ? `ປຶ້ມ: ${titleBook}` : 'ປຶ້ມ'
   const schemaJson = titleBook
     ? {
         '@context': 'https://schema.org',
@@ -42,7 +42,7 @@ function RouteComponent() {
   return (
     <>
       <Seo
-        title={`${titleBook || 'Book'} | Buddhaword`}
+        title={`${titleBook || 'Book'} | ຄຳສອນພຸດທະ`}
         description={description}
         url={pageUrl}
         canonical={canonical}

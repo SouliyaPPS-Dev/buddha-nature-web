@@ -3,17 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Buddhaword</title>
+    <title>ຄຳສອນພຸດທະ</title>
     <!-- Meta -->
     <meta name="description" content="ຄຳສອນພຣະພຸດທະເຈົ້າ" />
     <meta
       name="keywords"
-      content="Buddhaword, ຄຳສອນພຣະພຸດທະເຈົ້າ, ທັມມະຊາດ, The Word of Buddha for Research Educational, Buddha Nature, The Word of Buddha, Dhamma, Research, Educational, lao, laos, app, buddha, nature, ຄຳສອນພຣະພຸດທະເຈົ້າ, ທັມ, ທັມມະ, ທຳມະ, ພຸດທະ, ລາວ"
+      content="ຄຳສອນພຸດທະ, ຄຳສອນພຣະພຸດທະເຈົ້າ, ທັມມະຊາດ, The Word of Buddha for Research Educational, Buddha Nature, The Word of Buddha, Dhamma, Research, Educational, lao, laos, app, buddha, nature, ຄຳສອນພຣະພຸດທະເຈົ້າ, ທັມ, ທັມມະ, ທຳມະ, ພຸດທະ, ລາວ"
     />
     <link rel="manifest" href="/manifest.json" />
 
     <!--  Open Graph Metadata (for social cards) -->
-    <meta property="og:title" content="Buddhaword | ຄຳສອນພຣະພຸດທະເຈົ້າ" />
+    <meta property="og:title" content="ຄຳສອນພຸດທະ" />
     <meta property="og:description" content="ຄຳສອນພຣະພຸດທະເຈົ້າ" />
     <meta
       property="og:image"
@@ -24,7 +24,7 @@
 
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Buddhaword" />
+    <meta name="twitter:title" content="ຄຳສອນພຸດທະ" />
     <meta name="twitter:description" content="ຄຳສອນພຣະພຸດທະເຈົ້າ" />
     <meta
       name="twitter:image"
@@ -32,16 +32,15 @@
     />
 
     <!-- Add the favicon -->
-    <link rel="icon" type="image/png" href="/logo_wutdarn.png" />
+    <link rel="icon" type="image/png" href="/buddhaword.png" />
 
     <!-- PWA Support -->
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="#FFAF5D" />
-    <meta name="apple-mobile-web-app-title" content="Buddha-Nature" />
+    <meta name="apple-mobile-web-app-title" content="ຄຳສອນພຸດທະ" />
     <meta name="theme-color" content="#FFAF5D" />
-    <link rel="apple-touch-icon" href="/logo_wutdarn.png" />
+    <link rel="apple-touch-icon" href="/buddhaword.png" />
 
-  
     <!-- Register Service Worker and Add to Home Screen scripts -->
     <script>
       if ('serviceWorker' in navigator) {
@@ -155,100 +154,150 @@
       }
     </script>
 
-      <!-- Scroll View Style Reset -->
-      <style>
-        /* Ensure the body does not block overlays */
-        body {
-          margin: 0;
-          padding: 0;
-        }
-      
-        /* Make overlay banners always the top-most layer */
-        /* Inside global CSS or inline styles */
-        .install-alert {
-          z-index: 9999;
-          /* Ensure it's the topmost layer */
-          position: fixed;
-          /* Anchor it to the viewport */
-          bottom: 16px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: auto;
-          /* Prevent overlapping */
-          pointer-events: auto;
-          /* Ensure interactions */
-        }
-      
-        .modal {
-          position: fixed;
-          /* Sticks to viewport */
-          z-index: 9999;
-          /* Topmost layer */
-          /* Ensures nothing overlaps these elements */
-        }
-      
-        /* Ensure interactive buttons are clickable */
-        .install-alert *,
-        .modal * {
-          pointer-events: auto;
-          /* Allow interaction */
-        }
-      
-        /* Prevent background content from interfering */
-        .install-alert-blocker,
-        .modal-blocker {
-          pointer-events: none;
-          /* Block clicks to underlying layers */
-        }
-      
-        .sticky-element {
-          position: sticky;
-          z-index: 999;
-        }
+    <!-- Scroll View Style Reset -->
+    <style>
+      /* Ensure the body does not block overlays */
+      body {
+        margin: 0;
+        padding: 0;
+      }
 
-        /* Splash Screen */
-        .splash-screen {
-          position: fixed;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          background: #ffffff;
-          z-index: 10000;
-          transition: opacity 300ms ease;
-        }
-        .splash-screen.fade-out {
-          opacity: 0;
-          pointer-events: none;
-        }
+      /* Make overlay banners always the top-most layer */
+      /* Inside global CSS or inline styles */
+      .install-alert {
+        z-index: 9999;
+        /* Ensure it's the topmost layer */
+        position: fixed;
+        /* Anchor it to the viewport */
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: auto;
+        /* Prevent overlapping */
+        pointer-events: auto;
+        /* Ensure interactions */
+      }
+
+      .modal {
+        position: fixed;
+        /* Sticks to viewport */
+        z-index: 9999;
+        /* Topmost layer */
+        /* Ensures nothing overlaps these elements */
+      }
+
+      /* Ensure interactive buttons are clickable */
+      .install-alert *,
+      .modal * {
+        pointer-events: auto;
+        /* Allow interaction */
+      }
+
+      /* Prevent background content from interfering */
+      .install-alert-blocker,
+      .modal-blocker {
+        pointer-events: none;
+        /* Block clicks to underlying layers */
+      }
+
+      .sticky-element {
+        position: sticky;
+        z-index: 999;
+      }
+
+      /* Splash Screen */
+      .splash-screen {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+        z-index: 10000;
+        transition: opacity 300ms ease;
+      }
+      .splash-screen.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .splash-logo {
+        width: clamp(180px, 35vw, 420px);
+        max-width: 80vw;
+        height: auto;
+        object-fit: contain;
+      }
+      .splash-logo-medium {
+        width: clamp(120px, 30vw, 300px);
+        height: auto;
+        object-fit: contain;
+      }
+      .splash-title {
+        margin-top: 16px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #333333;
+      }
+
+      /* Additional logos layout */
+      .splash-logos {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+        align-items: center;
+        margin-top: 12px;
+        max-width: 92vw;
+      }
+      .splash-logo-mini {
+        width: clamp(56px, 18vw, 120px);
+        height: auto;
+        object-fit: contain;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
+      }
+
+      /* Make logo larger on mobile */
+      @media (max-width: 640px) {
         .splash-logo {
-          width: clamp(180px, 35vw, 420px);
-          max-width: 80vw;
-          height: auto;
-          object-fit: contain;
+          width: clamp(240px, 75vw, 520px);
         }
-        .splash-title {
-          margin-top: 16px;
-          font-size: 20px;
-          font-weight: 700;
-          color: #333333;
-        }
-
-        /* Make logo larger on mobile */
-        @media (max-width: 640px) {
-          .splash-logo {
-            width: clamp(240px, 75vw, 520px);
-          }
-        }
-      </style>
+      }
+    </style>
   </head>
 
   <body>
     <!-- Startup Splash Screen -->
     <div id="splash-screen" class="splash-screen" aria-label="loading">
-      <img class="splash-logo" src="/logo_wutdarn.png" alt="Buddhaword logo" />
-      <!-- <div class="splash-title">ວັດປ່າດານພຣະ</div> -->
+      <div class="splash-logos" aria-label="partner logos">
+        <img
+          class="splash-logo-medium "
+          src="/logo_wutdarn.png"
+          alt="ຄຳສອນພຸດທະ logo"
+        />
+        <img
+          class="splash-logo-medium"
+          src="/dhammakonnon.png"
+          alt="Dhammakonnon"
+        />
+        <img
+          class="splash-logo-medium"
+          src="/ຮຸ່ງເເສງເເຫ່ງທັມ.png"
+          alt="ຮຸ່ງແສງແຫ່ງທັມ"
+        />
+        <img
+          class="splash-logo-medium"
+          src="/ຕະຖາຄົຕພາສິຕ.png"
+          alt="ຕະຖາຄົຕພາສິຕ"
+        />
+        <img class="splash-logo-medium" src="/ພຸທທະວົງສ໌.png" alt="ພຸທທະວົງສ໌" />
+        <img class="splash-logo-medium" src="/ວິນັຍສຸຄົຕ.png" alt="ວິນັຍສຸຄົຕ" />
+        <img
+          class="splash-logo-medium"
+          src="/ວັດບ້ານນາຈິກ.png"
+          alt="ວັດບ້ານນາຈິກ"
+        />
+        <img class="splash-logo-medium" src="/buddhaword.png" alt="ຄຳສອນພຸດທະ" />
+      </div>
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>

@@ -648,7 +648,7 @@ function RouteComponent() {
   return (
     <>
       <Seo
-        title={(sutraTitle ? `${sutraTitle} | ` : '') + 'Buddhaword'}
+        title={(sutraTitle ? `${sutraTitle} | ` : '') + 'ຄຳສອນພຸດທະ'}
         description={description}
         url={pageUrl}
         canonical={canonical}

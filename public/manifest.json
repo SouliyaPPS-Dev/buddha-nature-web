@@ -1,14 +1,14 @@
 {
-  "short_name": "Buddhaword",
-  "name": "Buddhaword",
+  "short_name": "ຄຳສອນພຸດທະ",
+  "name": "ຄຳສອນພຸດທະ",
   "icons": [
     {
-      "src": "/logo_wutdarn.png",
+      "src": "/buddhaword.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/logo_wutdarn.png",
+      "src": "/buddhaword.png",
       "type": "image/png",
       "sizes": "512x512"
     }

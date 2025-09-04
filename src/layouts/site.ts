@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: 'Buddhaword',
+  name: 'ຄຳສອນພຸດທະ',
   description: 'ຄຳສອນພຣະພຸດທະເຈົ້າ',
   navItems: [
     {

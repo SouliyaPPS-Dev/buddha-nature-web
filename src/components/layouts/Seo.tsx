@@ -15,7 +15,7 @@ type SeoProps = {
 };
 
 function Seo({
-  title = 'Buddhaword',
+  title = 'ຄຳສອນພຸດທະ',
   description = 'ຄຳສອນພຣະພຸດທະເຈົ້າ',
   keywords = [
     // English
@@ -32,6 +32,7 @@ function Seo({
     'buddha',
     'nature',
     // Lao
+    'ຄຳສອນພຸດທະ',
     'ຄຳສອນພຣະພຸດທະເຈົ້າ',
     'ທັມ',
     'ທັມມະ',
@@ -78,7 +79,7 @@ function Seo({
       {description && <meta property='og:description' content={description} />}
       {image && <meta property='og:image' content={image} />}      
       <meta property='og:type' content={type} />
-      <meta property='og:site_name' content='Buddhaword' />
+      <meta property='og:site_name' content='ຄຳສອນພຸດທະ' />
       <meta property='og:locale' content='lo_LA' />
       <meta property='og:url' content={computedUrl || url} />
 
@@ -94,7 +95,7 @@ function Seo({
       <link rel='icon' type='image/png' href='/logo_wutdarn.png' />
       <meta name='mobile-web-app-capable' content='yes' />
       <meta name='apple-mobile-web-app-status-bar-style' content='#FFAF5D' />
-      <meta name='apple-mobile-web-app-title' content='Buddha-Nature' />
+      <meta name='apple-mobile-web-app-title' content='ຄຳສອນພຸດທະ' />
       <meta name='theme-color' content='#FFAF5D' />
       <link rel='apple-touch-icon' href='/logo_wutdarn.png' />
 

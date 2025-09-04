@@ -16,9 +16,6 @@ function RouteComponent() {
             alt='ວັດປ່າດານພຣະ logo'
             className='w-40 h-auto rounded-xl' // Increased width from w-24 to w-40
           />
-          <h1 className='mt-3 text-2xl md:text-3xl font-bold text-center text-[#4b2e23]'>
-            ວັດປ່າດານພຣະ
-          </h1>
         </div>
         {/* About Section */}
         <div className='max-w-5xl mx-auto text-center mb-7'>
