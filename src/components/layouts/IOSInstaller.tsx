@@ -5,6 +5,8 @@ import { Button, Image, Modal } from 'antd';
 import { useEffect, useState } from 'react';
 
 function IOSInstaller() {
+  const APP_STORE_URL =
+    'https://apps.apple.com/la/app/buddhaword-lao/id6751720204'; // TODO: replace with your App Store link
   const [isIOS, setIsIOS] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -44,6 +46,21 @@ function IOSInstaller() {
       >
         Add to Home Screen
       </Button>
+
+      {/* App Store badge */}
+      <a
+        href={APP_STORE_URL}
+        target='_blank'
+        rel='noopener noreferrer'
+        aria-label='Download on the App Store'
+        style={{ display: 'inline-flex', alignItems: 'center' }}
+      >
+        <img
+          src='https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=120x40'
+          alt='Download on the App Store'
+          style={{ height: 32 }}
+        />
+      </a>
 
       <Modal
         title='Install App on iOS'
