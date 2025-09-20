@@ -83,7 +83,7 @@ function PushNotificationA2HS() {
               <img
                 src='https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=120x40'
                 alt='Download on the App Store'
-                style={{ height: 52 }}
+                style={{ height: 52, marginLeft: '-4px' }}
               />
             </a>
           </div>

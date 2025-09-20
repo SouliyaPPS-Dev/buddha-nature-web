@@ -5,7 +5,7 @@ import { NavigationProvider } from '@/components/NavigationProvider';
 import { SearchProvider } from '@/components/search/SearchContext';
 import { ScrollProvider } from '@/hooks/ScrollProvider';
 import DefaultLayout from '@/layouts/default';
-import { createRootRoute, Outlet } from '@tanstack/react-router';
+import { createRootRoute, Outlet, useRouterState } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import React from 'react';
 
@@ -20,6 +20,7 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
+  const location = useRouterState({ select: (state) => state.location });
   const isClient = typeof window !== 'undefined';
   const pageUrl = isClient ? window.location.href : 'https://buddhaword.net';
   const canonical = isClient
@@ -81,8 +82,12 @@ function RootComponent() {
         <ScrollProvider>
           <NavigationProvider>
             <DefaultLayout>
-              <PushNotificationPlayStore />
-              <PushNotificationA2HS />
+              {(location.pathname === '/' || location.pathname === '/sutra') && (
+                <>
+                  <PushNotificationPlayStore />
+                  <PushNotificationA2HS />
+                </>
+              )}
               <Outlet />
               {isDevelopment && <TanStackRouterDevtools />}
             </DefaultLayout>
