@@ -104,6 +104,19 @@ function PushNotificationPlayStore() {
         </div>
       </div>
     );
+
+    // Auto-redirect Android users to the Play Store when the toast shows
+    try {
+      const isAndroid = /android/i.test(navigator.userAgent);
+      const alreadyRedirected =
+        sessionStorage.getItem('playStoreRedirected') === 'true';
+      if (isAndroid && !alreadyRedirected && installLink) {
+        sessionStorage.setItem('playStoreRedirected', 'true');
+        window.location.href = installLink;
+      }
+    } catch (_) {
+      // no-op
+    }
   };
 
   useEffect(() => {
@@ -111,6 +124,22 @@ function PushNotificationPlayStore() {
       notify();
     }
   }, [isVisible]);
+
+  // Fallback: if installLink initializes after toast shows, still redirect
+  useEffect(() => {
+    try {
+      if (!isVisible || !installLink) return;
+      const isAndroid = /android/i.test(navigator.userAgent);
+      const alreadyRedirected =
+        sessionStorage.getItem('playStoreRedirected') === 'true';
+      if (isAndroid && !alreadyRedirected) {
+        sessionStorage.setItem('playStoreRedirected', 'true');
+        window.location.href = installLink;
+      }
+    } catch (_) {
+      // no-op
+    }
+  }, [isVisible, installLink]);
 
   return <ToastContainer style={{ zIndex: 50 }} autoClose={10000} />;
 }

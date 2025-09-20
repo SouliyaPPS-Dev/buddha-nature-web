@@ -4,6 +4,7 @@ import { Button, Image } from 'antd';
 import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { isInStandaloneMode } from '@/hooks/deviceDetection';
 
 export const isSafariBrowser = () => {
   const userAgent = navigator.userAgent.toLowerCase();
@@ -19,8 +20,12 @@ export function isIOSDevice() {
 }
 
 function PushNotificationA2HS() {
+  const APP_STORE_URL =
+    'https://apps.apple.com/la/app/buddhaword-lao/id6751720204';
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  // (Removed mount-time redirect; now redirect happens when the toast shows)
   useEffect(() => {
     const dismissed = localStorage.getItem('a2hs_dismissed');
     if (!dismissed) {
@@ -31,8 +36,8 @@ function PushNotificationA2HS() {
   const notify = () => {
     if (isIOSDevice() && isInStandaloneMode()) {
       navigate({
-        to: '/sutra'
-      })
+        to: '/sutra',
+      });
     } else if (isSafariBrowser() && isVisible) {
       toast.info(
         <div>
@@ -63,19 +68,56 @@ function PushNotificationA2HS() {
               zIndex: 999,
             }}
           />
-          <Button
-            type='primary'
-            onClick={() => {
-              localStorage.setItem('a2hs_dismissed', 'true');
-              setIsVisible(false);
-              toast.dismiss(); // Close the notification
-            }}
-            style={{ marginTop: 10, backgroundColor: '#D64550' }}
+
+          {/* App Store button image */}
+          <div
+            style={{ display: 'flex', justifyContent: 'center', marginTop: 5 }}
           >
-            ປິດບໍ່ໃຫ້ສະແດງອີກ
-          </Button>
+            <a
+              href={APP_STORE_URL}
+              target='_blank'
+              rel='noopener noreferrer'
+              aria-label='Download on the App Store'
+              style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}
+            >
+              <img
+                src='https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=120x40'
+                alt='Download on the App Store'
+                style={{ height: 52 }}
+              />
+            </a>
+          </div>
+          <div
+            style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}
+          >
+            <Button
+              type='primary'
+              onClick={() => {
+                localStorage.setItem('a2hs_dismissed', 'true');
+                setIsVisible(false);
+                toast.dismiss(); // Close the notification
+              }}
+              style={{ marginTop: 20, backgroundColor: '#D64550' }}
+            >
+              ປິດບໍ່ໃຫ້ສະແດງອີກ
+            </Button>
+          </div>
         </div>
       );
+
+      // Auto-redirect to the App Store when the toast is shown (iOS Safari only)
+      try {
+        if (isIOSDevice() && !isInStandaloneMode()) {
+          const alreadyRedirected =
+            sessionStorage.getItem('iosAppRedirected') === 'true';
+          if (!alreadyRedirected) {
+            sessionStorage.setItem('iosAppRedirected', 'true');
+            window.location.href = APP_STORE_URL;
+          }
+        }
+      } catch (_) {
+        // no-op
+      }
     }
   };
 
@@ -85,11 +127,7 @@ function PushNotificationA2HS() {
     }
   }, [isVisible]);
 
-  const isInStandaloneMode = () => {
-    return (
-      'standalone' in window.navigator && (window.navigator as any).standalone
-    );
-  };
+  // isInStandaloneMode imported from hooks/deviceDetection
 
   return <ToastContainer style={{ zIndex: 50 }} autoClose={15000} />;
 }

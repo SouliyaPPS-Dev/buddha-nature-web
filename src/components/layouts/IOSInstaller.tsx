@@ -3,6 +3,7 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import { NavbarItem } from '@heroui/navbar';
 import { Button, Image, Modal } from 'antd';
 import { useEffect, useState } from 'react';
+import { isInStandaloneMode } from '@/hooks/deviceDetection';
 
 function IOSInstaller() {
   const APP_STORE_URL =
@@ -16,6 +17,28 @@ function IOSInstaller() {
 
     if (isSafari && !isStandalone) {
       setIsIOS(true);
+    }
+  }, []);
+
+  // Auto-redirect iPhone users to the App Store on first visit (per session)
+  useEffect(() => {
+    try {
+      if (typeof window === 'undefined') return;
+      const alreadyRedirected =
+        sessionStorage.getItem('iosAppRedirected') === 'true';
+
+      if (alreadyRedirected) return;
+
+      const ua = window.navigator.userAgent.toLowerCase();
+      const isIPhone = /iphone/.test(ua);
+
+      // Don't redirect if running as an installed PWA
+      if (isIPhone && !isInStandaloneMode()) {
+        sessionStorage.setItem('iosAppRedirected', 'true');
+        window.location.href = APP_STORE_URL;
+      }
+    } catch (e) {
+      // no-op: fail silently if sessionStorage or window is unavailable
     }
   }, []);
 
