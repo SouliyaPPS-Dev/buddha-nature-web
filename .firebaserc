@@ -1,7 +1,6 @@
 {
   "projects": {
-    "default": "buddha-nature-4585b",
-    "buddha-nature-4585b": "lao-tipitaka"
+    "default": "lao-tipitaka"
   },
   "targets": {},
   "etags": {}
