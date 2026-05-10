@@ -1,6 +1,6 @@
 import playStoreIcon from '@/assets/images/play_store.png'; // Add a Play Store icon
 import { useLinkToStore } from '@/hooks/useLinkToStore';
-import { Image } from 'antd';
+import { Image } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { isIOSDevice, isSafariBrowser } from './PushNotificationA2HS';
 
@@ -21,8 +21,7 @@ const ImagePlayStore = () => {
       <Image
         src={playStoreIcon}
         alt='Google Play Store Icon'
-        preview={false}
-        style={{ width: 150, height: 'auto', marginTop: 10 }}
+        className='w-[150px] h-auto mt-2'
       />
     </a>
   );

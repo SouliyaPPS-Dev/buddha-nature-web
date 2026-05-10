@@ -1,17 +1,18 @@
 import ios_addToHomeScreen from '@/assets/images/ios_addToHomeScreen.jpg';
 import { useNavigate } from '@tanstack/react-router';
-import { Button, Image } from 'antd';
+import { Button, Image } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { isInStandaloneMode } from '@/hooks/deviceDetection';
 
+
 export const isSafariBrowser = () => {
   const userAgent = navigator.userAgent.toLowerCase();
   return (
-    userAgent.includes('safari') &&
-    !userAgent.includes('chrome') &&
-    !userAgent.includes('android')
+    userAgent.includes("safari") &&
+    !userAgent.includes("chrome") &&
+    !userAgent.includes("android")
   );
 };
 
@@ -21,13 +22,13 @@ export function isIOSDevice() {
 
 function PushNotificationA2HS() {
   const APP_STORE_URL =
-    'https://apps.apple.com/la/app/buddhaword-lao/id6751720204';
+    "https://apps.apple.com/la/app/buddhaword-lao/id6751720204";
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const navigate = useNavigate();
 
   // (Removed mount-time redirect; now redirect happens when the toast shows)
   useEffect(() => {
-    const dismissed = localStorage.getItem('a2hs_dismissed');
+    const dismissed = localStorage.getItem("a2hs_dismissed");
     if (!dismissed) {
       setIsVisible(true);
     }
@@ -36,37 +37,31 @@ function PushNotificationA2HS() {
   const notify = () => {
     if (isIOSDevice() && isInStandaloneMode()) {
       navigate({
-        to: '/sutra',
+        to: "/sutra",
       });
     } else if (isSafariBrowser() && isVisible) {
       toast.info(
         <div>
           <p>
-            To install this app, tap the{' '}
+            To install this app, tap the{" "}
             <strong>
               <u>Share</u>
-            </strong>{' '}
+            </strong>{" "}
             button (
-            <span role='img' aria-label='share icon'>
+            <span role="img" aria-label="share icon">
               ⤓
             </span>
-            ) and select{' '}
+            ) and select{" "}
             <strong>
               <u>Add to Home Screen</u>
-            </strong>{' '}
+            </strong>{" "}
             from the menu.
           </p>
 
           <Image
             src={ios_addToHomeScreen}
             alt='Add to Home Screen'
-            preview={true}
-            style={{
-              marginTop: 10,
-              width: '100%',
-              height: 'auto',
-              zIndex: 999,
-            }}
+            className='mt-2 w-full h-auto z-[999]'
           />
 
           {/* App Store button image */}
@@ -91,27 +86,26 @@ function PushNotificationA2HS() {
             style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}
           >
             <Button
-              type='primary'
-              onClick={() => {
+              onPress={() => {
                 localStorage.setItem('a2hs_dismissed', 'true');
                 setIsVisible(false);
                 toast.dismiss(); // Close the notification
               }}
-              style={{ marginTop: 20, backgroundColor: '#D64550' }}
+              className='mt-5 bg-[#D64550] text-white font-phetsarath'
             >
               ປິດບໍ່ໃຫ້ສະແດງອີກ
             </Button>
           </div>
-        </div>
+        </div>,
       );
 
       // Auto-redirect to the App Store when the toast is shown (iOS Safari only)
       try {
         if (isIOSDevice() && !isInStandaloneMode()) {
           const alreadyRedirected =
-            sessionStorage.getItem('iosAppRedirected') === 'true';
+            sessionStorage.getItem("iosAppRedirected") === "true";
           if (!alreadyRedirected) {
-            sessionStorage.setItem('iosAppRedirected', 'true');
+            sessionStorage.setItem("iosAppRedirected", "true");
             window.location.href = APP_STORE_URL;
           }
         }

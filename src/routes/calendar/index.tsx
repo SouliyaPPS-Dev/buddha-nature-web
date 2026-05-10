@@ -7,6 +7,7 @@ import { DateValue } from '@internationalized/date';
 import {
   Button,
   DatePicker,
+  Image,
   Input,
   Modal,
   ModalBody,
@@ -16,7 +17,6 @@ import {
   Spinner,
 } from "@heroui/react";
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { Image } from 'antd';
 import { format, getDay, parse, startOfWeek } from 'date-fns';
 import DOMPurify from 'dompurify';
 import { useState } from 'react';
@@ -327,13 +327,7 @@ function RouteComponent() {
                       <Image
                         src={event.poster}
                         alt={event?.title || ''}
-                        width='100%'
-                        height='100%'
-                        style={{
-                          objectFit: 'contain', // Scale image to fit without distortion
-                          maxHeight: '100%', // Prevent exceeding container's height
-                        }}
-                        className='rounded-t-lg'
+                        className='w-full h-full object-contain max-h-[100%] rounded-t-lg'
                       />
                     </div>
                   </div>
@@ -472,14 +466,7 @@ function RouteComponent() {
                         <Image
                           src={selectedEvent?.poster}
                           alt={selectedEvent?.title || ''}
-                          loading={isLoading ? 'lazy' : 'eager'}
-                          width='100%'
-                          height='100%'
-                          style={{
-                            display: isLoading ? 'none' : 'block',
-                            objectFit: 'contain', // Scale image to fit without distortion
-                            maxHeight: '100%',
-                          }} // Hide image while loading
+                          className='w-full h-full object-contain max-h-[100%]'
                         />
                       </div>
                     </div>

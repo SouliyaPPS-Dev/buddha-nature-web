@@ -3,7 +3,7 @@ import { useScrollingStore } from '@/hooks/ScrollProvider';
 import { createFileRoute } from '@tanstack/react-router';
 import DOMPurify from 'dompurify';
 import ReactHtmlParser from 'react-html-parser';
-import { Image } from 'antd';
+import { Image } from "@heroui/react";
 import { Spinner } from "@heroui/spinner";
 import { extractPhoneNumber } from '@/hooks/utils';
 
@@ -76,14 +76,7 @@ function RouteComponent() {
             <Image
               src={selectedEvent?.poster}
               alt={selectedEvent?.title || ''}
-              loading={isLoading ? 'lazy' : 'eager'}
-              width='100%'
-              height='100%'
-              style={{
-                display: isLoading ? 'none' : 'block',
-                objectFit: 'contain', // Scale image to fit without distortion
-                maxHeight: '100%',
-              }} // Hide image while loading
+              className='w-full h-full object-contain max-h-[100%]'
             />
           </div>
         </div>

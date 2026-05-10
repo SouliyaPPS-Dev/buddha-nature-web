@@ -1,13 +1,21 @@
 import ios_addToHomeScreen from '@/assets/images/ios_addToHomeScreen.jpg';
-import { PlusCircleOutlined } from '@ant-design/icons';
-import { Button, Image, Modal } from 'antd';
+import {
+  Button,
+  Image,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from '@heroui/react';
 import { useEffect, useState } from 'react';
+import { IoAddCircleOutline } from 'react-icons/io5';
 
-function IOSInstaller() {
+function IOSInstaller({ ref, ...props }: any) {
   const APP_STORE_URL =
     'https://apps.apple.com/la/app/buddhaword-lao/id6751720204'; // TODO: replace with your App Store link
   const [isIOS, setIsIOS] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -19,29 +27,27 @@ function IOSInstaller() {
   }, []);
 
   const showModal = () => {
-    setModalVisible(true);
+    setIsModalOpen(true);
 
-    // Auto-close modal after 5 seconds
+    // Auto-close modal after 15 seconds
     setTimeout(() => {
-      setModalVisible(false);
+      setIsModalOpen(false);
     }, 15000); // 15000ms = 15 seconds
   };
 
   if (!isIOS) return null;
 
   return (
-    <>
+    <div
+      ref={ref}
+      {...props}
+      className={`flex flex-wrap gap-2 items-center ${props.className || ''}`}
+    >
       <Button
-        type='primary'
-        shape='round'
-        icon={<PlusCircleOutlined />}
+        radius='full'
+        startContent={<IoAddCircleOutline size={20} />}
         onClick={showModal}
-        style={{
-          backgroundColor: '#795548',
-          borderColor: '#795548',
-          display: 'flex',
-          alignItems: 'center',
-        }}
+        className='bg-[#795548] text-white flex items-center'
       >
         Add to Home Screen
       </Button>
@@ -62,33 +68,31 @@ function IOSInstaller() {
       </a>
 
       <Modal
-        title='Install App on iOS'
-        open={modalVisible}
-        centered
-        footer={[
-          <Button key='close' onClick={() => setModalVisible(false)}>
-            Close
-          </Button>,
-        ]}
-        onCancel={() => setModalVisible(false)}
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        placement='center'
       >
-        <p style={{ fontSize: '16px', textAlign: 'center' }}>
-          📤 Tap the <strong>Share</strong> button in Safari, then select
-          <strong> "Add to Home Screen"</strong>.
-        </p>
-        <Image
-          src={ios_addToHomeScreen}
-          alt='Add to Home Screen'
-          preview={true}
-          style={{
-            marginTop: 10,
-            width: '100%',
-            height: 'auto',
-            zIndex: 999,
-          }}
-        />
+        <ModalContent>
+          <ModalHeader className='flex flex-col gap-1'>Install App on iOS</ModalHeader>
+          <ModalBody>
+            <p style={{ fontSize: '16px', textAlign: 'center' }}>
+              📤 Tap the <strong>Share</strong> button in Safari, then select
+              <strong> "Add to Home Screen"</strong>.
+            </p>
+            <Image
+              src={ios_addToHomeScreen}
+              alt='Add to Home Screen'
+              className='mt-2 w-full h-auto z-[999]'
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button color='danger' variant='light' onClick={() => setIsModalOpen(false)}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
       </Modal>
-    </>
+    </div>
   );
 }
 

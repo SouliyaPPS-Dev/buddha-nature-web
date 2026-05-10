@@ -1,6 +1,6 @@
 import playStoreIcon from '@/assets/images/play_store.png'; // Add a Play Store icon
 import { useLinkToStore } from '@/hooks/useLinkToStore';
-import { Button, Image } from 'antd';
+import { Button, Image } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -80,24 +80,22 @@ function PushNotificationPlayStore() {
           <Image
             src={playStoreIcon}
             alt='App Store Icon'
-            preview={false}
-            style={{ width: 150, height: 'auto', marginTop: 10 }}
+            className='w-[150px] h-auto mt-2'
           />
         </a>
 
-        <div style={{ marginTop: 10 }}>
+        <div className='mt-2 flex gap-2'>
           <a href={installLink} target='_blank' rel='noopener noreferrer'>
-            <Button type='primary'>Install</Button>
+            <Button color='primary'>Install</Button>
           </a>
 
           <Button
-            type='default'
+            variant='bordered'
             onClick={() => {
               localStorage.setItem('playstore_install_dismissed', 'true');
               setIsVisible(false);
               toast.dismiss(); // Dismiss the notification
             }}
-            style={{ marginLeft: 10 }}
           >
             Close
           </Button>
