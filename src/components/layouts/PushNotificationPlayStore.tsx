@@ -91,7 +91,7 @@ function PushNotificationPlayStore() {
 
           <Button
             variant='bordered'
-            onClick={() => {
+            onPress={() => {
               localStorage.setItem('playstore_install_dismissed', 'true');
               setIsVisible(false);
               toast.dismiss(); // Dismiss the notification

@@ -46,7 +46,7 @@ function IOSInstaller({ ref, ...props }: any) {
       <Button
         radius='full'
         startContent={<IoAddCircleOutline size={20} />}
-        onClick={showModal}
+        onPress={showModal}
         className='bg-[#795548] text-white flex items-center'
       >
         Add to Home Screen
@@ -86,7 +86,7 @@ function IOSInstaller({ ref, ...props }: any) {
             />
           </ModalBody>
           <ModalFooter>
-            <Button color='danger' variant='light' onClick={() => setIsModalOpen(false)}>
+            <Button color='danger' variant='light' onPress={() => setIsModalOpen(false)}>
               Close
             </Button>
           </ModalFooter>

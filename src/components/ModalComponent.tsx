@@ -74,14 +74,14 @@ export const useConfirmationModal = (): UseConfirmationModalReturn => {
         <ModalFooter>
           <Button
             variant='light'
-            onClick={closeModal}
+            onPress={closeModal}
             className='font-phetsarath'
           >
             {modalOptions.cancelText}
           </Button>
           <Button
             color={modalOptions.color || 'primary'}
-            onClick={() => {
+            onPress={() => {
               modalOptions.onConfirm?.();
               closeModal();
             }}

@@ -236,7 +236,7 @@ function RouteComponent() {
             </div>
             {/* Reset Filters */}{' '}
             <Button
-              onClick={() => {
+              onPress={() => {
                 setSearchTerm('');
                 setStartDate(null);
                 setEndDate(null);
@@ -513,11 +513,11 @@ function RouteComponent() {
                 )}
               </ModalBody>
               <ModalFooter>
-                <Button onClick={handleCloseModal} color='primary'>
+                <Button onPress={handleCloseModal} color='primary'>
                   Close
                 </Button>
                 <Button
-                  onClick={() => handleShareEvent(selectedEvent)}
+                  onPress={() => handleShareEvent(selectedEvent)}
                   color='primary'
                 >
                   <IoShareSocialSharp className='w-5 h-5 mr-2' />
