@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="lo">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ຄຳສອນພຸດທະ</title>
+    <!-- Meta -->
+    <meta name="description" content="ຄຳສອນພຣະພຸດທະເຈົ້າ" />
+    <meta
+      name="keywords"
+      content="ຄຳສອນພຸດທະ, ຄຳສອນພຣະພຸດທະເຈົ້າ, ທັມມະຊາດ, The Word of Buddha for Research Educational, Buddha Nature, The Word of Buddha, Dhamma, Research, Educational, lao, laos, app, buddha, nature, ຄຳສອນພຣະພຸດທະເຈົ້າ, ທັມ, ທັມມະ, ທຳມະ, ພຸດທະ, ລາວ"
+    />
+    <link rel="manifest" href="/buddha-nature-web/manifest.json" />
+
+    <!--  Open Graph Metadata (for social cards) -->
+    <meta property="og:title" content="ຄຳສອນພຸດທະ" />
+    <meta property="og:description" content="ຄຳສອນພຣະພຸດທະເຈົ້າ" />
+    <meta
+      property="og:image"
+      content="https://buddhaword.net/logo_wutdarn.png"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://buddhaword.net" />
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ຄຳສອນພຸດທະ" />
+    <meta name="twitter:description" content="ຄຳສອນພຣະພຸດທະເຈົ້າ" />
+    <meta
+      name="twitter:image"
+      content="https://buddhaword.net/logo_wutdarn.png"
+    />
+
+    <!-- Add the favicon -->
+    <link rel="icon" type="image/png" href="/buddha-nature-web/buddhaword.png" />
+
+    <!-- PWA Support -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#FFAF5D" />
+    <meta name="apple-mobile-web-app-title" content="ຄຳສອນພຸດທະ" />
+    <meta name="theme-color" content="#FFAF5D" />
+    <link rel="apple-touch-icon" href="/buddha-nature-web/buddhaword.png" />
+
+    <!-- Register Service Worker and Add to Home Screen scripts -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        let deferredPrompt; // To handle the "Add to Home Screen" prompt
+        const hasShownA2HS = localStorage.getItem('hasShownA2HS') === 'true';
+        if (!hasShownA2HS) {
+          // Listen for the "beforeinstallprompt" event
+          window.addEventListener('beforeinstallprompt', (event) => {
+            console.log('Detected beforeinstallprompt event');
+            // Prevent default mini-info bar from appearing
+            event.preventDefault();
+            deferredPrompt = event; // Save the event for triggering the prompt later
+            // Show the custom banner
+            const installAlert = document.createElement('div');
+            installAlert.style.position = 'fixed';
+            installAlert.style.bottom = '20px';
+            installAlert.style.left = '50%';
+            installAlert.style.transform = 'translateX(-50%)';
+            installAlert.style.backgroundColor = '#ffffff';
+            installAlert.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.15)';
+            installAlert.style.borderRadius = '12px';
+            installAlert.style.padding = '15px 20px';
+            installAlert.style.zIndex = '999';
+            installAlert.style.display = 'flex';
+            installAlert.style.alignItems = 'center';
+            installAlert.style.justifyContent = 'space-between';
+            installAlert.style.width = '95%';
+            installAlert.style.maxWidth = '400px';
+            installAlert.style.fontFamily = 'Arial, sans-serif';
+            // Add content: message, install button, and close button
+            installAlert.innerHTML = `
+                    <div style="flex: 1; z-index: 999;">
+                      <p style="margin: 0; font-size: 16px; font-weight: bold; color: #333;">
+                        Add to Home Screen
+                      </p>
+                      <p style="margin: 0; font-size: 14px; color: #666;">
+                        Install this app for a better user experience!
+                      </p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; z-index: 999;">
+                      <button id="install-pwa-button" style="
+                        background-color: #ab5f14;
+                        color: #ffffff;
+                        font-size: 14px;
+                        font-weight: bold;
+                        border: none;
+                        padding: 8px 12px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        transition: background-color 0.3s;
+                      ">Install</button>
+                      <button id="close-alert-button" style="
+                        background-color: #bdbdbd;
+                        color: #fff;
+                        font-size: 14px;
+                        font-weight: bold;
+                        border: none;
+                        padding: 8px 12px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        transition: background-color 0.3s;
+                      ">Close</button>
+                    </div>
+                  `;
+            // Append the alert to the body
+            document.body.appendChild(installAlert);
+            // Automatically remove the alert after 15 seconds
+            const timeout = setTimeout(() => {
+              console.log('Install alert timed out after 15 seconds');
+              installAlert.remove();
+            }, 15000);
+            // Handle "Install" button click
+            const installButton = document.getElementById('install-pwa-button');
+            installButton?.addEventListener('click', async () => {
+              clearTimeout(timeout); // Cancel timeout when interacting
+              if (deferredPrompt) {
+                deferredPrompt.prompt(); // Trigger the install prompt
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log('User choice:', outcome);
+                if (outcome === 'accepted') {
+                  localStorage.setItem('hasShownA2HS', 'true'); // Mark as installed
+                }
+                deferredPrompt = null; // Clear saved prompt after user action
+              }
+              installAlert.remove(); // Once clicked, remove the alert
+            });
+            // Handle "Close" button click
+            const closeButton = document.getElementById('close-alert-button');
+            closeButton?.addEventListener('click', () => {
+              console.log('Install alert closed manually by user');
+              clearTimeout(timeout); // Cancel timeout
+              installAlert.remove(); // Remove alert
+              localStorage.setItem('hasShownA2HS', 'false'); // Track dismissal
+            });
+          });
+        }
+      }
+    </script>
+
+    <!-- Scroll View Style Reset -->
+    <style>
+      /* Ensure the body does not block overlays */
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Make overlay banners always the top-most layer */
+      /* Inside global CSS or inline styles */
+      .install-alert {
+        z-index: 9999;
+        /* Ensure it's the topmost layer */
+        position: fixed;
+        /* Anchor it to the viewport */
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: auto;
+        /* Prevent overlapping */
+        pointer-events: auto;
+        /* Ensure interactions */
+      }
+
+      .modal {
+        position: fixed;
+        /* Sticks to viewport */
+        z-index: 9999;
+        /* Topmost layer */
+        /* Ensures nothing overlaps these elements */
+      }
+
+      /* Ensure interactive buttons are clickable */
+      .install-alert *,
+      .modal * {
+        pointer-events: auto;
+        /* Allow interaction */
+      }
+
+      /* Prevent background content from interfering */
+      .install-alert-blocker,
+      .modal-blocker {
+        pointer-events: none;
+        /* Block clicks to underlying layers */
+      }
+
+      .sticky-element {
+        position: sticky;
+        z-index: 999;
+      }
+
+      /* Splash Screen */
+      .splash-screen {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+        z-index: 10000;
+        transition: opacity 300ms ease;
+      }
+      .splash-screen.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .splash-logo {
+        width: clamp(180px, 35vw, 420px);
+        max-width: 80vw;
+        height: auto;
+        -o-object-fit: contain;
+           object-fit: contain;
+      }
+      .splash-logo-medium {
+        width: clamp(120px, 30vw, 300px);
+        height: auto;
+        -o-object-fit: contain;
+           object-fit: contain;
+      }
+      .splash-title {
+        margin-top: 16px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #333333;
+      }
+
+      /* Additional logos layout */
+      .splash-logos {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+        align-items: center;
+        margin-top: 12px;
+        max-width: 92vw;
+      }
+      .splash-logo-mini {
+        width: clamp(56px, 18vw, 120px);
+        height: auto;
+        -o-object-fit: contain;
+           object-fit: contain;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
+      }
+
+      /* Make logo larger on mobile */
+      @media (max-width: 640px) {
+        .splash-logo {
+          width: clamp(240px, 75vw, 520px);
+        }
+      }
+    </style>
+    <script type="module" crossorigin src="/buddha-nature-web/assets/main-Bej0qX-G.js"></script>
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/core-js-pure-KQPHw1UG.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/@babel-xo7iNJez.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/react-fAtQMGNM.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/scheduler-8y5VlOXR.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/react-dom-s7e7XVc8.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/tiny-invariant-CopsF_GD.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/tiny-warning-Dirz_SfZ.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/use-sync-external-store-b15P9tko.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/@tanstack-9T7r6o9M.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/idb-BXWtuYvb.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/react-fast-compare-BizYdg1m.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/invariant-BdAXE57w.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/shallowequal-CdQIN3sq.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/react-helmet-async-DNPNerM-.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/dom-helpers-CNHQ5a9a.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/react-transition-group-C3oQmH4r.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/@swc-h1AXYk7E.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/@internationalized-C6LEMtSM.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/@react-stately-z5UE1Zpr.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/clsx-B-dksMZM.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/@react-aria-BIaGJtYT.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/motion-utils-C_SlKRoS.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/motion-dom-DWDx2Ux7.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/framer-motion-CEK0SSpx.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/compute-scroll-into-view-DWa9QgjM.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/scroll-into-view-if-needed-BHvttMQE.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/tailwind-variants-wBLq28id.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/tailwind-merge-CYizakiM.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/@heroui-Dj2lnoKL.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/react-toastify-DiPjDw98.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/smoothscroll-polyfill-Cwlh5Rmv.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/react-icons-Dqpz-IuW.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/axios-DXsv3KKR.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/lodash.debounce-C2bqhyOK.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/dompurify-CocPUCx9.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/react-highlight-words-D-J8_vlK.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/entities-05SZEo_X.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/inherits-BlmhoU4v.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/events-CXH2uRM3.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/domelementtype-C_FFwB5S.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/dom-serializer-Qz30wS5l.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/domutils-C5g0vQyY.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/base64-js-DRz5BQNA.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/ieee754-vIlwft-x.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/buffer-DT9VzwNJ.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/safe-buffer-CMTcrbJ_.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/string_decoder-DSI1wpto.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/htmlparser2-CzzkaVYh.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/react-html-parser-Cezyvd4p.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/core-js-DGKcuZ07.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/stylis-YPZU7XtI.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/@emotion-CBpc3bmA.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/math-random-BWbUAceK.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/react-scroll-to-bottom-D2ymsmD0.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/react-lifecycles-compat-AfN2QaV3.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/uncontrollable-C86MG6At.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/prop-types-BrTdBuwT.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/date-arithmetic-DrY26MJF.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/lodash-CdnCsZx1.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/@restart-C8sWSw9T.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/@popperjs-DMGSESOy.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/warning-DkKkkGOF.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/react-overlays-B48rysy9.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/memoize-one-BdPwpGay.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/dayjs-Da_WaCOV.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/react-big-calendar-D7Qup9e2.js">
+    <link rel="modulepreload" crossorigin href="/buddha-nature-web/assets/swiper-ByqCY2m5.js">
+    <link rel="stylesheet" crossorigin href="/buddha-nature-web/assets/react-toastify-BE4BdE5o.css">
+    <link rel="stylesheet" crossorigin href="/buddha-nature-web/assets/react-big-calendar-DxzzN9QP.css">
+    <link rel="stylesheet" crossorigin href="/buddha-nature-web/assets/swiper-B_l4pjL9.css">
+    <link rel="stylesheet" crossorigin href="/buddha-nature-web/assets/main-BRtDqnPn.css">
+  <link rel="manifest" href="/buddha-nature-web/manifest.json"><script id="vite-plugin-pwa:register-sw" src="/buddha-nature-web/registerSW.js"></script></head>
+
+  <body>
+    <!-- Startup Splash Screen -->
+    <div id="splash-screen" class="splash-screen" aria-label="loading">
+      <div class="splash-logos" aria-label="partner logos">
+        <img
+          class="splash-logo-medium "
+          src="/buddha-nature-web/logo_wutdarn.png"
+          alt="ຄຳສອນພຸດທະ logo"
+        />
+        <img
+          class="splash-logo-medium"
+          src="/buddha-nature-web/dhammakonnon.png"
+          alt="Dhammakonnon"
+        />
+        <img
+          class="splash-logo-medium"
+          src="/buddha-nature-web/ຮຸ່ງເເສງເເຫ່ງທັມ.png"
+          alt="ຮຸ່ງແສງແຫ່ງທັມ"
+        />
+        <img
+          class="splash-logo-medium"
+          src="/buddha-nature-web/ຕະຖາຄົຕພາສິຕ.png"
+          alt="ຕະຖາຄົຕພາສິຕ"
+        />
+        <img class="splash-logo-medium" src="/buddha-nature-web/ພຸທທະວົງສ໌.png" alt="ພຸທທະວົງສ໌" />
+        <img class="splash-logo-medium" src="/buddha-nature-web/ວິນັຍສຸຄົຕ.png" alt="ວິນັຍສຸຄົຕ" />
+        <img
+          class="splash-logo-medium"
+          src="/buddha-nature-web/ວັດບ້ານນາຈິກ.png"
+          alt="ວັດບ້ານນາຈິກ"
+        />
+        <img class="splash-logo-medium" src="/buddha-nature-web/buddhaword.png" alt="ຄຳສອນພຸດທະ" />
+      </div>
+    </div>
+    <div id="root"></div>
+
+    <!-- Hide Splash Screen once app signals readiness -->
+    <script>
+      (function () {
+        const splash = document.getElementById('splash-screen');
+        if (!splash) return;
+
+        function hideSplash() {
+          if (!splash || splash.classList.contains('fade-out')) return;
+          splash.classList.add('fade-out');
+          // Remove from DOM after transition
+          setTimeout(() => splash.remove(), 320);
+        }
+
+        // Primary: wait for the app to signal readiness
+        document.addEventListener('app:ready', hideSplash);
+
+        // Fallbacks: ensure we never get stuck on splash
+        window.addEventListener('load', () => setTimeout(hideSplash, 100));
+        setTimeout(hideSplash, 6000); // ultimate safety timeout
+      })();
+    </script>
+  </body>
+</html>

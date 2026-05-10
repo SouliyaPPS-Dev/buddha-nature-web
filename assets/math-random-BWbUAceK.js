@@ -1,0 +1,1 @@
+import{g as t}from"./@babel-xo7iNJez.js";var o=typeof window<"u"?window:self,e=o.crypto||o.msCrypto,m=function(r){if(!r)return Math.random;var a=Math.pow(2,32),n=new Uint32Array(1);return function(){return r.getRandomValues(n)[0]/a}}(e);const f=t(m);export{f as r};
