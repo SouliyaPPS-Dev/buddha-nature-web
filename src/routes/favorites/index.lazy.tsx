@@ -1,17 +1,17 @@
-import { SearchIcon } from '@/components/layouts/icons';
-import SutraCard from '@/containers/sutra/SutraCard';
-import { useFavorites } from '@/hooks/favorites/useFavorites';
-import { useScrollingStore } from '@/hooks/ScrollProvider';
-import { router } from '@/router';
-import { Input, Select, SelectItem } from "@heroui/react";
-import { createLazyFileRoute } from '@tanstack/react-router';
+import { SearchIcon } from '@/components/layouts/icons'
+import SutraCard from '@/containers/sutra/SutraCard'
+import { useFavorites } from '@/hooks/favorites/useFavorites'
+import { useScrollingStore } from '@/hooks/ScrollProvider'
+import { router } from '@/router'
+import { Input, Select, SelectItem } from '@heroui/react'
+import { createLazyFileRoute } from '@tanstack/react-router'
 
 export const Route = createLazyFileRoute('/favorites/')({
   component: RouteComponent,
-});
+})
 
 function RouteComponent() {
-  const { scrollContainerRef } = useScrollingStore();
+  const { scrollContainerRef } = useScrollingStore()
 
   const {
     data,
@@ -28,58 +28,58 @@ function RouteComponent() {
     currentlyPlayingId,
     handlePlayAudio,
     handleNextAudio,
-  } = useFavorites();
+  } = useFavorites()
 
   return (
-    <section ref={scrollContainerRef} className='max-w-lg mx-auto mb-0'>
+    <section ref={scrollContainerRef} className="max-w-lg mx-auto mb-0">
       {/* Fixed Filter Controls */}
       <div
-        className='top-0 z-10 px-4 py-2 mt-12 w-full max-w-lg mx-auto absolute'
+        className="top-0 z-10 px-4 py-2 mt-12 w-full max-w-lg mx-auto absolute"
         style={{
           marginLeft: '-4px',
         }}
       >
-        <div className='grid grid-cols-2 md:grid-cols-2 gap-1 items-center'>
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-1 items-center">
           {/* Search Bar */}
-          <div className='w-full'>
+          <div className="w-full">
             <Input
-              aria-label='Search'
-              labelPlacement='outside'
-              type='search'
-              placeholder='ຄົ້ນຫາພຣະສູດຖືກໃຈ...'
-              className='bg-default-100 rounded-lg w-full font-phetsarath'
+              aria-label="Search"
+              labelPlacement="outside"
+              type="search"
+              placeholder="ຄົ້ນຫາພຣະສູດຖືກໃຈ..."
+              className="bg-default-100 rounded-lg w-full font-phetsarath"
               value={searchTerm}
               startContent={
-                <SearchIcon className='text-base text-default-400 pointer-events-none flex-shrink-0' />
+                <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
               }
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
           {/* Dropdown for Category Filtering */}
-          <div className='w-full'>
+          <div className="w-full">
             <Select
-              aria-label='Select a category'
+              aria-label="Select a category"
               selectedKeys={[selectedCategory || '']}
               onSelectionChange={(e) => {
-                const value = Array.from(e).pop() as string | null;
-                setSelectedCategory(value);
+                const value = Array.from(e).pop() as string | null
+                setSelectedCategory(value)
               }}
               classNames={{
                 base: 'bg-default-100 text-lg rounded-lg w-full font-phetsarath',
                 trigger: 'font-phetsarath',
                 listbox: 'font-phetsarath',
               }}
-              placeholder='ທຸກໝວດ'
+              placeholder="ທຸກໝວດ"
             >
-              <SelectItem key='' className='font-phetsarath text-lg'>
+              <SelectItem key="" className="font-phetsarath text-lg">
                 ທຸກໝວດ
               </SelectItem>
               {uniqueCategories.map((category: any) => (
                 <SelectItem
                   key={category}
                   value={category}
-                  className='font-phetsarath text-lg'
+                  className="font-phetsarath text-lg"
                 >
                   {category}
                 </SelectItem>
@@ -90,10 +90,10 @@ function RouteComponent() {
       </div>
 
       {/* Spacer to prevent content from being hidden behind fixed filters */}
-      <div className='h-8'></div>
+      <div className="h-8"></div>
 
       {/* Render Filtered Items */}
-      <div className='flex flex-col gap-2 mt-4 mb-20 p-2'>
+      <div className="flex flex-col gap-2 mt-4 mb-20 p-2">
         {[...data].reverse().map((item: any) => (
           <SutraCard
             key={item.ID}
@@ -104,7 +104,7 @@ function RouteComponent() {
             onClick={() => {
               router.navigate({
                 to: `/favorites/details/${item['ID']}${window.location.search}`,
-              });
+              })
             }}
             route={`/favorites/details/${item['ID']}${window.location.search}`}
             isPlaying={currentlyPlayingId === item.ID}
@@ -115,9 +115,9 @@ function RouteComponent() {
 
         {/* Fallback for Empty Data */}
         {!data?.length && (
-          <div className='text-center text-white text-lg'>ບໍ່ພົບຂໍ້ມູນ</div>
+          <div className="text-center text-white text-lg">ບໍ່ພົບຂໍ້ມູນ</div>
         )}
       </div>
     </section>
-  );
+  )
 }
