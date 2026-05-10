@@ -24,29 +24,10 @@ declare module '@react-types/shared' {
 
 function App() {
   const [persister, setPersister] = useState<any>(null);
-  const [isServiceWorkerActive, setIsServiceWorkerActive] = useState(false);
 
   useEffect(() => {
     // Fetch persister asynchronously
     persisterPromise.then(setPersister);
-
-    // Register service worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker
-          .register('/sw.js')
-          .then((registration) => {
-            console.log(
-              'ServiceWorker registration successful with scope: ',
-              registration.scope
-            );
-            setIsServiceWorkerActive(true);
-          })
-          .catch((error) => {
-            console.error('ServiceWorker registration failed: ', error);
-          });
-      });
-    }
   }, []);
 
   // Notify index.html splash screen when app is ready to render
@@ -79,7 +60,6 @@ function App() {
               <PageTransition>
                 <React.Suspense fallback={<Spinner />}>
                   <RouterProvider router={router} />
-                  {isServiceWorkerActive}
                 </React.Suspense>
               </PageTransition>
 

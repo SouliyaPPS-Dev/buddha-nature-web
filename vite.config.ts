@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
       react(),
       VitePWA({
         registerType: 'autoUpdate',
-        devOptions: { enabled: true },
+        devOptions: { enabled: false },
         strategies: 'generateSW',
         srcDir: 'public',
         filename: 'sw.js',
@@ -40,6 +40,7 @@ export default defineConfig(({ mode }) => {
           display: 'standalone',
           orientation: 'portrait',
           start_url: '/',
+          scope: '/',
           icons: [
             { src: '/icons/Icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
             { src: '/icons/Icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
@@ -95,7 +96,7 @@ export default defineConfig(({ mode }) => {
     build: {
       chunkSizeWarningLimit: 4000,
       rollupOptions: {
-        input: { main: 'index.html', sw: 'src/sw.js' },
+        input: { main: 'index.html' },
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {

@@ -10,17 +10,17 @@ export const useLinkToStore = () => {
           if (isHuawei) {
                // Huawei AppGallery link
                setInstallLink(
-                    'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka'
+                    'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka&pcampaignid=web_share'
                ); // Replace with actual Huawei AppGallery URL
           } else if (isAndroid) {
                // Google Play Store link
                setInstallLink(
-                    'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka'
+                    'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka&pcampaignid=web_share'
                ); // Replace with actual Play Store URL
           } else {
                // Default fallback
                setInstallLink(
-                    'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka'
+                    'https://play.google.com/store/apps/details?id=com.buddha.lao_tipitaka&pcampaignid=web_share'
                ); // Default to Play Store if not detected
           }
      }, []);

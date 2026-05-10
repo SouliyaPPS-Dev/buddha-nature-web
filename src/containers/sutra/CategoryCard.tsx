@@ -40,7 +40,7 @@ const CategoryCard = memo(
               radius='lg'
               alt={item['ຊື່ພຣະສູດ']}
               className={`w-full h-full object-contain transition-opacity duration-300 ${
-                isLoading ? 'opacity-100' : 'opacity-0'
+                isLoading ? 'opacity-0' : 'opacity-100'
               }`}
               isLoading={isLoading}
               src={`/images/sutra/${category}.jpg`}

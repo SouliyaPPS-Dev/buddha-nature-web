@@ -44,20 +44,6 @@
     <!-- Register Service Worker and Add to Home Screen scripts -->
     <script>
       if ('serviceWorker' in navigator) {
-        // Register the service worker
-        window.addEventListener('load', () => {
-          navigator.serviceWorker
-            .register('/sw.js')
-            .then((registration) => {
-              console.log(
-                'Service Worker registered successfully with scope:',
-                registration.scope
-              );
-            })
-            .catch((error) => {
-              console.error('Service Worker registration failed:', error);
-            });
-        });
         let deferredPrompt; // To handle the "Add to Home Screen" prompt
         const hasShownA2HS = localStorage.getItem('hasShownA2HS') === 'true';
         if (!hasShownA2HS) {

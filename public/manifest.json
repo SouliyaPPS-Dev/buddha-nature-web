@@ -18,7 +18,7 @@
   "start_url": "/",
   "display": "standalone",
   "id": "ຄຳສອນພຣະພຸດທະເຈົ້າ",
-  "scope": "ຄຳສອນພຣະພຸດທະເຈົ້າ",
+  "scope": "/",
   "description": "ຄຳສອນພຣະພຸດທະເຈົ້າ | Buddha Nature",
   "dir": "auto",
   "background_color": "#FFAF5D",

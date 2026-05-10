@@ -202,10 +202,14 @@ export const Navbar = () => {
         </NavbarItem>
 
         {/* Play Store */}
-        <ImagePlayStore />
+        <NavbarItem className='hidden sm:flex gap-2'>
+          <ImagePlayStore />
+        </NavbarItem>
 
         {/* IOS Installer */}
-        <IOSInstaller />
+        <NavbarItem className='hidden sm:flex gap-2'>
+          <IOSInstaller />
+        </NavbarItem>
 
         {/* Conditionally hide search input when the current path is '/sutra' */}
         {currentPath !== '/sutra' && (
@@ -345,12 +349,14 @@ export const Navbar = () => {
         </div>
 
         {/* Play Store */}
-        <ImagePlayStore />
+        <NavbarMenuItem>
+          <ImagePlayStore />
+        </NavbarMenuItem>
 
         {/* IOS Installer */}
-        <div className='mt-3'>
+        <NavbarMenuItem className='mt-3'>
           <IOSInstaller />
-        </div>
+        </NavbarMenuItem>
       </NavbarMenu>
     </NextUINavbar>
   );

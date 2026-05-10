@@ -1,6 +1,5 @@
 import ios_addToHomeScreen from '@/assets/images/ios_addToHomeScreen.jpg';
 import { PlusCircleOutlined } from '@ant-design/icons';
-import { NavbarItem } from '@heroui/navbar';
 import { Button, Image, Modal } from 'antd';
 import { useEffect, useState } from 'react';
 
@@ -31,7 +30,7 @@ function IOSInstaller() {
   if (!isIOS) return null;
 
   return (
-    <NavbarItem className='sm:flex gap-2'>
+    <>
       <Button
         type='primary'
         shape='round'
@@ -64,7 +63,7 @@ function IOSInstaller() {
 
       <Modal
         title='Install App on iOS'
-        visible={modalVisible}
+        open={modalVisible}
         centered
         footer={[
           <Button key='close' onClick={() => setModalVisible(false)}>
@@ -89,7 +88,7 @@ function IOSInstaller() {
           }}
         />
       </Modal>
-    </NavbarItem>
+    </>
   );
 }
 
